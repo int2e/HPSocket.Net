@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--<TargetFrameworks>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netstandard2.0;netstandard2.1;net20;net30;net35;net35-client;net40;net40-client;net45;net451;net452;net46;net461;net462;net47;net471;net472;net48</TargetFrameworks>-->
+    <TargetFrameworks>netstandard2.0;net20;net40</TargetFrameworks>
+    <Platforms>AnyCPU</Platforms>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AssemblyName>HPSocket.Net</AssemblyName>
+    <RootNamespace>HPSocket</RootNamespace>
+    <Version>2.0.0</Version>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+
+  <!-- ReSharper disable once UnknownProperty -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net20' ">
+    <TargetFrameworkIdentifier Condition=" '$(TargetFrameworkIdentifier)' == '' ">.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <!-- ReSharper disable once UnknownProperty -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net30' ">
+    <TargetFrameworkIdentifier Condition=" '$(TargetFrameworkIdentifier)' == '' ">.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v3.0</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <!-- ReSharper disable once UnknownProperty -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net35' ">
+    <TargetFrameworkIdentifier Condition=" '$(TargetFrameworkIdentifier)' == '' ">.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <!-- ReSharper disable once UnknownProperty -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net35-client'">
+    <TargetFrameworkIdentifier Condition=" '$(TargetFrameworkIdentifier)' == '' ">.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile Condition=" '$(TargetFrameworkProfile)' == '' ">client</TargetFrameworkProfile>
+  </PropertyGroup>
+
+  <!-- ReSharper disable once UnknownProperty -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
+    <TargetFrameworkIdentifier Condition=" '$(TargetFrameworkIdentifier)' == '' ">.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile Condition=" '$(TargetFrameworkProfile)' == '' ">client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>D:\src\repos\HPSocket.Net\HPSocket.Net\HPSocket.Net.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HPSocket.csproj.DotSettings" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if &quot;$(OutDir)&quot; == &quot;bin\Release\netstandard2.0\&quot; (&#xD;&#xA;    InheritDoc -o&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).xml&quot;  &quot;$(ProjectDir)$(OutDir)..\$(TargetName).xml&quot; /y&#xD;&#xA;)" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="if exist &quot;$(ProjectDir)$(OutDir)\$(TargetName).xml&quot;  ( &#xD;&#xA;    del &quot;$(ProjectDir)$(OutDir)\$(TargetName).xml&quot; /q&#xD;&#xA;)" />
+  </Target>
+
+</Project>
