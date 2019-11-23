@@ -337,8 +337,8 @@ namespace HPSocket.Tcp
         /// <inheritdoc />
         public void Stop()
         {
-            _agent.Stop();
-            _server.Stop();
+            _agent?.Stop();
+            _server?.Stop();
         }
 
         #endregion
@@ -356,8 +356,8 @@ namespace HPSocket.Tcp
             if (disposing)
             {
                 // 释放托管对象资源
-                _agent.Dispose();
-                _server.Dispose();
+                _agent?.Dispose();
+                _server?.Dispose();
             }
 
             _disposed = true;
