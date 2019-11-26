@@ -33,7 +33,7 @@ namespace HPSocket.Http
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyChunkData事件", true)]
         new event ChunkCompleteEventHandler OnChunkComplete;
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyMessageData事件", true)]
-        new event MessageBeginEventHandler OnMessageBegin;
+        new event HeadersCompleteEventHandler OnHeadersComplete;
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyMessageData事件", true)]
         new event BodyEventHandler OnBody;
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyMessageData事件", true)]
@@ -139,15 +139,21 @@ namespace HPSocket.Http
 
         #region  重写父类message相关方法, 父类相关事件不会继续触发 
 
-        protected new HttpParseResult SdkOnMessageBegin(IntPtr sender, IntPtr connId)
+        protected new HttpParseResultEx SdkOnHeadersComplete(IntPtr sender, IntPtr connId)
         {
-            if (OnEasyMessageData == null) return HttpParseResult.Ok;
+            if (OnEasyMessageData == null) return HttpParseResultEx.Ok;
+
+            var header = GetHeader("Content-Length") ?? "0";
+            if (!int.TryParse(header, out var contentLength))
+            {
+                return HttpParseResultEx.Error;
+            }
 
             _easyData = null;
-            _easyData = new List<byte>();
+            _easyData = new List<byte>(contentLength);
 
 
-            return HttpParseResult.Ok;
+            return HttpParseResultEx.Ok;
         }
 
         protected new HttpParseResult SdkOnBody(IntPtr sender, IntPtr connId, IntPtr data, int length)
