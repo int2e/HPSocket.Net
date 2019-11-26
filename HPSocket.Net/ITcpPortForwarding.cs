@@ -40,6 +40,16 @@ namespace HPSocket
         #region 属性
 
         /// <summary>
+        /// 内部server对象
+        /// </summary>
+        ITcpServer Server { get; }
+
+        /// <summary>
+        /// 内部agent对象
+        /// </summary>
+        ITcpAgent Agent { get; }
+
+        /// <summary>
         /// 本地绑定地址, 默认0.0.0.0
         /// </summary>
         string LocalBindAddress { get; set; }

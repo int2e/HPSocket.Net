@@ -4551,6 +4551,16 @@
             agent 连接断开
             </summary>
         </member>
+        <member name="P:HPSocket.ITcpPortForwarding.Server">
+            <summary>
+            内部server对象
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpPortForwarding.Agent">
+            <summary>
+            内部agent对象
+            </summary>
+        </member>
         <member name="P:HPSocket.ITcpPortForwarding.LocalBindAddress">
             <summary>
             本地绑定地址, 默认0.0.0.0
@@ -6456,6 +6466,12 @@
             <inheritdoc />
         </member>
         <member name="E:HPSocket.Tcp.TcpPortForwarding.OnAgentClose">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwarding.Server">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwarding.Agent">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Tcp.TcpPortForwarding.SenderPtr">

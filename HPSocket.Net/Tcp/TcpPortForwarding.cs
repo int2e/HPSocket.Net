@@ -52,6 +52,12 @@ namespace HPSocket.Tcp
         /// <inheritdoc />
         public event AgentCloseEventHandler OnAgentClose;
 
+        /// <inheritdoc />
+        public ITcpServer Server => _server;
+
+        /// <inheritdoc />
+        public ITcpAgent Agent => _agent;
+
         #endregion
 
         #region 属性
