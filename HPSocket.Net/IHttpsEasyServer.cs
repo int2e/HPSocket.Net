@@ -5,7 +5,7 @@ namespace HPSocket
     /// <summary>
     /// https easy agent
     /// </summary>
-    public interface IHttpsEasySerer : ISsl, IHttpEasyServer
+    public interface IHttpsEasySerer : IHttpsServer, IHttpEasyServer
     {
     }
 }

@@ -29,7 +29,7 @@ namespace HPSocket
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyChunkData事件", true)]
         new event ChunkCompleteEventHandler OnChunkComplete;
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyMessageData事件", true)]
-        new event MessageBeginEventHandler OnMessageBegin;
+        new event HeadersCompleteEventHandler OnHeadersComplete;
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyMessageData事件", true)]
         new event BodyEventHandler OnBody;
         [Obsolete("无需添加此事件, 接收到完整数据后一次性触发OnEasyMessageData事件", true)]
