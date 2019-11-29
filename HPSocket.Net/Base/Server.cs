@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using HPSocket.Sdk;
 
 namespace HPSocket.Base
@@ -15,6 +16,10 @@ namespace HPSocket.Base
         /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        /// 等待
+        /// </summary>
+        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 保护成员
@@ -177,6 +182,12 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
+        public void Wait()
+        {
+            _resetEvent.WaitOne();
+        }
+
+        /// <inheritdoc />
         public string ErrorMessage => Sdk.Server.HP_Server_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
 
@@ -249,11 +260,24 @@ namespace HPSocket.Base
                 return true;
             }
 
-            return Sdk.Server.HP_Server_Start(SenderPtr, Address, Port);
+            var ok = Sdk.Server.HP_Server_Start(SenderPtr, Address, Port);
+            if (ok)
+            {
+                _resetEvent.Reset();
+            }
+            return ok;
         }
 
         /// <inheritdoc />
-        public bool Stop() => HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
+        public bool Stop()
+        {
+            var ok = HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
+            if (ok)
+            {
+                _resetEvent.Set();
+            }
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool Send(IntPtr connId, byte[] bytes, int length)
@@ -507,6 +531,8 @@ namespace HPSocket.Base
             if (disposing)
             {
                 // 释放托管对象资源
+
+                _resetEvent.Close();
             }
             Destroy();
 
