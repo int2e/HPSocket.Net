@@ -34,6 +34,11 @@
             连接分配的代理ip的缓存,连接成功或失败后删除
             </summary>
         </member>
+        <member name="F:HPSocket.Base.Agent._resetEvent">
+            <summary>
+            等待
+            </summary>
+        </member>
         <member name="F:HPSocket.Base.Agent.ListenerPtr">
             <summary>
             监听对象指针
@@ -139,6 +144,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Agent.Version">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Agent.Wait">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Agent.ErrorMessage">
@@ -305,6 +313,11 @@
             是否释放了
             </summary>
         </member>
+        <member name="F:HPSocket.Base.Client._resetEvent">
+            <summary>
+            等待
+            </summary>
+        </member>
         <member name="F:HPSocket.Base.Client.ListenerPtr">
             <summary>
             监听对象指针
@@ -380,6 +393,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Client.Version">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Client.Wait">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Client.ErrorMessage">
@@ -486,6 +502,11 @@
             是否释放了
             </summary>
         </member>
+        <member name="F:HPSocket.Base.Server._resetEvent">
+            <summary>
+            等待
+            </summary>
+        </member>
         <member name="F:HPSocket.Base.Server.ListenerPtr">
             <summary>
             监听对象指针
@@ -575,6 +596,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.Version">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Server.Wait">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.ErrorMessage">
@@ -678,945 +702,6 @@
         <member name="M:HPSocket.Base.Server.Dispose">
             <summary>
             释放资源
-            </summary>
-        </member>
-        <member name="T:HPSocket.IAgent">
-            <summary>
-            agent 基础接口
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.Address">
-            <summary>
-            监听地址，默认0.0.0.0
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.Async">
-            <summary>
-            是否异步连接，默认为真
-            <exception cref="T:System.InvalidOperationException">启动服务后设置此属性会引发此异常</exception>
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.ConnectionTimeout">
-            <summary>
-            连接超时时间, 默认操作系统默认值
-            <para>单位: 毫秒</para>
-            </summary>
-            <exception cref="T:System.InvalidOperationException">同步连接、.NET Framework2.0以及设置小于100毫秒会引发此异常</exception>
-        </member>
-        <member name="P:HPSocket.IAgent.SyncRecvTimeout">
-            <summary>
-            同步接收超时, 默认操作系统默认值
-            <para>只对同步连接有用</para>
-            <para>单位: 毫秒</para>
-            </summary>
-            <exception cref="T:System.InvalidOperationException">异步连接、小于100毫秒会引发此异常</exception>
-        </member>
-        <member name="E:HPSocket.IAgent.OnConnect">
-            <summary>
-            连接到达事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IAgent.OnSend">
-            <summary>
-            数据包发送事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IAgent.OnPrepareConnect">
-            <summary>
-            准备监听了事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IAgent.OnReceive">
-            <summary>
-            数据到达事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IAgent.OnClose">
-            <summary>
-            连接关闭事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IAgent.OnShutdown">
-            <summary>
-            客户端停止事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IAgent.OnHandShake">
-            <summary>
-            握手事件
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.HasStarted">
-            <summary>
-            获取是否启动
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.State">
-            <summary>
-            获取状态
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.ConnectionCount">
-            <summary>
-            获取连接数
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.IsSecure">
-            <summary>
-            是否为安全连接（SSL/HTTPS）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.MaxConnectionCount">
-            <summary>
-            设置最大连接数（组件会根据设置值预分配内存，因此需要根据实际情况设置，不宜过大）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.WorkerThreadCount">
-            <summary>
-            读取或设置工作线程数量（通常设置为 2 * CPU + 2）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.FreeSocketObjLockTime">
-            <summary>
-            读取或设置 Socket 缓存对象锁定时间（毫秒，在锁定期间该 Socket 缓存对象不能被获取使用）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.FreeSocketObjPool">
-            <summary>
-            读取或设置 Socket 缓存池大小（通常设置为平均并发连接数量的 1/3 - 1/2）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.FreeBufferObjPool">
-            <summary>
-            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.FreeSocketObjHold">
-            <summary>
-            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.FreeBufferObjHold">
-            <summary>
-            读取或设置内存块缓存池回收阀值（通常设置为内存块缓存池大小的 3 倍）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.IsMarkSilence">
-            <summary>
-            读取或设置是否标记静默时间（设置为 true 时 DisconnectSilenceConnections() 和 GetSilencePeriod() 才有效，默认：false）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.SendPolicy">
-            <summary>
-            获取或设置数据发送策略
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.OnSendSyncPolicy">
-            <summary>
-            获取或设置 OnSend 事件同步策略
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.ReuseAddressPolicy">
-            <summary>
-            获取或设置地址重用选项
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.ErrorCode">
-            <summary>
-            获取错误码
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.ErrorMessage">
-            <summary>
-            获取错误信息
-            </summary>
-        </member>
-        <member name="P:HPSocket.IAgent.ProxyList">
-            <summary>
-            socks5 代理列表
-            </summary>
-        </member>
-        <member name="M:HPSocket.IAgent.Start">
-            <summary>
-            启动服务
-            <exception cref="T:System.InvalidOperationException">BindAddress未设置会引发此异常</exception>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Stop">
-            <summary>
-            停止服务
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16)">
-            <summary>
-            连接到远程服务器
-            </summary>
-            <param name="address">远程服务器地址</param>
-            <param name="port">远程服务器端口</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16,System.IntPtr@)">
-            <summary>
-            连接到远程服务器
-            </summary>
-            <param name="address">远程服务器地址</param>
-            <param name="port">远程服务器端口</param>
-            <param name="connId">连接id</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16,System.IntPtr,System.IntPtr@,System.String,System.UInt16)">
-            <summary>
-            连接到远程服务器并附带附加数据, 另可附带本地地址及端口, 默认为空不带
-            </summary>
-            <param name="address">远程服务器地址</param>
-            <param name="port">远程服务器端口</param>
-            <param name="extra">附加数据, 在回调事件中使用GetConnectionExtra()获取
-            <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
-            <see>
-                <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
-            </see>
-            </para>
-            </param>
-            <param name="connId">连接id</param>
-            <param name="localAddress">要绑定的本地地址</param>
-            <param name="localPort">要绑定的本地端口</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16,System.IntPtr)">
-            <summary>
-            连接到远程服务器并附带附加数据
-            </summary>
-            <param name="address"></param>
-            <param name="port"></param>
-            <param name="extra">附加数据, 在回调事件中使用GetConnectionExtra()获取
-            <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
-            <see>
-                <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
-            </see>
-            </para>
-            </param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.SetConnectionExtra(System.IntPtr,System.IntPtr)">
-            <summary>
-            设置连接附加数据, 非托管版本, hp-socket自带方法；【使用此方法不支持异步连接超时时间，且不支持连接状态获取】；非特殊需求不要使用这个方法, 请直接使用 SetExtra();
-            <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
-            <see>
-                <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
-            </see>
-            </para>
-            </summary>
-            <param name="connId"></param>
-            <param name="extra"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetConnectionExtra(System.IntPtr,System.IntPtr@)">
-            <summary>
-            获取连接附加数据, 非托管版本, hp-socket自带方法；【使用此方法不支持异步连接超时时间，且不支持连接状态获取】 非特殊需求不要使用这个方法, 请直接使用 GetExtra();
-            </summary>
-            <param name="connId"></param>
-            <param name="extra"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Send(System.IntPtr,System.Byte[],System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="bytes"></param>
-            <param name="length"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Send(System.IntPtr,System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="bytes"></param>
-            <param name="offset">针对bytes的偏移</param>
-            <param name="length">发多大</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.SendPackets(System.IntPtr,HPSocket.Wsabuf[])">
-            <summary>
-            发送多组数据
-            向指定连接发送多组数据
-            TCP - 顺序发送所有数据包
-            </summary>
-            <param name="connId">连接 ID</param>
-            <param name="buffers">发送缓冲区数组</param>
-            <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
-        </member>
-        <member name="M:HPSocket.IAgent.Disconnect(System.IntPtr,System.Boolean)">
-            <summary>
-            断开某个的连接
-            </summary>
-            <param name="connId"></param>
-            <param name="force">是否强制断开</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.DisconnectLongConnections(System.UInt32,System.Boolean)">
-            <summary>
-            断开超过指定时间的连接
-            </summary>
-            <param name="period">毫秒</param>
-            <param name="force">强制</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.PauseReceive(System.IntPtr)">
-            <summary>
-            暂停接收
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.ResumeReceive(System.IntPtr)">
-            <summary>
-            唤醒接收
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetReceiveState(System.IntPtr)">
-            <summary>
-            获取连接的接收状态
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.DisconnectSilenceConnections(System.UInt32,System.Boolean)">
-            <summary>
-            断开超过指定时长的静默连接
-            </summary>
-            <param name="period">毫秒</param>
-            <param name="force">强制</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetLocalAddress(System.IntPtr,System.String@,System.UInt16@)">
-            <summary>
-            获取某个连接的本地地址信息
-            </summary>
-            <param name="connId"></param>
-            <param name="ip"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetRemoteAddress(System.IntPtr,System.String@,System.UInt16@)">
-            <summary>
-            获取某个连接的远程地址信息
-            </summary>
-            <param name="connId"></param>
-            <param name="ip"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetPendingDataLength(System.IntPtr,System.Int32@)">
-            <summary>
-            获取连接中未发出数据的长度
-            </summary>
-            <param name="connId"></param>
-            <param name="length"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetConnectPeriod(System.IntPtr,System.UInt32@)">
-            <summary>
-            获取指定连接的连接时长（毫秒）
-            </summary>
-            <param name="connId"></param>
-            <param name="period"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetSilencePeriod(System.IntPtr,System.UInt32@)">
-            <summary>
-            获取某个连接静默时间（毫秒）
-            </summary>
-            <param name="connId"></param>
-            <param name="period"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetAllConnectionIds">
-            <summary>
-            获取所有连接
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetRemoteHost(System.IntPtr,System.String@,System.UInt16@)">
-            <summary>
-            获取某个连接的远程主机信息
-            </summary>
-            <param name="connId"></param>
-            <param name="address"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.IsConnected(System.IntPtr)">
-            <summary>
-            检测是否有效连接
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.SetExtra(System.IntPtr,System.Object)">
-            <summary>
-            设置附加数据
-            </summary>
-            <param name="connId"></param>
-            <param name="obj"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetExtra``1(System.IntPtr)">
-            <summary>
-            获取附加数据
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.RemoveExtra(System.IntPtr)">
-            <summary>
-            删除附加数据
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IAgent.GetConnectionState(System.IntPtr)">
-            <summary>
-            获取连接状态
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="T:HPSocket.IClient">
-            <summary>
-            client 基础接口
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.Address">
-            <summary>
-            远程服务器地址
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.Port">
-            <summary>
-            远程服务器端口
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.BindAddress">
-            <summary>
-            本地绑定到哪个ip
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.BindPort">
-            <summary>
-            本地绑定到哪个端口
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.Async">
-            <summary>
-            是否异步连接，默认为真
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.ExtraData">
-            <summary>
-            附加数据
-            <para>赋值：client.ExtraData = myObj;</para>
-            <para>取值：var data = ExtraData as MyData;</para>
-            </summary>
-        </member>
-        <member name="E:HPSocket.IClient.OnPrepareConnect">
-            <summary>
-            准备连接了事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IClient.OnConnect">
-            <summary>
-            连接事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IClient.OnSend">
-            <summary>
-            数据发送事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IClient.OnReceive">
-            <summary>
-            数据到达事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IClient.OnClose">
-            <summary>
-            连接关闭事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IClient.OnHandShake">
-            <summary>
-            握手事件
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.FreeBufferPoolSize">
-            <summary>
-            读取或设置内存块缓存池大小（通常设置为 -> PUSH 模型：5 - 10；PULL 模型：10 - 20 ）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.FreeBufferPoolHold">
-            <summary>
-             读取或设置内存块缓存池回收阀值（通常设置为内存块缓存池大小的 3 倍）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.HasStarted">
-            <summary>
-            检查通信组件是否已启动
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.IsConnected">
-            <summary>
-            是否已连接
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.State">
-            <summary>
-            状态
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.ConnectionId">
-            <summary>
-            获取该组件对象的连接Id
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.IsSecure">
-            <summary>
-            是否为安全连接（SSL/HTTPS）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.PauseReceive">
-            <summary>
-            获取或设置暂停接收状态，设置状态时，不允许设置为ReceiveState.Unknown，
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.ReuseAddressPolicy">
-            <summary>
-            获取或设置地址重用选项
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.ErrorCode">
-            <summary>
-            获取错误码
-            </summary>
-        </member>
-        <member name="P:HPSocket.IClient.ErrorMessage">
-            <summary>
-            获取错误信息
-            </summary>
-        </member>
-        <member name="M:HPSocket.IClient.Connect">
-            <summary>
-            启动通讯组件并连接到服务器
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IClient.Connect(System.String,System.UInt16)">
-            <summary>
-            启动通讯组件并连接到服务器
-            </summary>
-            <param name="address">远程服务器地址</param>
-            <param name="port">远程服务器端口</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IClient.Stop">
-            <summary>
-            停止通讯组件
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IClient.Send(System.Byte[],System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="bytes"></param>
-            <param name="length"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IClient.Send(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="bytes"></param>
-            <param name="offset">针对bytes的偏移</param>
-            <param name="length">发多大</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IClient.SendPackets(HPSocket.Wsabuf[],System.Int32)">
-            <summary>
-            发送多组数据
-            向指定连接发送多组数据
-            TCP - 顺序发送所有数据包
-            </summary>
-            <param name="buffers">发送缓冲区数组</param>
-            <param name="count">发送缓冲区数目</param>
-            <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
-        </member>
-        <member name="M:HPSocket.IClient.GetPendingDataLength(System.Int32@)">
-            <summary>
-            获取连接中未发出数据的长度
-            </summary>
-            <param name="length"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IClient.GetListenAddress(System.String@,System.UInt16@)">
-            <summary>
-            获取监听socket的地址信息
-            </summary>
-            <param name="host"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IClient.GetRemoteHost(System.String@,System.UInt16@)">
-            <summary>
-            获取连接的远程主机信息
-            </summary>
-            <param name="host"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="T:HPSocket.IServer">
-            <summary>
-            server 基础接口
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.Address">
-            <summary>
-            要绑定的服务器地址
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.Port">
-            <summary>
-            要绑定的服务器端口
-            </summary>
-        </member>
-        <member name="E:HPSocket.IServer.OnAccept">
-            <summary>
-            连接到达事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IServer.OnSend">
-            <summary>
-            数据包发送事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IServer.OnPrepareListen">
-            <summary>
-            准备监听了事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IServer.OnReceive">
-            <summary>
-            数据到达事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IServer.OnClose">
-            <summary>
-            连接关闭事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IServer.OnShutdown">
-            <summary>
-            服务器关闭事件
-            </summary>
-        </member>
-        <member name="E:HPSocket.IServer.OnHandShake">
-            <summary>
-            握手成功事件
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.HasStarted">
-            <summary>
-            获取是否启动
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.State">
-            <summary>
-            获取状态
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.ConnectionCount">
-            <summary>
-            获取连接数
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.IsSecure">
-            <summary>
-            是否为安全连接（SSL/HTTPS）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.MaxConnectionCount">
-            <summary>
-            设置最大连接数（组件会根据设置值预分配内存，因此需要根据实际情况设置，不宜过大）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.WorkerThreadCount">
-            <summary>
-            读取或设置工作线程数量（通常设置为 2 * CPU + 2）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.FreeSocketObjLockTime">
-            <summary>
-            读取或设置 Socket 缓存对象锁定时间（毫秒，在锁定期间该 Socket 缓存对象不能被获取使用）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.FreeSocketObjPool">
-            <summary>
-            读取或设置 Socket 缓存池大小（通常设置为平均并发连接数量的 1/3 - 1/2）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.FreeBufferObjPool">
-            <summary>
-            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.FreeSocketObjHold">
-            <summary>
-            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.FreeBufferObjHold">
-            <summary>
-            读取或设置内存块缓存池回收阀值（通常设置为内存块缓存池大小的 3 倍）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.IsMarkSilence">
-            <summary>
-            读取或设置是否标记静默时间（设置为 true 时 DisconnectSilenceConnections() 和 GetSilencePeriod() 才有效，默认：false）
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.SendPolicy">
-            <summary>
-            获取或设置数据发送策略
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.OnSendSyncPolicy">
-            <summary>
-            获取或设置 OnSend 事件同步策略
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.ReuseAddressPolicy">
-            <summary>
-            获取或设置地址重用选项
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.ErrorCode">
-            <summary>
-            获取错误码
-            </summary>
-        </member>
-        <member name="P:HPSocket.IServer.ErrorMessage">
-            <summary>
-            获取错误信息
-            </summary>
-        </member>
-        <member name="M:HPSocket.IServer.Start">
-            <summary>
-            启动服务
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.Stop">
-            <summary>
-            停止服务
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.Send(System.IntPtr,System.Byte[],System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="bytes"></param>
-            <param name="length"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.Send(System.IntPtr,System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="bytes"></param>
-            <param name="offset">针对bytes的偏移</param>
-            <param name="length">发多大</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.SendPackets(System.IntPtr,HPSocket.Wsabuf[])">
-            <summary>
-            发送多组数据
-            向指定连接发送多组数据
-            TCP - 顺序发送所有数据包
-            </summary>
-            <param name="connId">连接 ID</param>
-            <param name="buffers">发送缓冲区数组</param>
-            <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
-        </member>
-        <member name="M:HPSocket.IServer.Disconnect(System.IntPtr,System.Boolean)">
-            <summary>
-            断开与某个客户的连接
-            </summary>
-            <param name="connId"></param>
-            <param name="force">是否强制断开</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.DisconnectLongConnections(System.UInt32,System.Boolean)">
-            <summary>
-            断开超过指定时间的连接
-            </summary>
-            <param name="period">毫秒</param>
-            <param name="force">强制</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.PauseReceive(System.IntPtr)">
-            <summary>
-            暂停接收
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.ResumeReceive(System.IntPtr)">
-            <summary>
-            唤醒接收
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetReceiveState(System.IntPtr)">
-            <summary>
-            获取连接的接收状态
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.DisconnectSilenceConnections(System.UInt32,System.Boolean)">
-            <summary>
-            断开超过指定时长的静默连接
-            </summary>
-            <param name="period">毫秒</param>
-            <param name="force">强制</param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetLocalAddress(System.IntPtr,System.String@,System.UInt16@)">
-            <summary>
-            获取某个连接的本地地址信息
-            </summary>
-            <param name="connId"></param>
-            <param name="ip"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetRemoteAddress(System.IntPtr,System.String@,System.UInt16@)">
-            <summary>
-            获取某个连接的远程地址信息
-            </summary>
-            <param name="connId"></param>
-            <param name="ip"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetPendingDataLength(System.IntPtr,System.Int32@)">
-            <summary>
-            获取连接中未发出数据的长度
-            </summary>
-            <param name="connId"></param>
-            <param name="length"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetListenAddress(System.String@,System.UInt16@)">
-            <summary>
-            获取监听socket的地址信息
-            </summary>
-            <param name="ip"></param>
-            <param name="port"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetConnectPeriod(System.IntPtr,System.UInt32@)">
-            <summary>
-            获取指定连接的连接时长（毫秒）
-            </summary>
-            <param name="connId"></param>
-            <param name="period"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetSilencePeriod(System.IntPtr,System.UInt32@)">
-            <summary>
-            获取某个连接静默时间（毫秒）
-            </summary>
-            <param name="connId"></param>
-            <param name="period"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetAllConnectionIds">
-            <summary>
-            获取所有连接
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.IsConnected(System.IntPtr)">
-            <summary>
-            是否有效连接
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.NativeSetConnectionExtra(System.IntPtr,System.IntPtr)">
-            <summary>
-            设置连接附加数据, 非托管版本, hp-socket自带方法；非特殊需求不要使用这个方法, 请直接使用 SetExtra();
-            </summary>
-            <param name="connId"></param>
-            <param name="extra"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.NativeGetConnectionExtra(System.IntPtr,System.IntPtr@)">
-            <summary>
-            获取连接附加数据, 非托管版本, hp-socket自带方法；非特殊需求不要使用这个方法, 请直接使用 GetExtra();
-            </summary>
-            <param name="connId"></param>
-            <param name="extra"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.SetExtra(System.IntPtr,System.Object)">
-            <summary>
-            设置附加数据
-            </summary>
-            <param name="connId"></param>
-            <param name="obj"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.GetExtra``1(System.IntPtr)">
-            <summary>
-            获取附加数据
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.IServer.RemoveExtra(System.IntPtr)">
-            <summary>
-            删除附加数据
-            </summary>
-            <param name="connId"></param>
-            <returns></returns>
-        </member>
-        <member name="T:HPSocket.ISocket">
-            <summary>
-            所有组件的基接口
-            </summary>
-        </member>
-        <member name="P:HPSocket.ISocket.SenderPtr">
-            <summary>
-            组件原始指针
-            <para>比如在 hp-socket 的线程池中需要使用</para>
-            </summary>
-        </member>
-        <member name="P:HPSocket.ISocket.Version">
-            <summary>
-            当前组件版本
             </summary>
         </member>
         <member name="T:HPSocket.ServerAcceptEventHandler">
@@ -3161,6 +2246,606 @@
         <member name="M:HPSocket.Http.HttpSyncClient.GetResponseBody">
             <inheritdoc />
         </member>
+        <member name="T:HPSocket.IAgent">
+            <summary>
+            agent 基础接口
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.Address">
+            <summary>
+            监听地址，默认0.0.0.0
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.Async">
+            <summary>
+            是否异步连接，默认为真
+            <exception cref="T:System.InvalidOperationException">启动服务后设置此属性会引发此异常</exception>
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.ConnectionTimeout">
+            <summary>
+            连接超时时间, 默认操作系统默认值
+            <para>单位: 毫秒</para>
+            </summary>
+            <exception cref="T:System.InvalidOperationException">同步连接、.NET Framework2.0以及设置小于100毫秒会引发此异常</exception>
+        </member>
+        <member name="P:HPSocket.IAgent.SyncRecvTimeout">
+            <summary>
+            同步接收超时, 默认操作系统默认值
+            <para>只对同步连接有用</para>
+            <para>单位: 毫秒</para>
+            </summary>
+            <exception cref="T:System.InvalidOperationException">异步连接、小于100毫秒会引发此异常</exception>
+        </member>
+        <member name="E:HPSocket.IAgent.OnConnect">
+            <summary>
+            连接到达事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IAgent.OnSend">
+            <summary>
+            数据包发送事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IAgent.OnPrepareConnect">
+            <summary>
+            准备监听了事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IAgent.OnReceive">
+            <summary>
+            数据到达事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IAgent.OnClose">
+            <summary>
+            连接关闭事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IAgent.OnShutdown">
+            <summary>
+            客户端停止事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IAgent.OnHandShake">
+            <summary>
+            握手事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.HasStarted">
+            <summary>
+            获取是否启动
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.State">
+            <summary>
+            获取状态
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.ConnectionCount">
+            <summary>
+            获取连接数
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.IsSecure">
+            <summary>
+            是否为安全连接（SSL/HTTPS）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.MaxConnectionCount">
+            <summary>
+            设置最大连接数（组件会根据设置值预分配内存，因此需要根据实际情况设置，不宜过大）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.WorkerThreadCount">
+            <summary>
+            读取或设置工作线程数量（通常设置为 2 * CPU + 2）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.FreeSocketObjLockTime">
+            <summary>
+            读取或设置 Socket 缓存对象锁定时间（毫秒，在锁定期间该 Socket 缓存对象不能被获取使用）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.FreeSocketObjPool">
+            <summary>
+            读取或设置 Socket 缓存池大小（通常设置为平均并发连接数量的 1/3 - 1/2）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.FreeBufferObjPool">
+            <summary>
+            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.FreeSocketObjHold">
+            <summary>
+            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.FreeBufferObjHold">
+            <summary>
+            读取或设置内存块缓存池回收阀值（通常设置为内存块缓存池大小的 3 倍）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.IsMarkSilence">
+            <summary>
+            读取或设置是否标记静默时间（设置为 true 时 DisconnectSilenceConnections() 和 GetSilencePeriod() 才有效，默认：false）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.SendPolicy">
+            <summary>
+            获取或设置数据发送策略
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.OnSendSyncPolicy">
+            <summary>
+            获取或设置 OnSend 事件同步策略
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.ReuseAddressPolicy">
+            <summary>
+            获取或设置地址重用选项
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.ErrorCode">
+            <summary>
+            获取错误码
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.ErrorMessage">
+            <summary>
+            获取错误信息
+            </summary>
+        </member>
+        <member name="P:HPSocket.IAgent.ProxyList">
+            <summary>
+            socks5 代理列表
+            </summary>
+        </member>
+        <member name="M:HPSocket.IAgent.Start">
+            <summary>
+            启动服务
+            <exception cref="T:System.InvalidOperationException">BindAddress未设置会引发此异常</exception>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Stop">
+            <summary>
+            停止服务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16)">
+            <summary>
+            连接到远程服务器
+            </summary>
+            <param name="address">远程服务器地址</param>
+            <param name="port">远程服务器端口</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16,System.IntPtr@)">
+            <summary>
+            连接到远程服务器
+            </summary>
+            <param name="address">远程服务器地址</param>
+            <param name="port">远程服务器端口</param>
+            <param name="connId">连接id</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16,System.IntPtr,System.IntPtr@,System.String,System.UInt16)">
+            <summary>
+            连接到远程服务器并附带附加数据, 另可附带本地地址及端口, 默认为空不带
+            </summary>
+            <param name="address">远程服务器地址</param>
+            <param name="port">远程服务器端口</param>
+            <param name="extra">附加数据, 在回调事件中使用GetConnectionExtra()获取
+            <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
+            <see>
+                <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
+            </see>
+            </para>
+            </param>
+            <param name="connId">连接id</param>
+            <param name="localAddress">要绑定的本地地址</param>
+            <param name="localPort">要绑定的本地端口</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16,System.IntPtr)">
+            <summary>
+            连接到远程服务器并附带附加数据
+            </summary>
+            <param name="address"></param>
+            <param name="port"></param>
+            <param name="extra">附加数据, 在回调事件中使用GetConnectionExtra()获取
+            <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
+            <see>
+                <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
+            </see>
+            </para>
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.SetConnectionExtra(System.IntPtr,System.IntPtr)">
+            <summary>
+            设置连接附加数据, 非托管版本, hp-socket自带方法；【使用此方法不支持异步连接超时时间，且不支持连接状态获取】；非特殊需求不要使用这个方法, 请直接使用 SetExtra();
+            <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
+            <see>
+                <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
+            </see>
+            </para>
+            </summary>
+            <param name="connId"></param>
+            <param name="extra"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetConnectionExtra(System.IntPtr,System.IntPtr@)">
+            <summary>
+            获取连接附加数据, 非托管版本, hp-socket自带方法；【使用此方法不支持异步连接超时时间，且不支持连接状态获取】 非特殊需求不要使用这个方法, 请直接使用 GetExtra();
+            </summary>
+            <param name="connId"></param>
+            <param name="extra"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Send(System.IntPtr,System.Byte[],System.Int32)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="connId"></param>
+            <param name="bytes"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Send(System.IntPtr,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="connId"></param>
+            <param name="bytes"></param>
+            <param name="offset">针对bytes的偏移</param>
+            <param name="length">发多大</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.SendPackets(System.IntPtr,HPSocket.Wsabuf[])">
+            <summary>
+            发送多组数据
+            向指定连接发送多组数据
+            TCP - 顺序发送所有数据包
+            </summary>
+            <param name="connId">连接 ID</param>
+            <param name="buffers">发送缓冲区数组</param>
+            <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
+        </member>
+        <member name="M:HPSocket.IAgent.Disconnect(System.IntPtr,System.Boolean)">
+            <summary>
+            断开某个的连接
+            </summary>
+            <param name="connId"></param>
+            <param name="force">是否强制断开</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.DisconnectLongConnections(System.UInt32,System.Boolean)">
+            <summary>
+            断开超过指定时间的连接
+            </summary>
+            <param name="period">毫秒</param>
+            <param name="force">强制</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.PauseReceive(System.IntPtr)">
+            <summary>
+            暂停接收
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.ResumeReceive(System.IntPtr)">
+            <summary>
+            唤醒接收
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetReceiveState(System.IntPtr)">
+            <summary>
+            获取连接的接收状态
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.DisconnectSilenceConnections(System.UInt32,System.Boolean)">
+            <summary>
+            断开超过指定时长的静默连接
+            </summary>
+            <param name="period">毫秒</param>
+            <param name="force">强制</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetLocalAddress(System.IntPtr,System.String@,System.UInt16@)">
+            <summary>
+            获取某个连接的本地地址信息
+            </summary>
+            <param name="connId"></param>
+            <param name="ip"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetRemoteAddress(System.IntPtr,System.String@,System.UInt16@)">
+            <summary>
+            获取某个连接的远程地址信息
+            </summary>
+            <param name="connId"></param>
+            <param name="ip"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetPendingDataLength(System.IntPtr,System.Int32@)">
+            <summary>
+            获取连接中未发出数据的长度
+            </summary>
+            <param name="connId"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetConnectPeriod(System.IntPtr,System.UInt32@)">
+            <summary>
+            获取指定连接的连接时长（毫秒）
+            </summary>
+            <param name="connId"></param>
+            <param name="period"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetSilencePeriod(System.IntPtr,System.UInt32@)">
+            <summary>
+            获取某个连接静默时间（毫秒）
+            </summary>
+            <param name="connId"></param>
+            <param name="period"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetAllConnectionIds">
+            <summary>
+            获取所有连接
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetRemoteHost(System.IntPtr,System.String@,System.UInt16@)">
+            <summary>
+            获取某个连接的远程主机信息
+            </summary>
+            <param name="connId"></param>
+            <param name="address"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.IsConnected(System.IntPtr)">
+            <summary>
+            检测是否有效连接
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.SetExtra(System.IntPtr,System.Object)">
+            <summary>
+            设置附加数据
+            </summary>
+            <param name="connId"></param>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetExtra``1(System.IntPtr)">
+            <summary>
+            获取附加数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.RemoveExtra(System.IntPtr)">
+            <summary>
+            删除附加数据
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IAgent.GetConnectionState(System.IntPtr)">
+            <summary>
+            获取连接状态
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HPSocket.IClient">
+            <summary>
+            client 基础接口
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.Address">
+            <summary>
+            远程服务器地址
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.Port">
+            <summary>
+            远程服务器端口
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.BindAddress">
+            <summary>
+            本地绑定到哪个ip
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.BindPort">
+            <summary>
+            本地绑定到哪个端口
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.Async">
+            <summary>
+            是否异步连接，默认为真
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.ExtraData">
+            <summary>
+            附加数据
+            <para>赋值：client.ExtraData = myObj;</para>
+            <para>取值：var data = ExtraData as MyData;</para>
+            </summary>
+        </member>
+        <member name="E:HPSocket.IClient.OnPrepareConnect">
+            <summary>
+            准备连接了事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IClient.OnConnect">
+            <summary>
+            连接事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IClient.OnSend">
+            <summary>
+            数据发送事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IClient.OnReceive">
+            <summary>
+            数据到达事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IClient.OnClose">
+            <summary>
+            连接关闭事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IClient.OnHandShake">
+            <summary>
+            握手事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.FreeBufferPoolSize">
+            <summary>
+            读取或设置内存块缓存池大小（通常设置为 -> PUSH 模型：5 - 10；PULL 模型：10 - 20 ）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.FreeBufferPoolHold">
+            <summary>
+             读取或设置内存块缓存池回收阀值（通常设置为内存块缓存池大小的 3 倍）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.HasStarted">
+            <summary>
+            检查通信组件是否已启动
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.IsConnected">
+            <summary>
+            是否已连接
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.State">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.ConnectionId">
+            <summary>
+            获取该组件对象的连接Id
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.IsSecure">
+            <summary>
+            是否为安全连接（SSL/HTTPS）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.PauseReceive">
+            <summary>
+            获取或设置暂停接收状态，设置状态时，不允许设置为ReceiveState.Unknown，
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.ReuseAddressPolicy">
+            <summary>
+            获取或设置地址重用选项
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.ErrorCode">
+            <summary>
+            获取错误码
+            </summary>
+        </member>
+        <member name="P:HPSocket.IClient.ErrorMessage">
+            <summary>
+            获取错误信息
+            </summary>
+        </member>
+        <member name="M:HPSocket.IClient.Connect">
+            <summary>
+            启动通讯组件并连接到服务器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.Connect(System.String,System.UInt16)">
+            <summary>
+            启动通讯组件并连接到服务器
+            </summary>
+            <param name="address">远程服务器地址</param>
+            <param name="port">远程服务器端口</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.Stop">
+            <summary>
+            停止通讯组件
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.Send(System.Byte[],System.Int32)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="bytes"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.Send(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="bytes"></param>
+            <param name="offset">针对bytes的偏移</param>
+            <param name="length">发多大</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.SendPackets(HPSocket.Wsabuf[],System.Int32)">
+            <summary>
+            发送多组数据
+            向指定连接发送多组数据
+            TCP - 顺序发送所有数据包
+            </summary>
+            <param name="buffers">发送缓冲区数组</param>
+            <param name="count">发送缓冲区数目</param>
+            <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
+        </member>
+        <member name="M:HPSocket.IClient.GetPendingDataLength(System.Int32@)">
+            <summary>
+            获取连接中未发出数据的长度
+            </summary>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.GetListenAddress(System.String@,System.UInt16@)">
+            <summary>
+            获取监听socket的地址信息
+            </summary>
+            <param name="host"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.GetRemoteHost(System.String@,System.UInt16@)">
+            <summary>
+            获取连接的远程主机信息
+            </summary>
+            <param name="host"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
         <member name="T:HPSocket.IHttp">
             <summary>
             http server/agent/client 的公共接口
@@ -4065,6 +3750,345 @@
         <member name="P:HPSocket.IProxy.Password">
             <summary>
             密码
+            </summary>
+        </member>
+        <member name="T:HPSocket.IServer">
+            <summary>
+            server 基础接口
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.Address">
+            <summary>
+            要绑定的服务器地址
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.Port">
+            <summary>
+            要绑定的服务器端口
+            </summary>
+        </member>
+        <member name="E:HPSocket.IServer.OnAccept">
+            <summary>
+            连接到达事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IServer.OnSend">
+            <summary>
+            数据包发送事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IServer.OnPrepareListen">
+            <summary>
+            准备监听了事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IServer.OnReceive">
+            <summary>
+            数据到达事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IServer.OnClose">
+            <summary>
+            连接关闭事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IServer.OnShutdown">
+            <summary>
+            服务器关闭事件
+            </summary>
+        </member>
+        <member name="E:HPSocket.IServer.OnHandShake">
+            <summary>
+            握手成功事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.HasStarted">
+            <summary>
+            获取是否启动
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.State">
+            <summary>
+            获取状态
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.ConnectionCount">
+            <summary>
+            获取连接数
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.IsSecure">
+            <summary>
+            是否为安全连接（SSL/HTTPS）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.MaxConnectionCount">
+            <summary>
+            设置最大连接数（组件会根据设置值预分配内存，因此需要根据实际情况设置，不宜过大）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.WorkerThreadCount">
+            <summary>
+            读取或设置工作线程数量（通常设置为 2 * CPU + 2）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.FreeSocketObjLockTime">
+            <summary>
+            读取或设置 Socket 缓存对象锁定时间（毫秒，在锁定期间该 Socket 缓存对象不能被获取使用）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.FreeSocketObjPool">
+            <summary>
+            读取或设置 Socket 缓存池大小（通常设置为平均并发连接数量的 1/3 - 1/2）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.FreeBufferObjPool">
+            <summary>
+            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.FreeSocketObjHold">
+            <summary>
+            读取或设置内存块缓存池大小（通常设置为 Socket 缓存池大小的 2 - 3 倍）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.FreeBufferObjHold">
+            <summary>
+            读取或设置内存块缓存池回收阀值（通常设置为内存块缓存池大小的 3 倍）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.IsMarkSilence">
+            <summary>
+            读取或设置是否标记静默时间（设置为 true 时 DisconnectSilenceConnections() 和 GetSilencePeriod() 才有效，默认：false）
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.SendPolicy">
+            <summary>
+            获取或设置数据发送策略
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.OnSendSyncPolicy">
+            <summary>
+            获取或设置 OnSend 事件同步策略
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.ReuseAddressPolicy">
+            <summary>
+            获取或设置地址重用选项
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.ErrorCode">
+            <summary>
+            获取错误码
+            </summary>
+        </member>
+        <member name="P:HPSocket.IServer.ErrorMessage">
+            <summary>
+            获取错误信息
+            </summary>
+        </member>
+        <member name="M:HPSocket.IServer.Start">
+            <summary>
+            启动服务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.Stop">
+            <summary>
+            停止服务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.Send(System.IntPtr,System.Byte[],System.Int32)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="connId"></param>
+            <param name="bytes"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.Send(System.IntPtr,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="connId"></param>
+            <param name="bytes"></param>
+            <param name="offset">针对bytes的偏移</param>
+            <param name="length">发多大</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.SendPackets(System.IntPtr,HPSocket.Wsabuf[])">
+            <summary>
+            发送多组数据
+            向指定连接发送多组数据
+            TCP - 顺序发送所有数据包
+            </summary>
+            <param name="connId">连接 ID</param>
+            <param name="buffers">发送缓冲区数组</param>
+            <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
+        </member>
+        <member name="M:HPSocket.IServer.Disconnect(System.IntPtr,System.Boolean)">
+            <summary>
+            断开与某个客户的连接
+            </summary>
+            <param name="connId"></param>
+            <param name="force">是否强制断开</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.DisconnectLongConnections(System.UInt32,System.Boolean)">
+            <summary>
+            断开超过指定时间的连接
+            </summary>
+            <param name="period">毫秒</param>
+            <param name="force">强制</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.PauseReceive(System.IntPtr)">
+            <summary>
+            暂停接收
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.ResumeReceive(System.IntPtr)">
+            <summary>
+            唤醒接收
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetReceiveState(System.IntPtr)">
+            <summary>
+            获取连接的接收状态
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.DisconnectSilenceConnections(System.UInt32,System.Boolean)">
+            <summary>
+            断开超过指定时长的静默连接
+            </summary>
+            <param name="period">毫秒</param>
+            <param name="force">强制</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetLocalAddress(System.IntPtr,System.String@,System.UInt16@)">
+            <summary>
+            获取某个连接的本地地址信息
+            </summary>
+            <param name="connId"></param>
+            <param name="ip"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetRemoteAddress(System.IntPtr,System.String@,System.UInt16@)">
+            <summary>
+            获取某个连接的远程地址信息
+            </summary>
+            <param name="connId"></param>
+            <param name="ip"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetPendingDataLength(System.IntPtr,System.Int32@)">
+            <summary>
+            获取连接中未发出数据的长度
+            </summary>
+            <param name="connId"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetListenAddress(System.String@,System.UInt16@)">
+            <summary>
+            获取监听socket的地址信息
+            </summary>
+            <param name="ip"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetConnectPeriod(System.IntPtr,System.UInt32@)">
+            <summary>
+            获取指定连接的连接时长（毫秒）
+            </summary>
+            <param name="connId"></param>
+            <param name="period"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetSilencePeriod(System.IntPtr,System.UInt32@)">
+            <summary>
+            获取某个连接静默时间（毫秒）
+            </summary>
+            <param name="connId"></param>
+            <param name="period"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetAllConnectionIds">
+            <summary>
+            获取所有连接
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.IsConnected(System.IntPtr)">
+            <summary>
+            是否有效连接
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.NativeSetConnectionExtra(System.IntPtr,System.IntPtr)">
+            <summary>
+            设置连接附加数据, 非托管版本, hp-socket自带方法；非特殊需求不要使用这个方法, 请直接使用 SetExtra();
+            </summary>
+            <param name="connId"></param>
+            <param name="extra"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.NativeGetConnectionExtra(System.IntPtr,System.IntPtr@)">
+            <summary>
+            获取连接附加数据, 非托管版本, hp-socket自带方法；非特殊需求不要使用这个方法, 请直接使用 GetExtra();
+            </summary>
+            <param name="connId"></param>
+            <param name="extra"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.SetExtra(System.IntPtr,System.Object)">
+            <summary>
+            设置附加数据
+            </summary>
+            <param name="connId"></param>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.GetExtra``1(System.IntPtr)">
+            <summary>
+            获取附加数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IServer.RemoveExtra(System.IntPtr)">
+            <summary>
+            删除附加数据
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HPSocket.ISocket">
+            <summary>
+            所有组件的基接口
+            </summary>
+        </member>
+        <member name="P:HPSocket.ISocket.SenderPtr">
+            <summary>
+            组件原始指针
+            <para>比如在 hp-socket 的线程池中需要使用</para>
+            </summary>
+        </member>
+        <member name="P:HPSocket.ISocket.Version">
+            <summary>
+            当前组件版本
             </summary>
         </member>
         <member name="M:HPSocket.ISocks5Proxy.GetConnectData">
@@ -6450,6 +6474,11 @@
             agent
             </summary>
         </member>
+        <member name="F:HPSocket.Tcp.TcpPortForwarding._resetEvent">
+            <summary>
+            等待
+            </summary>
+        </member>
         <member name="E:HPSocket.Tcp.TcpPortForwarding.OnServerAccept">
             <inheritdoc />
         </member>
@@ -6483,6 +6512,9 @@
             <summary>
             当前组件版本
             </summary>
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.Wait">
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.Tcp.TcpPortForwarding.LocalBindAddress">
             <inheritdoc />
@@ -7025,6 +7057,11 @@
             是否释放了
             </summary>
         </member>
+        <member name="F:HPSocket.Udp.UdpNode._resetEvent">
+            <summary>
+            等待
+            </summary>
+        </member>
         <member name="F:HPSocket.Udp.UdpNode.ListenerPtr">
             <summary>
             监听对象指针
@@ -7097,6 +7134,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.Version">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Udp.UdpNode.Wait">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.ErrorMessage">
@@ -7414,6 +7454,11 @@
             从内存加载证书
             </summary>
         </member>
+        <member name="F:HPSocket.WebSocket.WebSocketAgent._resetEvent">
+            <summary>
+            等待
+            </summary>
+        </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.BindAddress">
             <summary>
             本地绑定地址, 默认0.0.0.0
@@ -7453,6 +7498,11 @@
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Version">
             <summary>
             当前组件版本
+            </summary>
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketAgent.Wait">
+            <summary>
+            等待服务结束
             </summary>
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.DefaultMask">
@@ -7613,6 +7663,11 @@
             释放资源
             </summary>
         </member>
+        <member name="F:HPSocket.WebSocket.WebSocketServer._resetEvent">
+            <summary>
+            等待
+            </summary>
+        </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.Http">
             <summary>
             开放式 http/https server 对象, 对 http 连接有 cookie 或者 header 操作, 直接调用这个对象操作
@@ -7649,6 +7704,11 @@
         <member name="P:HPSocket.WebSocket.WebSocketServer.Version">
             <summary>
             当前组件版本
+            </summary>
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.Wait">
+            <summary>
+            等待服务结束
             </summary>
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.MaxPacketSize">

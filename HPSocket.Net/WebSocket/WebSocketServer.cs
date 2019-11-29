@@ -12,8 +12,9 @@ using System.Linq;
 #endif
 using System.Security.Cryptography;
 using System.Text;
-using System.Timers;
+using System.Threading;
 using HPSocket.Http;
+using Timer = System.Timers.Timer;
 
 namespace HPSocket.WebSocket
 {
@@ -26,6 +27,12 @@ namespace HPSocket.WebSocket
         private SslConfiguration _sslConfiguration;
         private readonly ExtraData<IntPtr, WebSocketSession> _sessions = new ExtraData<IntPtr, WebSocketSession>();
         private readonly ExtraData<string, IHub> _services = new ExtraData<string, IHub>();
+
+        /// <summary>
+        /// 等待
+        /// </summary>
+        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
+
         #endregion
 
         #region 公有成员
@@ -67,6 +74,14 @@ namespace HPSocket.WebSocket
         /// 当前组件版本
         /// </summary>
         public string Version => Sdk.Sys.GetVersion();
+
+        /// <summary>
+        /// 等待服务结束
+        /// </summary>
+        public void Wait()
+        {
+            _resetEvent.WaitOne();
+        }
 
         /// <summary>
         /// 最大封包长度
@@ -162,12 +177,21 @@ namespace HPSocket.WebSocket
             {
                 throw new WebSocketException(_httpServer.ErrorCode, _httpServer.ErrorMessage);
             }
+
+
+            _resetEvent.Reset();
         }
 
         /// <summary>
         /// 停止服务
         /// </summary>
-        public void Stop() => _httpServer.Stop();
+        public void Stop()
+        {
+            if (_httpServer.HasStarted && _httpServer.Stop())
+            {
+                _resetEvent.Set();
+            }
+        }
 
         /// <summary>
         /// 尝试发送数据
@@ -708,6 +732,7 @@ namespace HPSocket.WebSocket
                 // 释放托管对象资源
                 _sessions.Clear();
                 _services.Clear();
+                _resetEvent.Close();
             }
             Destroy();
 

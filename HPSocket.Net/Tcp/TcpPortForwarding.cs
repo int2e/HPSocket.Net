@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace HPSocket.Tcp
 {
@@ -28,6 +29,10 @@ namespace HPSocket.Tcp
         /// </summary>
         private TcpAgent _agent;
 
+        /// <summary>
+        /// 等待
+        /// </summary>
+        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 公有成员
@@ -71,6 +76,12 @@ namespace HPSocket.Tcp
         /// 当前组件版本
         /// </summary>
         public string Version => Sdk.Sys.GetVersion();
+
+        /// <inheritdoc />
+        public void Wait()
+        {
+            _resetEvent.WaitOne();
+        }
 
         /// <inheritdoc />
         public string LocalBindAddress { get; set; } = "0.0.0.0";
@@ -337,6 +348,8 @@ namespace HPSocket.Tcp
                 return false;
             }
 
+            _resetEvent.Reset();
+
             return true;
         }
 
@@ -345,6 +358,8 @@ namespace HPSocket.Tcp
         {
             _agent?.Stop();
             _server?.Stop();
+
+            _resetEvent.WaitOne();
         }
 
         #endregion
@@ -364,6 +379,7 @@ namespace HPSocket.Tcp
                 // 释放托管对象资源
                 _agent?.Dispose();
                 _server?.Dispose();
+                _resetEvent.Close();
             }
 
             _disposed = true;
