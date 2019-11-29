@@ -1,84 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
-using HPSocket.Tcp;
 
-// ReSharper disable once CheckNamespace
 namespace HPSocket
 {
     /// <summary>
-    /// agent 基础接口
+    /// server 基础接口
     /// </summary>
-    public interface IAgent : ISocket
+    public interface IServer : ISocket
     {
         #region 基础属性
 
         /// <summary>
-        /// 监听地址，默认0.0.0.0
+        /// 要绑定的服务器地址
         /// </summary>
         string Address { get; set; }
 
         /// <summary>
-        /// 是否异步连接，默认为真
-        /// <exception cref="InvalidOperationException">启动服务后设置此属性会引发此异常</exception>
+        /// 要绑定的服务器端口
         /// </summary>
-        bool Async { get; set; }
+        ushort Port { get; set; }
 
-        /// <summary>
-        /// 连接超时时间, 默认操作系统默认值
-        /// <para>单位: 毫秒</para>
-        /// </summary>
-        /// <exception cref="InvalidOperationException">同步连接、.NET Framework2.0以及设置小于100毫秒会引发此异常</exception>
-        int ConnectionTimeout { get; set; }
-
-        /// <summary>
-        /// 同步接收超时, 默认操作系统默认值
-        /// <para>只对同步连接有用</para>
-        /// <para>单位: 毫秒</para>
-        /// </summary>
-        /// <exception cref="InvalidOperationException">异步连接、小于100毫秒会引发此异常</exception>
-        int SyncRecvTimeout { get; set; }
-        
         #endregion
 
-        #region 客户端事件
+        #region 服务器事件
 
         /// <summary>
         /// 连接到达事件
         /// </summary>
-        event AgentConnectEventHandler OnConnect;
+        event ServerAcceptEventHandler OnAccept;
 
         /// <summary>
         /// 数据包发送事件
         /// </summary>
-        event AgentSendEventHandler OnSend;
+        event ServerSendEventHandler OnSend;
         /// <summary>
         /// 准备监听了事件
         /// </summary>
-        event AgentPrepareConnectEventHandler OnPrepareConnect;
+        event ServerPrepareListenEventHandler OnPrepareListen;
 
         /// <summary>
         /// 数据到达事件
         /// </summary>
-        event AgentReceiveEventHandler OnReceive;
+        event ServerReceiveEventHandler OnReceive;
 
         /// <summary>
         /// 连接关闭事件
         /// </summary>
-        event AgentCloseEventHandler OnClose;
+        event ServerCloseEventHandler OnClose;
 
         /// <summary>
-        /// 客户端停止事件
+        /// 服务器关闭事件
         /// </summary>
-        event AgentShutdownEventHandler OnShutdown;
+        event ServerShutdownEventHandler OnShutdown;
 
         /// <summary>
-        /// 握手事件
+        /// 握手成功事件
         /// </summary>
-        event AgentHandShakeEventHandler OnHandShake;
+        event ServerHandShakeEventHandler OnHandShake;
 
         #endregion
 
-        #region 客户端属性
+        #region 服务器属性
 
         /// <summary>
         /// 获取是否启动
@@ -166,18 +148,12 @@ namespace HPSocket
         /// </summary>
         string ErrorMessage { get; }
 
-        /// <summary>
-        /// socks5 代理列表
-        /// </summary>
-        List<IProxy> ProxyList { get; set; }
-
         #endregion
 
-        #region 客户端方法
+        #region 服务器方法
 
         /// <summary>
         /// 启动服务
-        /// <exception cref="InvalidOperationException">BindAddress未设置会引发此异常</exception>
         /// </summary>
         /// <returns></returns>
         bool Start();
@@ -187,77 +163,6 @@ namespace HPSocket
         /// </summary>
         /// <returns></returns>
         bool Stop();
-
-        /// <summary>
-        /// 连接到远程服务器
-        /// </summary>
-        /// <param name="address">远程服务器地址</param>
-        /// <param name="port">远程服务器端口</param>
-        /// <returns></returns>
-        bool Connect(string address, ushort port);
-
-        /// <summary>
-        /// 连接到远程服务器
-        /// </summary>
-        /// <param name="address">远程服务器地址</param>
-        /// <param name="port">远程服务器端口</param>
-        /// <param name="connId">连接id</param>
-        /// <returns></returns>
-        bool Connect(string address, ushort port, out IntPtr connId);
-
-        /// <summary>
-        /// 连接到远程服务器并附带附加数据, 另可附带本地地址及端口, 默认为空不带
-        /// </summary>
-        /// <param name="address">远程服务器地址</param>
-        /// <param name="port">远程服务器端口</param>
-        /// <param name="extra">附加数据, 在回调事件中使用GetConnectionExtra()获取
-        /// <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
-        /// <see>
-        ///     <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
-        /// </see>
-        /// </para>
-        /// </param>
-        /// <param name="connId">连接id</param>
-        /// <param name="localAddress">要绑定的本地地址</param>
-        /// <param name="localPort">要绑定的本地端口</param>
-        /// <returns></returns>
-        bool Connect(string address, ushort port, IntPtr extra, out IntPtr connId, string localAddress = "", ushort localPort = 0);
-
-        /// <summary>
-        /// 连接到远程服务器并附带附加数据
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="port"></param>
-        /// <param name="extra">附加数据, 在回调事件中使用GetConnectionExtra()获取
-        /// <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
-        /// <see>
-        ///     <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
-        /// </see>
-        /// </para>
-        /// </param>
-        /// <returns></returns>
-        bool Connect(string address, ushort port, IntPtr extra);
-
-        /// <summary>
-        /// 设置连接附加数据, 非托管版本, hp-socket自带方法；【使用此方法不支持异步连接超时时间，且不支持连接状态获取】；非特殊需求不要使用这个方法, 请直接使用 SetExtra();
-        /// <para>附加托管对象时候可能需使用GCHandle固定托管对象地址, 使用方法参考微软官方文档:
-        /// <see>
-        ///     <cref>https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=netframework-4.8#System_Runtime_InteropServices_GCHandle_AddrOfPinnedObject</cref>
-        /// </see>
-        /// </para>
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="extra"></param>
-        /// <returns></returns>
-        bool SetConnectionExtra(IntPtr connId, IntPtr extra);
-
-        /// <summary>
-        /// 获取连接附加数据, 非托管版本, hp-socket自带方法；【使用此方法不支持异步连接超时时间，且不支持连接状态获取】 非特殊需求不要使用这个方法, 请直接使用 GetExtra();
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="extra"></param>
-        /// <returns></returns>
-        bool GetConnectionExtra(IntPtr connId, out IntPtr extra);
 
         /// <summary>
         /// 发送数据
@@ -289,7 +194,7 @@ namespace HPSocket
         bool SendPackets(IntPtr connId, Wsabuf[] buffers);
 
         /// <summary>
-        /// 断开某个的连接
+        /// 断开与某个客户的连接
         /// </summary>
         /// <param name="connId"></param>
         /// <param name="force">是否强制断开</param>
@@ -360,6 +265,14 @@ namespace HPSocket
         bool GetPendingDataLength(IntPtr connId, out int length);
 
         /// <summary>
+        /// 获取监听socket的地址信息
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        bool GetListenAddress(out string ip, out ushort port);
+
+        /// <summary>
         /// 获取指定连接的连接时长（毫秒）
         /// </summary>
         /// <param name="connId"></param>
@@ -382,20 +295,27 @@ namespace HPSocket
         List<IntPtr> GetAllConnectionIds();
 
         /// <summary>
-        /// 获取某个连接的远程主机信息
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="address"></param>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        bool GetRemoteHost(IntPtr connId, out string address, out ushort port);
-
-        /// <summary>
-        /// 检测是否有效连接
+        /// 是否有效连接
         /// </summary>
         /// <param name="connId"></param>
         /// <returns></returns>
         bool IsConnected(IntPtr connId);
+
+        /// <summary>
+        /// 设置连接附加数据, 非托管版本, hp-socket自带方法；非特殊需求不要使用这个方法, 请直接使用 SetExtra();
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="extra"></param>
+        /// <returns></returns>
+        bool NativeSetConnectionExtra(IntPtr connId, IntPtr extra);
+
+        /// <summary>
+        /// 获取连接附加数据, 非托管版本, hp-socket自带方法；非特殊需求不要使用这个方法, 请直接使用 GetExtra();
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="extra"></param>
+        /// <returns></returns>
+        bool NativeGetConnectionExtra(IntPtr connId, out IntPtr extra);
 
         /// <summary>
         /// 设置附加数据
@@ -419,13 +339,6 @@ namespace HPSocket
         /// <param name="connId"></param>
         /// <returns></returns>
         bool RemoveExtra(IntPtr connId);
-
-        /// <summary>
-        /// 获取连接状态
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <returns></returns>
-        TcpConnectionState GetConnectionState(IntPtr connId);
 
         #endregion
     }
