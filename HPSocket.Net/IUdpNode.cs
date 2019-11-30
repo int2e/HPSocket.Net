@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !NET20 && !NET30 && !NET35
+using System.Threading.Tasks;
+#endif
 using HPSocket.Udp;
 
 namespace HPSocket
@@ -161,6 +163,15 @@ namespace HPSocket
         /// </summary>
         /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
         bool Wait(uint milliseconds = 0xffffffff);
+
+#if !NET20 && !NET30 && !NET35
+        /// <summary>
+        /// 等待通信组件停止运行
+        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+        /// </summary>
+        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        Task<bool> WaitAsync(uint milliseconds = 0xffffffff);
+#endif
 
         /// <summary>
         /// 向指定地址发送数据

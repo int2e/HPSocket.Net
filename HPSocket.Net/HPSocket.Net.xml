@@ -144,6 +144,9 @@
         <member name="M:HPSocket.Base.Agent.Wait(System.UInt32)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Base.Agent.WaitAsync(System.UInt32)">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Agent.ErrorMessage">
             <inheritdoc />
         </member>
@@ -581,6 +584,9 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Base.Server.Wait(System.UInt32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Server.WaitAsync(System.UInt32)">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.ErrorMessage">
@@ -2404,6 +2410,13 @@
             </summary>
             <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
         </member>
+        <member name="M:HPSocket.IAgent.WaitAsync(System.UInt32)">
+            <summary>
+            等待通信组件停止运行
+            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+            </summary>
+            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        </member>
         <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16)">
             <summary>
             连接到远程服务器
@@ -3895,6 +3908,13 @@
             </summary>
             <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
         </member>
+        <member name="M:HPSocket.IServer.WaitAsync(System.UInt32)">
+            <summary>
+            等待通信组件停止运行
+            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+            </summary>
+            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        </member>
         <member name="M:HPSocket.IServer.Send(System.IntPtr,System.Byte[],System.Int32)">
             <summary>
             发送数据
@@ -5164,6 +5184,13 @@
             <returns></returns>
         </member>
         <member name="M:HPSocket.IUdpNode.Wait(System.UInt32)">
+            <summary>
+            等待通信组件停止运行
+            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+            </summary>
+            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        </member>
+        <member name="M:HPSocket.IUdpNode.WaitAsync(System.UInt32)">
             <summary>
             等待通信组件停止运行
             <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
@@ -7137,6 +7164,9 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Udp.UdpNode.Wait(System.UInt32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Udp.UdpNode.WaitAsync(System.UInt32)">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.ErrorMessage">

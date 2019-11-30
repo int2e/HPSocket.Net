@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+#if !NET20 && !NET30 && !NET35
+using System.Threading.Tasks;
+#endif
 
 namespace HPSocket.Udp
 {
@@ -149,6 +152,14 @@ namespace HPSocket.Udp
 
         /// <inheritdoc />
         public bool Wait(uint milliseconds = 0xffffffff) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(uint milliseconds = 4294967295)
+        {
+            return new TaskFactory().StartNew((obj) => Wait((uint)obj), milliseconds);
+        }
+#endif
 
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Udp.HP_UdpNode_GetLastErrorDesc(SenderPtr).PtrToAnsiString();

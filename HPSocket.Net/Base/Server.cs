@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+#if !NET20 && !NET30 && !NET35
+using System.Threading.Tasks;
+#endif
 
 namespace HPSocket.Base
 {
@@ -178,6 +181,14 @@ namespace HPSocket.Base
 
         /// <inheritdoc />
         public bool Wait(uint milliseconds = 0xffffffff) => Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(uint milliseconds = 4294967295)
+        {
+            return new TaskFactory().StartNew((obj) => Wait((uint)obj), milliseconds);
+        }
+#endif
 
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Server.HP_Server_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
