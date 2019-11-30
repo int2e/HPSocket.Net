@@ -14,11 +14,6 @@ namespace HPSocket.Thread
         #region 保护成员
 
         /// <summary>
-        /// 任务数
-        /// </summary>
-        private int _currentTaskCount = 0;
-
-        /// <summary>
         /// 是否释放了
         /// </summary>
         private bool _disposed;
@@ -110,9 +105,7 @@ namespace HPSocket.Thread
 
             var bytes = Encoding.ASCII.GetBytes(guid);
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            var ok = Sdk.ThreadPool.HP_ThreadPool_Submit(_pool, _taskProc, (IntPtr)gch, maxWait);
-            Interlocked.Increment(ref _currentTaskCount);
-            return ok;
+            return Sdk.ThreadPool.HP_ThreadPool_Submit(_pool, _taskProc, (IntPtr)gch, maxWait);
         }
 
         /// <summary>
@@ -134,7 +127,6 @@ namespace HPSocket.Thread
             _extraData.Remove(guid);
 
             args.TaskProc.Invoke(args.Arg);
-            Interlocked.Decrement(ref _currentTaskCount);
         }
 
         ///// <summary>
@@ -215,9 +207,9 @@ namespace HPSocket.Thread
         private bool AdjustThreadCount(int count) => Sdk.ThreadPool.HP_ThreadPool_AdjustThreadCount(_pool, count);
 
         /// <summary>
-        /// 当前在执行的任务数, 还未执行结束的
+        /// 获取当前正在执行的任务数量
         /// </summary>
-        public int CurrentTaskCount => _currentTaskCount;
+        public uint TaskCount => Sdk.ThreadPool.HP_ThreadPool_GetTaskCount(_pool);
 
         /// <summary>
         /// 获取或设置线程池数量

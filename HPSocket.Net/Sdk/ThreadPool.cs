@@ -41,6 +41,8 @@ namespace HPSocket.Sdk
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_ThreadPool_GetQueueSize(IntPtr pThreadPool);
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern uint HP_ThreadPool_GetTaskCount(IntPtr pThreadPool);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern int HP_ThreadPool_GetThreadCount(IntPtr pThreadPool);

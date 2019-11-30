@@ -6807,11 +6807,6 @@
             线程池
             </summary>
         </member>
-        <member name="F:HPSocket.Thread.ThreadPool._currentTaskCount">
-            <summary>
-            任务数
-            </summary>
-        </member>
         <member name="F:HPSocket.Thread.ThreadPool._disposed">
             <summary>
             是否释放了
@@ -6871,9 +6866,9 @@
             <param name="count">线程数量， 大于0: count， 等于0: (CPU核数 * 2 + 2)， 小于0: (CPU核数 * (-count))</param>
             <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
         </member>
-        <member name="P:HPSocket.Thread.ThreadPool.CurrentTaskCount">
+        <member name="P:HPSocket.Thread.ThreadPool.TaskCount">
             <summary>
-            当前在执行的任务数, 还未执行结束的
+            获取当前正在执行的任务数量
             </summary>
         </member>
         <member name="P:HPSocket.Thread.ThreadPool.ThreadCount">
