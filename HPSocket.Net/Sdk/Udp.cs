@@ -316,6 +316,8 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
         public static extern bool HP_UdpNode_Stop(IntPtr pNode);
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern bool HP_UdpNode_Wait(IntPtr pNode, uint dwMilliseconds);
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_UdpNode_Send(IntPtr pNode, string lpszRemoteAddress, ushort usRemotePort, IntPtr pBuffer, int iLength);
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_UdpNode_SendPart(IntPtr pNode, string lpszRemoteAddress, ushort usRemotePort, IntPtr pBuffer, int iLength, int iOffset);

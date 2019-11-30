@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 
 namespace HPSocket.Udp
 {
@@ -14,10 +13,6 @@ namespace HPSocket.Udp
         /// </summary>
         private bool _disposed;
 
-        /// <summary>
-        /// 等待
-        /// </summary>
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 保护成员
@@ -153,10 +148,7 @@ namespace HPSocket.Udp
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
-        public void Wait()
-        {
-            _resetEvent.WaitOne();
-        }
+        public bool Wait(uint milliseconds = 0xffffffff) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
 
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Udp.HP_UdpNode_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
@@ -178,12 +170,7 @@ namespace HPSocket.Udp
                 return true;
             }
 
-            var ok = Sdk.Udp.HP_UdpNode_Start(SenderPtr, Address, Port);
-            if (ok)
-            {
-                _resetEvent.Reset();
-            }
-            return ok;
+            return Sdk.Udp.HP_UdpNode_Start(SenderPtr, Address, Port);
         }
 
         /// <inheritdoc />
@@ -203,15 +190,7 @@ namespace HPSocket.Udp
         }
 
         /// <inheritdoc />
-        public bool Stop()
-        {
-            var ok = HasStarted && Sdk.Udp.HP_UdpNode_Stop(SenderPtr);
-            if (ok)
-            {
-                _resetEvent.Set();
-            }
-            return ok;
-        }
+        public bool Stop() => HasStarted && Sdk.Udp.HP_UdpNode_Stop(SenderPtr);
 
         /// <inheritdoc />
         public bool Send(string remoteAddress, ushort remotePort, byte[] data, int length)
@@ -410,9 +389,8 @@ namespace HPSocket.Udp
             if (disposing)
             {
                 // 释放托管对象资源
-
-                _resetEvent.Close();
             }
+
             Destroy();
 
             _disposed = true;

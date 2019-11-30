@@ -1,9 +1,8 @@
-﻿using System;
+﻿using HPSocket.Sdk;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using HPSocket.Sdk;
 
 namespace HPSocket.Base
 {
@@ -16,10 +15,6 @@ namespace HPSocket.Base
         /// </summary>
         private bool _disposed;
 
-        /// <summary>
-        /// 等待
-        /// </summary>
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 保护成员
@@ -182,10 +177,7 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
-        public void Wait()
-        {
-            _resetEvent.WaitOne();
-        }
+        public bool Wait(uint milliseconds = 0xffffffff) => Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
 
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Server.HP_Server_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
@@ -260,24 +252,11 @@ namespace HPSocket.Base
                 return true;
             }
 
-            var ok = Sdk.Server.HP_Server_Start(SenderPtr, Address, Port);
-            if (ok)
-            {
-                _resetEvent.Reset();
-            }
-            return ok;
+            return Sdk.Server.HP_Server_Start(SenderPtr, Address, Port);
         }
 
         /// <inheritdoc />
-        public bool Stop()
-        {
-            var ok = HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
-            if (ok)
-            {
-                _resetEvent.Set();
-            }
-            return ok;
-        }
+        public bool Stop() => HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
 
         /// <inheritdoc />
         public bool Send(IntPtr connId, byte[] bytes, int length)
@@ -531,9 +510,8 @@ namespace HPSocket.Base
             if (disposing)
             {
                 // 释放托管对象资源
-
-                _resetEvent.Close();
             }
+
             Destroy();
 
             _disposed = true;

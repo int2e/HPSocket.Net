@@ -188,6 +188,13 @@ namespace HPSocket
         bool Stop();
 
         /// <summary>
+        /// 等待通信组件停止运行
+        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+        /// </summary>
+        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        bool Wait(uint milliseconds = 0xffffffff);
+
+        /// <summary>
         /// 连接到远程服务器
         /// </summary>
         /// <param name="address">远程服务器地址</param>

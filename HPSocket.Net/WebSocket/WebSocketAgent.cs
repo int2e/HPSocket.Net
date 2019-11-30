@@ -1,8 +1,7 @@
-﻿using System;
+﻿using HPSocket.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using HPSocket.Http;
 
 namespace HPSocket.WebSocket
 {
@@ -14,11 +13,6 @@ namespace HPSocket.WebSocket
         private readonly HttpAgent _httpAgent;
         private SslConfiguration _sslConfiguration;
         private readonly ExtraData<IntPtr, WebSocketSession> _sessions = new ExtraData<IntPtr, WebSocketSession>();
-
-        /// <summary>
-        /// 等待
-        /// </summary>
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 公有成员
@@ -65,12 +59,11 @@ namespace HPSocket.WebSocket
         public string Version => Sdk.Sys.GetVersion();
 
         /// <summary>
-        /// 等待服务结束
+        /// 等待通信组件停止运行
+        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
         /// </summary>
-        public void Wait()
-        {
-            _resetEvent.WaitOne();
-        }
+        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        public bool Wait(uint milliseconds = 0xffffffff) => _httpAgent.Wait(milliseconds);
 
         /// <summary>
         /// 默认掩码, 默认值: byte[] { 0x01, 0x02, 0x03, 0x04 }
@@ -209,7 +202,6 @@ namespace HPSocket.WebSocket
                 throw new WebSocketException(_httpAgent.ErrorCode, _httpAgent.ErrorMessage);
             }
 
-            _resetEvent.Reset();
         }
 
         /// <summary>
@@ -217,10 +209,7 @@ namespace HPSocket.WebSocket
         /// </summary>
         public void Stop()
         {
-            if (_httpAgent.HasStarted && _httpAgent.Stop())
-            {
-                _resetEvent.Set();
-            }
+            _httpAgent.Stop();
         }
 
         /// <summary>
@@ -548,8 +537,8 @@ namespace HPSocket.WebSocket
             {
                 // 释放托管对象资源
                 _sessions.Clear();
-                _resetEvent.Close();
             }
+
             Destroy();
 
             _disposed = true;

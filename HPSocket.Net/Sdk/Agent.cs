@@ -36,6 +36,9 @@ namespace HPSocket.Sdk
         public static extern bool HP_Agent_Stop(IntPtr pAgent);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern bool HP_Agent_Wait(IntPtr pAgent, uint dwMilliseconds);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_Agent_Connect(IntPtr pAgent, string lpszRemoteAddress, ushort usPort, ref IntPtr pdwConnId);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]

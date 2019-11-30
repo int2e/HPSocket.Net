@@ -17,8 +17,5 @@ namespace HPSocket
         /// 当前组件版本
         /// </summary>
         string Version { get; }
-
-        // 等待服务结束
-        void Wait();
     }
 }

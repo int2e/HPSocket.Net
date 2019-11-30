@@ -1,11 +1,10 @@
-﻿using System;
+﻿using HPSocket.Proxy;
+using HPSocket.Sdk;
+using HPSocket.Tcp;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using HPSocket.Proxy;
-using HPSocket.Sdk;
-using HPSocket.Tcp;
 using Timer = System.Timers.Timer;
 
 namespace HPSocket.Base
@@ -44,10 +43,6 @@ namespace HPSocket.Base
         /// </summary>
         private readonly ExtraData<string, IProxy> _connProxyCache = new ExtraData<string, IProxy>();
 
-        /// <summary>
-        /// 等待
-        /// </summary>
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 保护成员
@@ -282,10 +277,7 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
-        public void Wait()
-        {
-            _resetEvent.WaitOne();
-        }
+        public bool Wait(uint milliseconds = 0xffffffff) => Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
 
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Agent.HP_Agent_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
@@ -355,24 +347,11 @@ namespace HPSocket.Base
                 return true;
             }
 
-            var ok = Sdk.Agent.HP_Agent_Start(SenderPtr, Address, Async);
-            if (ok)
-            {
-                _resetEvent.Reset();
-            }
-            return ok;
+            return Sdk.Agent.HP_Agent_Start(SenderPtr, Address, Async);
         }
 
         /// <inheritdoc />
-        public bool Stop()
-        {
-            var ok = HasStarted && Sdk.Agent.HP_Agent_Stop(SenderPtr);
-            if (ok)
-            {
-                _resetEvent.Set();
-            }
-            return ok;
-        }
+        public bool Stop() => HasStarted && Sdk.Agent.HP_Agent_Stop(SenderPtr);
 
         /// <inheritdoc />
         public bool Connect(string address, ushort port)
@@ -1027,8 +1006,8 @@ namespace HPSocket.Base
                 // 释放托管对象资源
                 _connProxy.Clear();
                 _connProxyCache.Clear();
-                _resetEvent.Close();
             }
+
             Destroy();
 
             _disposed = true;
