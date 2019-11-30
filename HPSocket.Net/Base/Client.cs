@@ -1,8 +1,7 @@
-﻿using System;
+﻿using HPSocket.Sdk;
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using HPSocket.Sdk;
 
 namespace HPSocket.Base
 {
@@ -15,10 +14,6 @@ namespace HPSocket.Base
         /// </summary>
         private bool _disposed;
 
-        /// <summary>
-        /// 等待
-        /// </summary>
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 保护成员
@@ -155,12 +150,6 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
-        public void Wait()
-        {
-            _resetEvent.WaitOne();
-        }
-
-        /// <inheritdoc />
         public string ErrorMessage => Sdk.Client.HP_Client_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
         /// <summary>
@@ -241,12 +230,7 @@ namespace HPSocket.Base
                 return Sdk.Client.HP_Client_StartWithBindAddress(SenderPtr, Address, Port, Async, BindAddress);
             }
 
-            var ok = Sdk.Client.HP_Client_Start(SenderPtr, Address, Port, Async);
-            if (ok)
-            {
-                _resetEvent.Reset();
-            }
-            return ok;
+            return Sdk.Client.HP_Client_Start(SenderPtr, Address, Port, Async);
         }
 
         /// <inheritdoc />
@@ -258,15 +242,7 @@ namespace HPSocket.Base
         }
 
         /// <inheritdoc />
-        public bool Stop()
-        {
-            var ok = State != ServiceState.Stopped && State != ServiceState.Stopping && Sdk.Client.HP_Client_Stop(SenderPtr);
-            if (ok)
-            {
-                _resetEvent.Set();
-            }
-            return ok;
-        }
+        public bool Stop() => State != ServiceState.Stopped && State != ServiceState.Stopping && Sdk.Client.HP_Client_Stop(SenderPtr);
 
         /// <inheritdoc />
         public bool Send(byte[] bytes, int length)
@@ -401,9 +377,8 @@ namespace HPSocket.Base
             if (disposing)
             {
                 // 释放托管对象资源
-
-                _resetEvent.Close();
             }
+
             Destroy();
 
             _disposed = true;
