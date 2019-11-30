@@ -5438,6 +5438,11 @@
             连接超时时间
             </summary>
         </member>
+        <member name="P:HPSocket.IWebSocketAgent.HasStarted">
+            <summary>
+            获取是否启动
+            </summary>
+        </member>
         <member name="E:HPSocket.IWebSocketAgent.OnMessage">
             <summary>
             cont/text/binary 消息
@@ -5502,6 +5507,11 @@
             自动发送ping消息的时间间隔
             <para>毫秒，0不自动发送，默认不发送（多数分机房的防火墙都在1分钟检测空连接，超时无交互则被踢，如果间隔过长，可能被机房防火墙误杀）</para>
             <para>目前浏览器都不支持在客户端发送ping消息，所以一般在服务器发送ping，在客户端响应接收到ping消息之后再对服务器发送pong，或客户端主动pong，服务器响应pong再发送ping给客户端</para>
+            </summary>
+        </member>
+        <member name="P:HPSocket.IWebSocketServer.HasStarted">
+            <summary>
+            获取是否启动
             </summary>
         </member>
         <member name="M:HPSocket.IWebSocketServer.AddHub``1(System.String)">
@@ -7552,6 +7562,11 @@
             连接超时时间
             </summary>
         </member>
+        <member name="P:HPSocket.WebSocket.WebSocketAgent.HasStarted">
+            <summary>
+            获取是否启动
+            </summary>
+        </member>
         <member name="E:HPSocket.WebSocket.WebSocketAgent.OnMessage">
             <summary>
             cont/text/binary 消息
@@ -7818,6 +7833,11 @@
             发送关闭消息同时关闭连接
             </summary>
             <param name="connId"></param>
+        </member>
+        <member name="P:HPSocket.WebSocket.WebSocketServer.HasStarted">
+            <summary>
+            获取是否启动
+            </summary>
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.AddHub``1(System.String)">
             <summary>
