@@ -270,6 +270,11 @@ namespace HPSocket.WebSocket
         }
 
         /// <summary>
+        /// 获取是否启动
+        /// </summary>
+        public bool HasStarted => _httpServer.HasStarted;
+
+        /// <summary>
         /// 对path注册特定hub
         /// <para>例如: AddHub&lt;ChatHub&gt;("/chat")</para>
         /// </summary>

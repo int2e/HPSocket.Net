@@ -16,6 +16,11 @@ namespace HPSocket
         /// </summary>
         uint PingInterval { get; set; }
 
+        /// <summary>
+        /// 获取是否启动
+        /// </summary>
+        bool HasStarted { get; }
+
         #endregion
 
         #region 服务器方法

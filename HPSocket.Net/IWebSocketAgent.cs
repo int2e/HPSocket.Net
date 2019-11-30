@@ -35,6 +35,10 @@ namespace HPSocket
         /// </summary>
         int ConnectionTimeout { get; set; }
 
+        /// <summary>
+        /// 获取是否启动
+        /// </summary>
+        bool HasStarted { get; }
         #endregion
 
         #region 客户端事件

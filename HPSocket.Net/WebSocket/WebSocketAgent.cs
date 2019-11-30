@@ -86,6 +86,11 @@ namespace HPSocket.WebSocket
         public int ConnectionTimeout { get => _httpAgent.ConnectionTimeout; set => _httpAgent.ConnectionTimeout = value; }
 
         /// <summary>
+        /// 获取是否启动
+        /// </summary>
+        public bool HasStarted => _httpAgent.HasStarted;
+
+        /// <summary>
         /// cont/text/binary 消息
         /// </summary>
         public event MessageEventHandler OnMessage;
