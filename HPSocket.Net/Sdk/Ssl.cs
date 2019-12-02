@@ -10,60 +10,60 @@ namespace HPSocket.Sdk
 
 
         /**************** HPSocket4C 导出函数 ****************/
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLServer(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLAgent(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLClient(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLPullServer(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLPullAgent(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLPullClient(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLPackServer(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLPackAgent(IntPtr pListener);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern IntPtr Create_HP_SSLPackClient(IntPtr pListener);
 
 
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLServer(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLAgent(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLClient(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLPullServer(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLPullAgent(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLPullClient(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLPackServer(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLPackAgent(IntPtr pObj);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_SSLPackClient(IntPtr pObj);
 
         /************************ SSL 初始化方法 ****************************/
@@ -102,52 +102,52 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern int HP_SSLServer_AddSSLContext(IntPtr pServer, SslVerifyMode verifyMode, string lpszPemCertFile, string lpszPemKeyFile, string lpszKeyPassword, string lpszCaPemCertFileOrPath);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_SSLAgent_CleanupSSLContext(IntPtr pAgent);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_SSLClient_CleanupSSLContext(IntPtr pClient);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_SSLServer_CleanupSSLContext(IntPtr pServer);
 
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_SSL_RemoveThreadLocalState();
 
 
-        [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLServer_StartSSLHandShake(IntPtr pServer, IntPtr dwConnId);
 
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_SSLServer_SetSSLAutoHandShake(IntPtr pServer, bool bAutoHandShake);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLServer_IsSSLAutoHandShake(IntPtr pServer);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLServer_GetSSLSessionInfo(IntPtr pServer, IntPtr connId, SslSessionInfo enInfo, ref IntPtr lppInfo);
 
-        [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLAgent_StartSSLHandShake(IntPtr pAgent, IntPtr dwConnId);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_SSLAgent_SetSSLAutoHandShake(IntPtr pAgent, bool bAutoHandShake);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLAgent_IsSSLAutoHandShake(IntPtr pAgent);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLAgent_GetSSLSessionInfo(IntPtr pAgent, IntPtr connId, SslSessionInfo enInfo, ref IntPtr lppInfo);
 
-        [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLClient_StartSSLHandShake(IntPtr pClient);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_SSLClient_SetSSLAutoHandShake(IntPtr pClient, bool bAutoHandShake);
 
-        [DllImport(HpSocketLibrary.DllName)]
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLClient_IsSSLAutoHandShake(IntPtr pClient);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
