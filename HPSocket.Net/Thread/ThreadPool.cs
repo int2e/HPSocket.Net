@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
+#if !NET20 && !NET30 && !NET35
+using System.Threading.Tasks;
+#endif
 using HPSocket.Sdk;
 
 namespace HPSocket.Thread
@@ -205,6 +207,25 @@ namespace HPSocket.Thread
         /// <param name="count">线程数量， 大于0: count， 等于0: (CPU核数 * 2 + 2)， 小于0: (CPU核数 * (-count))</param>
         /// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
         private bool AdjustThreadCount(int count) => Sdk.ThreadPool.HP_ThreadPool_AdjustThreadCount(_pool, count);
+
+        /// <summary>
+        /// 等待线程池组件停止运行
+        /// </summary>
+        /// <param name="milliseconds"></param>
+        /// <returns></returns>
+        public bool Wait(int milliseconds = -1) => Sdk.ThreadPool.HP_ThreadPool_Wait(_pool, milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <summary>
+        /// 等待线程池组件停止运行
+        /// </summary>
+        /// <param name="milliseconds"></param>
+        /// <returns></returns>
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+#endif
 
         /// <summary>
         /// 获取当前正在执行的任务数量

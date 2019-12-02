@@ -34,6 +34,9 @@ namespace HPSocket.Sdk
         public static extern bool HP_ThreadPool_AdjustThreadCount(IntPtr pThreadPool, int dwNewThreadCount);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern bool HP_ThreadPool_Wait(IntPtr pThreadPool, int dwMilliseconds);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_ThreadPool_HasStarted(IntPtr pThreadPool);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]

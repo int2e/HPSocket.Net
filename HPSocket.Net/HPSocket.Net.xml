@@ -141,10 +141,10 @@
         <member name="P:HPSocket.Base.Agent.Version">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Base.Agent.Wait(System.UInt32)">
+        <member name="M:HPSocket.Base.Agent.Wait(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Base.Agent.WaitAsync(System.UInt32)">
+        <member name="M:HPSocket.Base.Agent.WaitAsync(System.Int32)">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Agent.ErrorMessage">
@@ -388,6 +388,12 @@
         <member name="P:HPSocket.Base.Client.Version">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Base.Client.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Client.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Client.ErrorMessage">
             <inheritdoc />
         </member>
@@ -583,10 +589,10 @@
         <member name="P:HPSocket.Base.Server.Version">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Base.Server.Wait(System.UInt32)">
+        <member name="M:HPSocket.Base.Server.Wait(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Base.Server.WaitAsync(System.UInt32)">
+        <member name="M:HPSocket.Base.Server.WaitAsync(System.Int32)">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.ErrorMessage">
@@ -2403,20 +2409,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:HPSocket.IAgent.Wait(System.UInt32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
-        <member name="M:HPSocket.IAgent.WaitAsync(System.UInt32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
         <member name="M:HPSocket.IAgent.Connect(System.String,System.UInt16)">
             <summary>
             连接到远程服务器
@@ -3901,20 +3893,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:HPSocket.IServer.Wait(System.UInt32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
-        <member name="M:HPSocket.IServer.WaitAsync(System.UInt32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
         <member name="M:HPSocket.IServer.Send(System.IntPtr,System.Byte[],System.Int32)">
             <summary>
             发送数据
@@ -4106,6 +4084,20 @@
             <summary>
             当前组件版本
             </summary>
+        </member>
+        <member name="M:HPSocket.ISocket.Wait(System.Int32)">
+            <summary>
+            等待通信组件停止运行
+            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+            </summary>
+            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        </member>
+        <member name="M:HPSocket.ISocket.WaitAsync(System.Int32)">
+            <summary>
+            等待通信组件停止运行
+            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+            </summary>
+            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
         </member>
         <member name="M:HPSocket.ISocks5Proxy.GetConnectData">
             <summary>
@@ -5183,20 +5175,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:HPSocket.IUdpNode.Wait(System.UInt32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
-        <member name="M:HPSocket.IUdpNode.WaitAsync(System.UInt32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
         <member name="M:HPSocket.IUdpNode.Send(System.String,System.UInt16,System.Byte[],System.Int32)">
             <summary>
             向指定地址发送数据
@@ -5349,13 +5327,6 @@
             <summary>
             停止服务
             </summary>
-        </member>
-        <member name="M:HPSocket.IWebSocket.Wait(System.UInt32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
         </member>
         <member name="M:HPSocket.IWebSocket.Send(System.IntPtr,System.Boolean,HPSocket.WebSocket.OpCode,System.Byte[],System.Int32)">
             <summary>
@@ -6560,7 +6531,10 @@
             当前组件版本
             </summary>
         </member>
-        <member name="M:HPSocket.Tcp.TcpPortForwarding.Wait">
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.WaitAsync(System.Int32)">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Tcp.TcpPortForwarding.LocalBindAddress">
@@ -6913,6 +6887,20 @@
             <param name="count">线程数量， 大于0: count， 等于0: (CPU核数 * 2 + 2)， 小于0: (CPU核数 * (-count))</param>
             <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
         </member>
+        <member name="M:HPSocket.Thread.ThreadPool.Wait(System.Int32)">
+            <summary>
+            等待线程池组件停止运行
+            </summary>
+            <param name="milliseconds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.Thread.ThreadPool.WaitAsync(System.Int32)">
+            <summary>
+            等待线程池组件停止运行
+            </summary>
+            <param name="milliseconds"></param>
+            <returns></returns>
+        </member>
         <member name="P:HPSocket.Thread.ThreadPool.TaskCount">
             <summary>
             获取当前正在执行的任务数量
@@ -7173,10 +7161,10 @@
         <member name="P:HPSocket.Udp.UdpNode.Version">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Udp.UdpNode.Wait(System.UInt32)">
+        <member name="M:HPSocket.Udp.UdpNode.Wait(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Udp.UdpNode.WaitAsync(System.UInt32)">
+        <member name="M:HPSocket.Udp.UdpNode.WaitAsync(System.Int32)">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.ErrorMessage">
@@ -7535,7 +7523,14 @@
             当前组件版本
             </summary>
         </member>
-        <member name="M:HPSocket.WebSocket.WebSocketAgent.Wait(System.UInt32)">
+        <member name="M:HPSocket.WebSocket.WebSocketAgent.Wait(System.Int32)">
+            <summary>
+            等待通信组件停止运行
+            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+            </summary>
+            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketAgent.WaitAsync(System.Int32)">
             <summary>
             等待通信组件停止运行
             <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
@@ -7743,7 +7738,14 @@
             当前组件版本
             </summary>
         </member>
-        <member name="M:HPSocket.WebSocket.WebSocketServer.Wait(System.UInt32)">
+        <member name="M:HPSocket.WebSocket.WebSocketServer.Wait(System.Int32)">
+            <summary>
+            等待通信组件停止运行
+            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+            </summary>
+            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.WaitAsync(System.Int32)">
             <summary>
             等待通信组件停止运行
             <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>

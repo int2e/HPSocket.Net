@@ -52,9 +52,11 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
         public static extern bool HP_Client_SendPackets(IntPtr pClient, Wsabuf[] pBuffers, int iCount);
 
-
         [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
         public static extern bool HP_Client_PauseReceive(IntPtr pClient, bool bPause);
+
+        [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
+        public static extern bool HP_Client_Wait(IntPtr pClient, int dwMilliseconds);
 
         /******************************************************************************/
         /***************************** Client 属性访问方法 *****************************/

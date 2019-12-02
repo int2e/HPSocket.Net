@@ -151,13 +151,13 @@ namespace HPSocket.Udp
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
-        public bool Wait(uint milliseconds = 0xffffffff) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
-        public Task<bool> WaitAsync(uint milliseconds = 4294967295)
+        public Task<bool> WaitAsync(int milliseconds = -1)
         {
-            return new TaskFactory().StartNew((obj) => Wait((uint)obj), milliseconds);
+            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
         }
 #endif
 

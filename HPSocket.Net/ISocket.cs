@@ -1,4 +1,7 @@
 ﻿using System;
+#if !NET20 && !NET30 && !NET35
+using System.Threading.Tasks;
+#endif
 
 namespace HPSocket
 {
@@ -17,5 +20,21 @@ namespace HPSocket
         /// 当前组件版本
         /// </summary>
         string Version { get; }
+
+        /// <summary>
+        /// 等待通信组件停止运行
+        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+        /// </summary>
+        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        bool Wait(int milliseconds = -1);
+
+#if !NET20 && !NET30 && !NET35
+        /// <summary>
+        /// 等待通信组件停止运行
+        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+        /// </summary>
+        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        Task<bool> WaitAsync(int milliseconds = -1);
+#endif
     }
 }

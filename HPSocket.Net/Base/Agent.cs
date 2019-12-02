@@ -280,13 +280,13 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
-        public bool Wait(uint milliseconds = 0xffffffff) => Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1) => Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
-        public Task<bool> WaitAsync(uint milliseconds = 4294967295)
+        public Task<bool> WaitAsync(int milliseconds = -1)
         {
-            return new TaskFactory().StartNew((obj) => Wait((uint)obj), milliseconds);
+            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
         }
 #endif
 

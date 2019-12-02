@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+#if !NET20 && !NET30 && !NET35
+using System.Threading.Tasks;
+#endif
 
 namespace HPSocket.Tcp
 {
@@ -78,11 +81,18 @@ namespace HPSocket.Tcp
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
-        public void Wait()
+        public bool Wait(int milliseconds = -1)
         {
-            _resetEvent.WaitOne();
+            return _resetEvent.WaitOne();
         }
 
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+#endif
         /// <inheritdoc />
         public string LocalBindAddress { get; set; } = "0.0.0.0";
 

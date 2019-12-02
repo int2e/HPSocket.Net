@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 #if !NET20 && !NET30 && !NET35
 using System.Linq;
+using System.Threading.Tasks;
 #endif
 using System.Security.Cryptography;
 using System.Text;
@@ -74,7 +75,19 @@ namespace HPSocket.WebSocket
         /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
         /// </summary>
         /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        public bool Wait(uint milliseconds = 0xffffffff) => _httpServer.Wait(milliseconds);
+        public bool Wait(int milliseconds = -1) => _httpServer.Wait(milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <summary>
+        /// 等待通信组件停止运行
+        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
+        /// </summary>
+        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+#endif
 
         /// <summary>
         /// 最大封包长度
