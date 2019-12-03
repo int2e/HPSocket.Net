@@ -36,6 +36,14 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`hp-socket`的`macOS分支`[HP
 + `ITcpPackAgent`
 + `ITcpPacClient`
 
+##### UDP
++ `IUdpServer`
++ `IUdpClient`
++ `IUdpCast`
++ `IUdpArqServer`
++ `IUdpArqClient`
++ `IUdpNode`
+
 ##### SSL
 + `ISslServer`
 + `ISslAgent`
