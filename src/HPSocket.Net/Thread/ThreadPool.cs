@@ -225,6 +225,16 @@ namespace HPSocket.Thread
         {
             return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
         }
+
+        /// <summary>
+        /// 在规定时间内关闭线程池组件，如果工作线程在最大等待时间内未能正常关闭，会尝试强制关闭，这种情况下很可能会造成系统资源泄漏
+        /// </summary>
+        /// <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
+        /// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+        public Task<bool> StopAsync(int maxWait = -1)
+        {
+            return Task.Factory.StartNew((obj)=> Stop((int)obj), maxWait);
+        }
 #endif
 
         /// <summary>
