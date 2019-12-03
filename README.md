@@ -9,11 +9,11 @@ the C# SDK for [HP-Socket](https://gitee.com/ldcsaa/HP-Socket)
 `.Net Core 2.0+`
 
 #### 平台支持
-`Windows`支持`x86/x64`
+`Windows x86/x64`
 
-`Linux`支持`x86/x64`
+`Linux x86/x64`
 
-`mac OS`支持`x64`
+`mac OS x64`
 
 #### 操作系统支持
 `Win7+`
