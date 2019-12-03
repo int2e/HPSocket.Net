@@ -4,17 +4,13 @@
 the C# SDK for [HP-Socket](https://github.com/ldcsaa/HP-Socket)
 
 #### .Net Framework Supported
-`.Net Framework 2.0+`
-
-`.Net Core 2.0+`
+* `.Net Framework 2.0+`
+* `.Net Core 2.0+`
 
 #### Platform supported
-`Windows 7+ x86/x64`
-
-`Linux kernel 2.6.32+ x86/x64`
-
-`mac OS 10.12+ x64`
-
+* `Windows 7+ x86/x64`
+* `Linux kernel 2.6.32+ x86/x64`
+* `mac OS 10.12+ x64`
 
 ## Installation Guide
 `HPSocket.Net` deploy via NuGet package manager
