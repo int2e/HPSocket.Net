@@ -87,7 +87,7 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`hp-socket`的`macOS分支`[HP
 
 ### 使用说明
 1. 大部分组件使用方法清参考`demo`目录下的工程
-2. `HPSocket.Net`扩展组件事件绑定
+2. `HPSocket.Net`的`Easy`扩展组件事件绑定
 #### IHttpEasyServer
 ```cs
 // 创建 HttpEasyServer 的实例
