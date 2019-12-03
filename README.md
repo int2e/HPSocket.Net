@@ -21,7 +21,7 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`hp-socket`的`macOS分支`[HP
 
 ### 组件列表
 #### 基础组件
-基础组件是`hp-socket`提供的组件原型, 相关使用方法请参考[HP-Socket Development Guide.pdf](https://gitee.com/ldcsaa/HP-Socket/blob/master/Doc/HP-Socket%20Development%20Guide.pdf)
+基础组件是`hp-socket`提供的组件原型, 相关使用方法请参考[HP-Socket Doc](https://github.com/ldcsaa/HP-Socket/tree/master/Doc)
 
 *`HPSocket.Net`提供的`Agent`系列组件除`Pack`系列模型外, 包括`ITcpPortForwarding`组件, 都支持设置`http`或`socks5`代理, 以`List<IProxy>`方式设置, 可同时设置多个代理, 组件内部会随机使用, 可以同时混用`http`和`socks5`代理, 使用方法参考各`Agent`组件的`demo`*
 
