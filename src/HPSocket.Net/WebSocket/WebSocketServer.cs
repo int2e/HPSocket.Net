@@ -32,71 +32,31 @@ namespace HPSocket.WebSocket
 
         #region 公有成员
 
-        /// <summary>
-        /// 开放式 http/https server 对象, 对 http 连接有 cookie 或者 header 操作, 直接调用这个对象操作
-        /// </summary>
+        /// <inheritdoc />
         public IHttpMultiId Http => _httpServer;
 
-        /// <summary>
-        /// Uri
-        /// </summary>
+        /// <inheritdoc />
         public Uri Uri { get; }
 
-        /// <summary>
-        /// 是否安全连接
-        /// </summary>
+        /// <inheritdoc />
         public bool IsSecure { get; }
 
-        /// <summary>
-        /// 忽略压缩扩展, 默认false
-        /// <para>如果忽略, 则不支持压缩解压缩</para>
-        /// </summary>
+        /// <inheritdoc />
         public bool IgnoreCompressionExtensions { get; set; } = false;
 
-        /// <summary>
-        /// 自动发送ping消息的时间间隔
-        /// <para>毫秒，0不自动发送，默认不发送（多数分机房的防火墙都在1分钟检测空连接，超时无交互则被踢，如果间隔过长，可能被机房防火墙误杀）</para>
-        /// <para>目前浏览器都不支持在客户端发送ping消息，所以一般在服务器发送ping，在客户端响应接收到ping消息之后再对服务器发送pong，或客户端主动pong，服务器响应pong再发送ping给客户端</para>
-        /// </summary>
+        /// <inheritdoc />
         public uint PingInterval { get; set; }
 
-        /// <summary>
-        /// 组件对象指针
-        /// </summary>
+        /// <inheritdoc />
         public IntPtr SenderPtr => Http.SenderPtr;
 
-        /// <summary>
-        /// 当前组件版本
-        /// </summary>
+        /// <inheritdoc />
         public string Version => Sdk.Sys.GetVersion();
 
-        /// <summary>
-        /// 等待通信组件停止运行
-        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-        /// </summary>
-        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        public bool Wait(int milliseconds = -1) => _httpServer.Wait(milliseconds);
-
-#if !NET20 && !NET30 && !NET35
-        /// <summary>
-        /// 等待通信组件停止运行
-        /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-        /// </summary>
-        /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        public Task<bool> WaitAsync(int milliseconds = -1)
-        {
-            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
-        }
-#endif
-
-        /// <summary>
-        /// 最大封包长度
-        /// </summary>
+        /// <inheritdoc />
         public uint MaxPacketSize { get; set; } = 0;
 
-        /// <summary>
-        /// ssl环境配置
-        /// </summary>
+        /// <inheritdoc />
         public SslConfiguration SslConfiguration
         {
             get => _sslConfiguration;
@@ -121,21 +81,14 @@ namespace HPSocket.WebSocket
             }
         }
 
-        /// <summary>
-        /// 支持的子协议, 默认空, 不限制
-        /// </summary>
+        /// <inheritdoc />
         public string SubProtocols { get; set; } = "";
 
         #endregion
 
         #region 公有方法
 
-        /// <summary>
-        /// 创建 websocket server 对象
-        /// </summary>
-        /// <param name="url">url必须是 ws 或 wss
-        /// <para>如果是 wss 则为安全连接, 必须设置 SslConfiguration 属性</para>
-        /// </param>
+        /// <inheritdoc />
         public WebSocketServer(string url)
         {
             if (string.IsNullOrEmpty(url))
@@ -166,9 +119,7 @@ namespace HPSocket.WebSocket
 
         ~WebSocketServer() => Dispose(false);
 
-        /// <summary>
-        /// 启动服务
-        /// </summary>
+        /// <inheritdoc />
         public void Start()
         {
             if (IsSecure && SslConfiguration == null)
@@ -185,23 +136,30 @@ namespace HPSocket.WebSocket
             }
         }
 
-        /// <summary>
-        /// 停止服务
-        /// </summary>
-        public void Stop()
+        /// <inheritdoc />
+        public bool Stop()
         {
-            _httpServer.Stop();
+            return _httpServer.Stop();
         }
 
-        /// <summary>
-        /// 尝试发送数据
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="final"></param>
-        /// <param name="opCode"></param>
-        /// <param name="data"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
+        public bool Wait(int milliseconds = -1) => _httpServer.Wait(milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> StopAsync()
+        {
+            return Task.Factory.StartNew(Stop);
+        }
+#endif
+
+        /// <inheritdoc />
         public bool Send(IntPtr connId, bool final, OpCode opCode, byte[] data, int length)
         {
             var session = _sessions.Get(connId);
@@ -219,48 +177,26 @@ namespace HPSocket.WebSocket
             return _httpServer.SendWsMessage(connId, final, length == 0 ? Rsv.Off : session.Rsv, opCode, data, length);
         }
 
-        /// <summary>
-        /// 发送数据
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="opCode"></param>
-        /// <param name="data"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public bool Send(IntPtr connId, OpCode opCode, byte[] data, int length)
         {
             return Send(connId, true, opCode, data, length);
         }
 
-        /// <summary>
-        /// 发送文本消息
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public bool Text(IntPtr connId, string text)
         {
             var data = Encoding.UTF8.GetBytes(text);
             return Send(connId, OpCode.Text, data, data.Length);
         }
 
-        /// <summary>
-        /// 发送ping消息
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="data"></param>
-        /// <param name="length"></param>
+        /// <inheritdoc />
         public void Ping(IntPtr connId, byte[] data, int length)
         {
             Send(connId, OpCode.Ping, data, length);
         }
 
-        /// <summary>
-        /// 发送pong消息
-        /// </summary>
-        /// <param name="connId"></param>
-        /// <param name="data"></param>
-        /// <param name="length"></param>
+        /// <inheritdoc />
         public void Pong(IntPtr connId, byte[] data, int length)
         {
             if (data?.Length == 0)
@@ -270,10 +206,7 @@ namespace HPSocket.WebSocket
             Send(connId, OpCode.Pong, data, length);
         }
 
-        /// <summary>
-        /// 发送关闭消息同时关闭连接
-        /// </summary>
-        /// <param name="connId"></param>
+        /// <inheritdoc />
         public void Close(IntPtr connId)
         {
             Send(connId, OpCode.Close, null, 0);
@@ -282,17 +215,10 @@ namespace HPSocket.WebSocket
             _httpServer.Release(connId);
         }
 
-        /// <summary>
-        /// 获取是否启动
-        /// </summary>
+        /// <inheritdoc />
         public bool HasStarted => _httpServer.HasStarted;
 
-        /// <summary>
-        /// 对path注册特定hub
-        /// <para>例如: AddHub&lt;ChatHub&gt;("/chat")</para>
-        /// </summary>
-        /// <typeparam name="THubWithNew">继承自HPSocket.WebSocket.IHub或HPSocket.WebSocket.Hub的类</typeparam>
-        /// <param name="path">url path</param>
+        /// <inheritdoc />
         public void AddHub<THubWithNew>(string path) where THubWithNew : IHub, new()
         {
             if (!_services.Set(path, new THubWithNew()))
@@ -301,10 +227,7 @@ namespace HPSocket.WebSocket
             }
         }
 
-        /// <summary>
-        /// 移除已注册的hub
-        /// </summary>
-        /// <param name="path">url path</param>
+        /// <inheritdoc />
         public void RemoveHub(string path)
         {
             _services.Remove(path);

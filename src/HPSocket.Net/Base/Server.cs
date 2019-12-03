@@ -180,17 +180,6 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
-
-#if !NET20 && !NET30 && !NET35
-        /// <inheritdoc />
-        public Task<bool> WaitAsync(int milliseconds = -1)
-        {
-            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
-        }
-#endif
-
-        /// <inheritdoc />
         public string ErrorMessage => Sdk.Server.HP_Server_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
 
@@ -268,6 +257,23 @@ namespace HPSocket.Base
 
         /// <inheritdoc />
         public bool Stop() => HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
+
+        /// <inheritdoc />
+        public bool Wait(int milliseconds = -1) => Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> StopAsync()
+        {
+            return Task.Factory.StartNew(Stop);
+        }
+#endif
 
         /// <inheritdoc />
         public bool Send(IntPtr connId, byte[] bytes, int length)

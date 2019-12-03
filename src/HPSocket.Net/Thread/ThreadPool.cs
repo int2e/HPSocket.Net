@@ -223,7 +223,7 @@ namespace HPSocket.Thread
         /// <returns></returns>
         public Task<bool> WaitAsync(int milliseconds = -1)
         {
-            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
+            return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
         }
 #endif
 

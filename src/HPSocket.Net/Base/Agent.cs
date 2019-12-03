@@ -278,18 +278,7 @@ namespace HPSocket.Base
 
         /// <inheritdoc />
         public string Version => Sys.GetVersion();
-
-        /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
-
-#if !NET20 && !NET30 && !NET35
-        /// <inheritdoc />
-        public Task<bool> WaitAsync(int milliseconds = -1)
-        {
-            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
-        }
-#endif
-
+        
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Agent.HP_Agent_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
@@ -363,6 +352,23 @@ namespace HPSocket.Base
 
         /// <inheritdoc />
         public bool Stop() => HasStarted && Sdk.Agent.HP_Agent_Stop(SenderPtr);
+
+        /// <inheritdoc />
+        public bool Wait(int milliseconds = -1) => Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> StopAsync()
+        {
+            return Task.Factory.StartNew(Stop);
+        }
+#endif
 
         /// <inheritdoc />
         public bool Connect(string address, ushort port)

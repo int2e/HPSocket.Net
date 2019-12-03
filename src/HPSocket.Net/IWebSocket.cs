@@ -58,7 +58,7 @@ namespace HPSocket
         /// <summary>
         /// 停止服务
         /// </summary>
-        void Stop();
+        bool Stop();
 
         /// <summary>
         /// 发送数据

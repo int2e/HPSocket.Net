@@ -152,7 +152,7 @@ namespace HPSocket
         bool Connect(string address, ushort port);
 
         /// <summary>
-        /// 停止通讯组件
+        /// 停止服务
         /// </summary>
         /// <returns></returns>
         bool Stop();

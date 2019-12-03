@@ -110,7 +110,7 @@ namespace HPSocket
         /// <summary>
         /// 停止服务
         /// </summary>
-        void Stop();
+        bool Stop();
 
         #endregion
     }

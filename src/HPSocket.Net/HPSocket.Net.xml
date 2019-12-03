@@ -141,12 +141,6 @@
         <member name="P:HPSocket.Base.Agent.Version">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Base.Agent.Wait(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Base.Agent.WaitAsync(System.Int32)">
-            <inheritdoc />
-        </member>
         <member name="P:HPSocket.Base.Agent.ErrorMessage">
             <inheritdoc />
         </member>
@@ -168,6 +162,15 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Base.Agent.Stop">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Agent.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Agent.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Agent.StopAsync">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Base.Agent.Connect(System.String,System.UInt16)">
@@ -388,12 +391,6 @@
         <member name="P:HPSocket.Base.Client.Version">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Base.Client.Wait(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Base.Client.WaitAsync(System.Int32)">
-            <inheritdoc />
-        </member>
         <member name="P:HPSocket.Base.Client.ErrorMessage">
             <inheritdoc />
         </member>
@@ -407,6 +404,15 @@
             <summary>
             终止服务并释放资源
             </summary>
+        </member>
+        <member name="M:HPSocket.Base.Client.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Client.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Client.StopAsync">
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.Base.Client.Connect">
             <inheritdoc />
@@ -589,12 +595,6 @@
         <member name="P:HPSocket.Base.Server.Version">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Base.Server.Wait(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Base.Server.WaitAsync(System.Int32)">
-            <inheritdoc />
-        </member>
         <member name="P:HPSocket.Base.Server.ErrorMessage">
             <inheritdoc />
         </member>
@@ -613,6 +613,15 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Base.Server.Stop">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Server.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Server.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Base.Server.StopAsync">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Base.Server.Send(System.IntPtr,System.Byte[],System.Int32)">
@@ -2786,7 +2795,7 @@
         </member>
         <member name="M:HPSocket.IClient.Stop">
             <summary>
-            停止通讯组件
+            停止服务
             </summary>
             <returns></returns>
         </member>
@@ -4098,6 +4107,11 @@
             <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
             </summary>
             <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+        </member>
+        <member name="M:HPSocket.ISocket.StopAsync">
+            <summary>
+            停止服务
+            </summary>
         </member>
         <member name="M:HPSocket.ISocks5Proxy.GetConnectData">
             <summary>
@@ -6531,12 +6545,6 @@
             当前组件版本
             </summary>
         </member>
-        <member name="M:HPSocket.Tcp.TcpPortForwarding.Wait(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Tcp.TcpPortForwarding.WaitAsync(System.Int32)">
-            <inheritdoc />
-        </member>
         <member name="P:HPSocket.Tcp.TcpPortForwarding.LocalBindAddress">
             <inheritdoc />
         </member>
@@ -6588,6 +6596,15 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpPortForwarding.Stop">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.StopAsync">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpPortForwarding.Dispose(System.Boolean)">
@@ -7161,12 +7178,6 @@
         <member name="P:HPSocket.Udp.UdpNode.Version">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Udp.UdpNode.Wait(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Udp.UdpNode.WaitAsync(System.Int32)">
-            <inheritdoc />
-        </member>
         <member name="P:HPSocket.Udp.UdpNode.ErrorMessage">
             <inheritdoc />
         </member>
@@ -7180,6 +7191,15 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Udp.UdpNode.Stop">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Udp.UdpNode.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Udp.UdpNode.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Udp.UdpNode.StopAsync">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Udp.UdpNode.Send(System.String,System.UInt16,System.Byte[],System.Int32)">
@@ -7483,155 +7503,88 @@
             </summary>
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.BindAddress">
-            <summary>
-            本地绑定地址, 默认0.0.0.0
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.IgnoreCompressionExtensions">
-            <summary>
-            忽略压缩扩展, 默认false
-            <para>如果忽略, 则不支持压缩解压缩</para>
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Http">
-            <summary>
-            开放式 http/https server 对象, 对 http 连接有 cookie 或者 header 操作, 直接调用这个对象操作
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Uri">
-            <summary>
-            Uri
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.IsSecure">
-            <summary>
-            是否安全连接
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.MaxPacketSize">
-            <summary>
-            最大封包长度
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.SenderPtr">
-            <summary>
-            组件对象指针
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Version">
-            <summary>
-            当前组件版本
-            </summary>
-        </member>
-        <member name="M:HPSocket.WebSocket.WebSocketAgent.Wait(System.Int32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
-        <member name="M:HPSocket.WebSocket.WebSocketAgent.WaitAsync(System.Int32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.DefaultMask">
-            <summary>
-            默认掩码, 默认值: byte[] { 0x01, 0x02, 0x03, 0x04 }
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.UserAgent">
-            <summary>
-            浏览器 User-Agent, 默认 chrome78.0.3904.97 的 User-Agent
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Cookie">
-            <summary>
-            cookie
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.ConnectionTimeout">
-            <summary>
-            连接超时时间
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.HasStarted">
-            <summary>
-            获取是否启动
-            </summary>
+            <inheritdoc />
         </member>
         <member name="E:HPSocket.WebSocket.WebSocketAgent.OnMessage">
-            <summary>
-            cont/text/binary 消息
-            </summary>
+            <inheritdoc />
         </member>
         <member name="E:HPSocket.WebSocket.WebSocketAgent.OnOpen">
-            <summary>
-            握手成功, 打开/进入 连接
-            </summary>
+            <inheritdoc />
         </member>
         <member name="E:HPSocket.WebSocket.WebSocketAgent.OnClose">
-            <summary>
-            连接关闭
-            </summary>
+            <inheritdoc />
         </member>
         <member name="E:HPSocket.WebSocket.WebSocketAgent.OnPing">
-            <summary>
-            ping消息
-            </summary>
+            <inheritdoc />
         </member>
         <member name="E:HPSocket.WebSocket.WebSocketAgent.OnPong">
-            <summary>
-            pong消息
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.SslConfiguration">
-            <summary>
-            ssl环境配置
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.SubProtocols">
-            <summary>
-            支持的子协议, 默认空, 不限制
-            </summary>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.#ctor(System.String,System.String[])">
-            <summary>
-            创建 websocket server 对象
-            </summary>
-            <param name="url">url必须是 ws 或 wss
-            <para>如果是 wss 则为安全连接, 必须设置 SslConfiguration 属性</para>
-            </param>
-            <param name="protocols">子协议</param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Start">
-            <summary>
-            启动服务
-            </summary>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Stop">
-            <summary>
-            停止服务
-            </summary>
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketAgent.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketAgent.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketAgent.StopAsync">
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Connect">
-            <summary>
-            连接到目标 web socket 服务器
-            </summary>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Send(System.IntPtr,System.Boolean,HPSocket.WebSocket.OpCode,System.Byte[],System.Byte[],System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="final"></param>
-            <param name="opCode"></param>
-            <param name="mask"></param>
-            <param name="data"></param>
-            <param name="length"></param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Send(System.IntPtr,System.Boolean,HPSocket.WebSocket.OpCode,System.Byte[],System.Int32)">
             <summary>
@@ -7645,44 +7598,19 @@
             <returns></returns>
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Send(System.IntPtr,HPSocket.WebSocket.OpCode,System.Byte[],System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="opCode"></param>
-            <param name="data"></param>
-            <param name="length"></param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Text(System.IntPtr,System.String)">
-            <summary>
-            发送文本消息
-            </summary>
-            <param name="connId"></param>
-            <param name="text"></param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Ping(System.IntPtr,System.Byte[],System.Int32)">
-            <summary>
-            发送ping消息
-            </summary>
-            <param name="connId"></param>
-            <param name="data"></param>
-            <param name="length"></param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Pong(System.IntPtr,System.Byte[],System.Int32)">
-            <summary>
-            发送pong消息
-            </summary>
-            <param name="connId"></param>
-            <param name="data"></param>
-            <param name="length"></param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Close(System.IntPtr)">
-            <summary>
-            发送关闭消息同时关闭连接
-            </summary>
-            <param name="connId"></param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Destroy">
             <summary>
@@ -7701,159 +7629,79 @@
             </summary>
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.Http">
-            <summary>
-            开放式 http/https server 对象, 对 http 连接有 cookie 或者 header 操作, 直接调用这个对象操作
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.Uri">
-            <summary>
-            Uri
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.IsSecure">
-            <summary>
-            是否安全连接
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.IgnoreCompressionExtensions">
-            <summary>
-            忽略压缩扩展, 默认false
-            <para>如果忽略, 则不支持压缩解压缩</para>
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.PingInterval">
-            <summary>
-            自动发送ping消息的时间间隔
-            <para>毫秒，0不自动发送，默认不发送（多数分机房的防火墙都在1分钟检测空连接，超时无交互则被踢，如果间隔过长，可能被机房防火墙误杀）</para>
-            <para>目前浏览器都不支持在客户端发送ping消息，所以一般在服务器发送ping，在客户端响应接收到ping消息之后再对服务器发送pong，或客户端主动pong，服务器响应pong再发送ping给客户端</para>
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.SenderPtr">
-            <summary>
-            组件对象指针
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.Version">
-            <summary>
-            当前组件版本
-            </summary>
-        </member>
-        <member name="M:HPSocket.WebSocket.WebSocketServer.Wait(System.Int32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
-        </member>
-        <member name="M:HPSocket.WebSocket.WebSocketServer.WaitAsync(System.Int32)">
-            <summary>
-            等待通信组件停止运行
-            <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
-            </summary>
-            <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.MaxPacketSize">
-            <summary>
-            最大封包长度
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.SslConfiguration">
-            <summary>
-            ssl环境配置
-            </summary>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.SubProtocols">
-            <summary>
-            支持的子协议, 默认空, 不限制
-            </summary>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.#ctor(System.String)">
-            <summary>
-            创建 websocket server 对象
-            </summary>
-            <param name="url">url必须是 ws 或 wss
-            <para>如果是 wss 则为安全连接, 必须设置 SslConfiguration 属性</para>
-            </param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Start">
-            <summary>
-            启动服务
-            </summary>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Stop">
-            <summary>
-            停止服务
-            </summary>
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.Wait(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.WaitAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.StopAsync">
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Send(System.IntPtr,System.Boolean,HPSocket.WebSocket.OpCode,System.Byte[],System.Int32)">
-            <summary>
-            尝试发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="final"></param>
-            <param name="opCode"></param>
-            <param name="data"></param>
-            <param name="length"></param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Send(System.IntPtr,HPSocket.WebSocket.OpCode,System.Byte[],System.Int32)">
-            <summary>
-            发送数据
-            </summary>
-            <param name="connId"></param>
-            <param name="opCode"></param>
-            <param name="data"></param>
-            <param name="length"></param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Text(System.IntPtr,System.String)">
-            <summary>
-            发送文本消息
-            </summary>
-            <param name="connId"></param>
-            <param name="text"></param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Ping(System.IntPtr,System.Byte[],System.Int32)">
-            <summary>
-            发送ping消息
-            </summary>
-            <param name="connId"></param>
-            <param name="data"></param>
-            <param name="length"></param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Pong(System.IntPtr,System.Byte[],System.Int32)">
-            <summary>
-            发送pong消息
-            </summary>
-            <param name="connId"></param>
-            <param name="data"></param>
-            <param name="length"></param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Close(System.IntPtr)">
-            <summary>
-            发送关闭消息同时关闭连接
-            </summary>
-            <param name="connId"></param>
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.HasStarted">
-            <summary>
-            获取是否启动
-            </summary>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.AddHub``1(System.String)">
-            <summary>
-            对path注册特定hub
-            <para>例如: AddHub&lt;ChatHub&gt;("/chat")</para>
-            </summary>
-            <typeparam name="THubWithNew">继承自HPSocket.WebSocket.IHub或HPSocket.WebSocket.Hub的类</typeparam>
-            <param name="path">url path</param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.RemoveHub(System.String)">
-            <summary>
-            移除已注册的hub
-            </summary>
-            <param name="path">url path</param>
+            <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.ProcessSecWebSocketExtensionsClientHeader(System.String,HPSocket.WebSocket.CompressionMethod@,System.String@)">
             <summary>

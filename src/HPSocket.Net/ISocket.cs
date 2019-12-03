@@ -35,6 +35,11 @@ namespace HPSocket
         /// </summary>
         /// <param name="milliseconds">超时时间（毫秒，默认：-1，永不超时）</param>
         Task<bool> WaitAsync(int milliseconds = -1);
+
+        /// <summary>
+        /// 停止服务
+        /// </summary>
+        Task<bool> StopAsync();
 #endif
     }
 }

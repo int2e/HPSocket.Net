@@ -81,19 +81,6 @@ namespace HPSocket.Tcp
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1)
-        {
-            return _resetEvent.WaitOne();
-        }
-
-#if !NET20 && !NET30 && !NET35
-        /// <inheritdoc />
-        public Task<bool> WaitAsync(int milliseconds = -1)
-        {
-            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
-        }
-#endif
-        /// <inheritdoc />
         public string LocalBindAddress { get; set; } = "0.0.0.0";
 
         /// <inheritdoc />
@@ -364,14 +351,34 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
-        public void Stop()
+        public bool Stop()
         {
             _agent?.Stop();
             _server?.Stop();
 
             _resetEvent.WaitOne();
+            return true;
         }
 
+        /// <inheritdoc />
+        public bool Wait(int milliseconds = -1)
+        {
+            return _resetEvent.WaitOne();
+        }
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> StopAsync()
+        {
+            return Task.Factory.StartNew(Stop);
+        }
+#endif
         #endregion
 
         #region 释放资源

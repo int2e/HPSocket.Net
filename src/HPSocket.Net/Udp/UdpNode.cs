@@ -151,17 +151,6 @@ namespace HPSocket.Udp
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
-
-#if !NET20 && !NET30 && !NET35
-        /// <inheritdoc />
-        public Task<bool> WaitAsync(int milliseconds = -1)
-        {
-            return new TaskFactory().StartNew((obj) => Wait((int)obj), milliseconds);
-        }
-#endif
-
-        /// <inheritdoc />
         public string ErrorMessage => Sdk.Udp.HP_UdpNode_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
         /// <inheritdoc />
@@ -202,6 +191,23 @@ namespace HPSocket.Udp
 
         /// <inheritdoc />
         public bool Stop() => HasStarted && Sdk.Udp.HP_UdpNode_Stop(SenderPtr);
+
+        /// <inheritdoc />
+        public bool Wait(int milliseconds = -1) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public Task<bool> WaitAsync(int milliseconds = -1)
+        {
+            return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> StopAsync()
+        {
+            return Task.Factory.StartNew(Stop);
+        }
+#endif
 
         /// <inheritdoc />
         public bool Send(string remoteAddress, ushort remotePort, byte[] data, int length)
