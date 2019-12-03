@@ -29,12 +29,12 @@ Install-Package HPSocket.Net
 ### 关于macOS
 `HPSocket.Net`现在支持在`osx 10.12+`中使用`.net core2.0+`进行开发
 
-Nuget软件包中的`libhpsocket4c.dylib`编译自`hp-socket`的`macOS分支`[HP-Socket-for-macOS](https://gitee.com/xin_chong/HP-Socket-for-macOS)
+Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP-Socket-for-macOS](https://gitee.com/xin_chong/HP-Socket-for-macOS)
 
 
 ### 组件列表
 #### 基础组件
-基础组件是`hp-socket`提供的组件原型, 相关使用方法请参考[HP-Socket Doc](https://github.com/ldcsaa/HP-Socket/tree/master/Doc)
+基础组件是`HP-Socket`提供的组件原型, 相关使用方法请参考[HP-Socket Doc](https://github.com/ldcsaa/HP-Socket/tree/master/Doc)
 
 *`HPSocket.Net`提供的`Agent`系列组件除`Pack`系列模型外, 包括`ITcpPortForwarding`组件, 都支持设置`http`或`socks5`代理, 以`List<IProxy>`方式设置, 可同时设置多个代理, 组件内部会随机使用, 可以同时混用`http`和`socks5`代理, 使用方法参考各`Agent`组件的`demo`*
 
@@ -94,7 +94,7 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`hp-socket`的`macOS分支`[HP
 
 `HPSocket.Net` 提供一个Tcp端口转发组件`ITcpPortForwarding`, 10行代码即可完成TCP端口转发
 
-`HPSocket.Net`暂时提供6个Easy组件和2个WebSocket组件, 用来更简单的处理http/https/ws的数据包, `hp-socket`提供的基础组件, 需要自己来实现数据包的完整获取, Easy组件已经做了这些处理, http/https的Easy组件绑定以下事件, 当事件到达, 即可获得完整数据包
+`HPSocket.Net`暂时提供6个Easy组件和2个WebSocket组件, 用来更简单的处理http/https/ws的数据包, `HP-Socket`提供的基础组件, 需要自己来实现数据包的完整获取, Easy组件已经做了这些处理, http/https的Easy组件绑定以下事件, 当事件到达, 即可获得完整数据包
  
 + `OnEasyChunkData` Chunk消息的完整数据包事件
 + `OnEasyMessageData` get或post的完整数据包事件
