@@ -32,8 +32,6 @@ Or right-click on the project name in the solution of Visual Studio-> Manage NuG
 ### Basic COmponents
 Basic component is the original component provided by HP-Socket. For related usage, please refer to [HP-Socket Doc](https://github.com/ldcsaa/HP-Socket/tree/master/Doc)
 
-*In addition to the `Pack` series model, the `Agent` series components provided by `HPSocket.Net` (including the `ITcpPortForwarding` component) support to setting `HTTP` or `Socks5` proxy, which can be set in the manner of`List<IProxy>`. Multiple proxies can be set at the same time, which will be used randomly, and can be mixed with `HTTP` and `Socks5` proxy at the same time. For the usage method, refer to the `demo` of each` Agent` component.*
-
 ##### TCP
 + `ITcpServer`
 + `ITcpAgent`
@@ -105,6 +103,8 @@ Basic component is the original component provided by HP-Socket. For related usa
 ## Instructions
 1. For the use of most components, please refer to the project in the `demo` directory
 2. `Easy` extended component event binding for` HPSocket.Net`
+3. In addition to the `Pack` series model, the `Agent` series components provided by `HPSocket.Net` (including the `ITcpPortForwarding` component) support to setting `HTTP` or `Socks5` proxy, which can be set in the manner of`List<IProxy>`. Multiple proxies can be set at the same time, which will be used randomly, and can be mixed with `HTTP` and `Socks5` proxy at the same time. For the usage method, refer to the `demo` of each` Agent` component.
+
 #### IHttpEasyServer
 ```cs
 // Create HttpEasyServer instance
