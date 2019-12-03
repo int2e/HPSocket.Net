@@ -53,7 +53,7 @@ namespace HPSocket
         /// <summary>
         /// 启动服务
         /// </summary>
-        void Start();
+        bool Start();
 
         /// <summary>
         /// 停止服务

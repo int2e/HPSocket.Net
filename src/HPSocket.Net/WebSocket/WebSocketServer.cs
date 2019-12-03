@@ -120,7 +120,7 @@ namespace HPSocket.WebSocket
         ~WebSocketServer() => Dispose(false);
 
         /// <inheritdoc />
-        public void Start()
+        public bool Start()
         {
             if (IsSecure && SslConfiguration == null)
             {
@@ -130,10 +130,7 @@ namespace HPSocket.WebSocket
             _httpServer.Address = Uri.Host;
             _httpServer.Port = (ushort)Uri.Port;
 
-            if (!_httpServer.Start())
-            {
-                throw new WebSocketException(_httpServer.ErrorCode, _httpServer.ErrorMessage);
-            }
+            return _httpServer.Start();
         }
 
         /// <inheritdoc />

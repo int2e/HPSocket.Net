@@ -140,7 +140,7 @@ namespace HPSocket.WebSocket
         ~WebSocketAgent() => Dispose(false);
 
         /// <inheritdoc />
-        public void Start()
+        public bool Start()
         {
             if (IsSecure && SslConfiguration == null)
             {
@@ -149,11 +149,7 @@ namespace HPSocket.WebSocket
 
             _httpAgent.Address = BindAddress;
 
-            if (!_httpAgent.Start())
-            {
-                throw new WebSocketException(_httpAgent.ErrorCode, _httpAgent.ErrorMessage);
-            }
-
+            return _httpAgent.Start();
         }
 
         /// <inheritdoc />
