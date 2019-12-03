@@ -151,7 +151,7 @@ namespace HPSocket.Http
             var header = GetHeader(connId, "Content-Length") ?? "0";
             if (!int.TryParse(header, out var contentLength))
             {
-                return HttpParseResultEx.Error;
+                // return HttpParseResultEx.Error;
             }
 
             var extra = new List<byte>(contentLength);

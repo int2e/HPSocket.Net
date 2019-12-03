@@ -146,7 +146,7 @@ namespace HPSocket.Http
             var header = GetHeader("Content-Length") ?? "0";
             if (!int.TryParse(header, out var contentLength))
             {
-                return HttpParseResultEx.Error;
+                // return HttpParseResultEx.Error;
             }
 
             _easyData = null;
