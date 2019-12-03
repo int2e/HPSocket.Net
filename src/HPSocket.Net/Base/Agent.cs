@@ -119,13 +119,6 @@ namespace HPSocket.Base
             // ReSharper disable once ValueParameterNotUsed
             set
             {
-#if NET20
-                if (Async)
-                {
-                    _connectionTimeout = 0;
-                    throw new InvalidOperationException(".Net 2.0 不支持设置异步连接超时时间");
-                }
-#else
                 if (value < 0)
                 {
                     throw new InvalidOperationException("不能设置小于0的值");
@@ -138,7 +131,6 @@ namespace HPSocket.Base
                 }
 
                 _connectionTimeout = value;
-#endif
             }
         }
 
