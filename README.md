@@ -1,14 +1,14 @@
 # HPSocket.Net
 
-### 介绍
-the C# SDK for [HP-Socket](https://gitee.com/ldcsaa/HP-Socket)
+## Overview
+the C# SDK for [HP-Socket](https://github.com/ldcsaa/HP-Socket)
 
-#### .Net 框架支持
+#### .Net Framework Supported
 `.Net Framework 2.0+`
 
 `.Net Core 2.0+`
 
-#### 平台支持
+#### Platform supported
 `Windows 7+ x86/x64`
 
 `Linux kernel 2.6.32+ x86/x64`
@@ -16,27 +16,27 @@ the C# SDK for [HP-Socket](https://gitee.com/ldcsaa/HP-Socket)
 `mac OS 10.12+ x64`
 
 
-### 安装教程
-`HPSocket.Net`是通过NuGet软件包管理器交付的
+## Installation Guide
+`HPSocket.Net` deploy via NuGet package manager
 
-在 Package Manager 控制台中使用以下命令来手动安装 `HPSocket.Net`
+Use the following command in the Package Manager console to manually install `HPSocket.Net`
 ```
 Install-Package HPSocket.Net
 ```
-或在`Visual Studio`的解决方案中的`项目名`上`鼠标右键`->`管理 NuGet 程序包`->`浏览`页面->搜索框输入`HPSocket.Net`->然后安装
+Or right-click on the project name in the solution of Visual Studio-> Manage NuGet Packages-> Browse the page-> search box and enter HPSocket.Net and then install
 
 
-### 关于macOS
-`HPSocket.Net`现在支持在`osx 10.12+`中使用`.net core2.0+`进行开发
+### About macOS
+`HPSocket.Net` now supports development using` .net core2.0 + `in` osx 10.12 + `
 
-Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP-Socket-for-macOS](https://gitee.com/xin_chong/HP-Socket-for-macOS)
+`Libhpsocket4c.dylib` in Nuget package is compiled from [HP-Socket-for-macOS](https://gitee.com/xin_chong/HP-Socket-for-macOS)
 
 
-### 组件列表
-#### 基础组件
-基础组件是`HP-Socket`提供的组件原型, 相关使用方法请参考[HP-Socket Doc](https://github.com/ldcsaa/HP-Socket/tree/master/Doc)
+## Components List
+### Basic COmponents
+Basic component is the original component provided by HP-Socket. For related usage, please refer to [HP-Socket Doc](https://github.com/ldcsaa/HP-Socket/tree/master/Doc)
 
-*`HPSocket.Net`提供的`Agent`系列组件除`Pack`系列模型外, 包括`ITcpPortForwarding`组件, 都支持设置`http`或`socks5`代理, 以`List<IProxy>`方式设置, 可同时设置多个代理, 组件内部会随机使用, 可以同时混用`http`和`socks5`代理, 使用方法参考各`Agent`组件的`demo`*
+*In addition to the `Pack` series model, the `Agent` series components provided by `HPSocket.Net` (including the `ITcpPortForwarding` component) support to setting `HTTP` or `Socks5` proxy, which can be set in the manner of`List<IProxy>`. Multiple proxies can be set at the same time, which will be used randomly, and can be mixed with `HTTP` and `Socks5` proxy at the same time. For the usage method, refer to the `demo` of each` Agent` component.*
 
 ##### TCP
 + `ITcpServer`
@@ -81,7 +81,7 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP
 #### ThreadPool
 + `ThreadPool`
 
-#### `HPSocket.Net`扩展组件
+### Extended components
 + `ITcpPortForwarding`
 + `IHttpEasyServer`
 + `IHttpsEasyServer`
@@ -92,35 +92,35 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP
 + `IWebSocketServer`
 + `IWebSocketAgent` 
 
-`HPSocket.Net` 提供一个Tcp端口转发组件`ITcpPortForwarding`, 10行代码即可完成TCP端口转发
+`HPSocket.Net` provides a TCP port forwarding component` ITcpPortForwarding`, 10 lines of code can complete TCP port forwarding.
 
-`HPSocket.Net`暂时提供6个Easy组件和2个WebSocket组件, 用来更简单的处理http/https/ws的数据包, `HP-Socket`提供的基础http组件, 需要自己来实现数据包的完整获取, Easy组件已经做了这些处理, http/https的Easy组件绑定以下事件, 当事件到达, 即可获得完整数据包
+`HPSocket.Net` currently provides 6 Easy components and 2 WebSocket components for easier processing of http / https / ws data packets. The basic http components provided by `HP-Socket` need to implement the data packets themselves. Complete acquisition, Easy component has done these processing, http / https Easy component is bound to the following events, when the event arrives, you can get the complete data packet.
  
-+ `OnEasyChunkData` http CHUNK消息的完整数据包事件
-+ `OnEasyMessageData` http GET或POST的完整数据包事件
-+ `OnEasyWebSocketMessageData` WebSocket消息的完整数据包事件
++ `OnEasyChunkData` Complete packet event for http CHUNK message
++ `OnEasyMessageData` Complete packet event for http GET or POST message
++ `OnEasyWebSocketMessageData` Complete packet event for WebSocket message
 
-`WebSocket` 也可以直接使用以下两个组件
+`WebSocket` can also use the following two components directly
 
-+ `IWebSocketServer` WebSocket 服务端
-+ `IWebSocketAgent` WebSocket 客户端, 不同其他agent组件, WebSocket的agent组件不支持连接到不同的WebSocket server, 也就是说`IWebSocketAgent`组件所有的连接都是针对同一个服务器的
++ `IWebSocketServer` WebSocket Server
++ `IWebSocketAgent` WebSocket Client (Unlike other Agent components, the WebSocket Agent component does not support connecting to different WebSocket Servers, which means that all connections of the `IWebSocketAgent` component can only connect to the same server)
 
 
-### 使用说明
-1. 大部分组件使用方法清参考`demo`目录下的工程
-2. `HPSocket.Net`的`Easy`扩展组件事件绑定
+## Instructions
+1. For the use of most components, please refer to the project in the `demo` directory
+2. `Easy` extended component event binding for` HPSocket.Net`
 #### IHttpEasyServer
 ```cs
-// 创建 HttpEasyServer 的实例
+// Create HttpEasyServer instance
 using(IHttpEasyServer httpServer = new HttpEasyServer())
 {
-    // ...其他设置
+    // ... other settings
 
-    // 绑定 OnEasyMessageData 事件
+    // Binding OnEasyMessageData event
     httpServer.OnEasyMessageData += (sender, id, data) => 
     {
-        // data 参数每次都是一个完整的数据包
-        // ... 处理 data
+        // The data parameter is a complete packet each time
+        // ... Process data
 
         return HttpParseResult.Ok;
     };
@@ -129,16 +129,16 @@ using(IHttpEasyServer httpServer = new HttpEasyServer())
 
 #### IHttpEasyAgent
 ```cs
-// 创建 HttpEasyAgent 的实例
+// Create HttpEasyAgent instance
 using(IHttpEasyAgent httpAgent = new HttpEasyAgent())
 {
-    // ...其他设置
+    // ... other settings
 
-    // 绑定 OnEasyMessageData 事件
+    // Binding OnEasyMessageData event
     httpAgent.OnEasyMessageData += (sender, id, data) => 
     {
-        // data 参数每次都是一个完整的数据包
-        // ... 处理 data
+        // The data parameter is a complete packet each time
+        // ... Process data
 
         return HttpParseResult.Ok;
     };
@@ -147,25 +147,25 @@ using(IHttpEasyAgent httpAgent = new HttpEasyAgent())
 
 #### IHttpEasyClient
 ```cs
-// 创建 HttpEasyClient 的实例
+// Create HttpEasyClient instance
 using(IHttpEasyClient httpClient = new HttpEasyClient())
 {
-    // ...其他设置
+    // ... other settings
 
-    // 绑定 OnEasyMessageData 事件
+    // Binding OnEasyMessageData event
     httpClient.OnEasyMessageData += (sender, data) => 
     {
-        // data 参数每次都是一个完整的数据包
-        // ... 处理 data
+        // The data parameter is a complete packet each time
+        // ... Process data
 
         return HttpParseResult.Ok;
     };
 }
 ```
 
-### 参与贡献
+## Contribute
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+1.  Fork this Repository
+2.  Create a new Feat_xxx branch
+3.  Submit code
+4.  Create a new Pull Request
