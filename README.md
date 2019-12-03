@@ -100,7 +100,7 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP
 + `OnEasyMessageData` get或post的完整数据包事件
 + `OnEasyWebSocketMessageData` WebSocket消息的完整数据包事件
 
-`WebSocket` 请直接使用以下两个组件
+`WebSocket` 也可以直接使用以下两个组件
 
 + `IWebSocketServer` WebSocket 服务端
 + `IWebSocketAgent` WebSocket 客户端, 不同其他agent组件, WebSocket的agent组件不支持连接到不同的WebSocket server, 也就是说`IWebSocketAgent`组件所有的连接都是针对同一个服务器的
