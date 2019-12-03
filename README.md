@@ -96,8 +96,8 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP
 
 `HPSocket.Net`暂时提供6个Easy组件和2个WebSocket组件, 用来更简单的处理http/https/ws的数据包, `HP-Socket`提供的基础http组件, 需要自己来实现数据包的完整获取, Easy组件已经做了这些处理, http/https的Easy组件绑定以下事件, 当事件到达, 即可获得完整数据包
  
-+ `OnEasyChunkData` Chunk消息的完整数据包事件
-+ `OnEasyMessageData` get或post的完整数据包事件
++ `OnEasyChunkData` http CHUNK消息的完整数据包事件
++ `OnEasyMessageData` http GET或POST的完整数据包事件
 + `OnEasyWebSocketMessageData` WebSocket消息的完整数据包事件
 
 `WebSocket` 也可以直接使用以下两个组件
