@@ -766,7 +766,7 @@ namespace HPSocket.Base
                 Marshal.Copy(data, bytes, 0, length);
             }
 
-            if (_connProxy.ContainsKey(connId) && NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero && ProxyList?.Count > 0)
+            if (ProxyList?.Count > 0 && _connProxy.ContainsKey(connId) && NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero)
             {
                 var nativeExtra = extra.ToNativeExtra();
                 if (nativeExtra.ProxyConnectionState == ProxyConnectionState.Normal)
