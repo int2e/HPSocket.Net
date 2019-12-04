@@ -743,6 +743,8 @@ namespace HPSocket.Base
                         return HandleResult.Error;
                     }
 
+                    _connProxyCache.Remove(nativeExtra.ProxyConnectionFlag);
+
                     switch (nativeExtra.ProxyConnectionState)
                     {
                         case ProxyConnectionState.Step1:
