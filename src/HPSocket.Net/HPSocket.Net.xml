@@ -24,6 +24,11 @@
             异步连接
             </summary>
         </member>
+        <member name="F:HPSocket.Base.Agent._proxyList">
+            <summary>
+            代理列表
+            </summary>
+        </member>
         <member name="F:HPSocket.Base.Agent._connProxy">
             <summary>
             连接分配的代理ip

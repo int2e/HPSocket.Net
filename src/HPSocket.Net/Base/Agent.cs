@@ -37,11 +37,6 @@ namespace HPSocket.Base
         private bool _async = true;
 
         /// <summary>
-        /// 使用代理
-        /// </summary>
-        private bool _useProxy;
-
-        /// <summary>
         /// 代理列表
         /// </summary>
         private List<IProxy> _proxyList;
@@ -289,11 +284,16 @@ namespace HPSocket.Base
             get => _proxyList;
             set
             {
-                _proxyList = value;
-                if (_proxyList != null)
-                {
-                    _useProxy = true;
-                }
+                _proxyList = value ?? throw new InvalidOperationException("不允许null值, 如果不使用, 请不要设置");
+
+                _onConnect = SdkOnConnect;
+                _onReceive = SdkOnReceive;
+
+                Sdk.Agent.HP_Set_FN_Agent_OnConnect(ListenerPtr, _onConnect);
+                Sdk.Agent.HP_Set_FN_Agent_OnReceive(ListenerPtr, _onReceive);
+
+                GC.KeepAlive(_onConnect);
+                GC.KeepAlive(_onReceive);
             }
         }
 
@@ -403,7 +403,7 @@ namespace HPSocket.Base
                 UserExtra = extra,
             };
 
-            if (_useProxy && ProxyList?.Count > 0)
+            if (ProxyList?.Count > 0)
             {
                 var proxy = GetRandomProxyServer();
                 if ((proxy is Socks5Proxy socks5Proxy))
@@ -681,9 +681,11 @@ namespace HPSocket.Base
         protected virtual void SetCallback()
         {
             _onPrepareConnect = SdkOnPrepareConnect;
-            _onConnect = SdkOnConnect;
+            // _onConnect = SdkOnConnect;
+            _onConnect = SdkOnConnectNoProxy;
             _onSend = SdkOnSend;
-            _onReceive = SdkOnReceive;
+            // _onReceive = SdkOnReceive;
+            _onReceive = SdkOnReceiveNoProxy;
             _onClose = SdkOnClose;
             _onShutdown = SdkOnShutdown;
             _onHandShake = SdkOnHandShake;
@@ -728,9 +730,26 @@ namespace HPSocket.Base
             return OnPrepareConnect?.Invoke(this, connId, socket) ?? HandleResult.Ignore;
         }
 
+        protected HandleResult SdkOnConnectNoProxy(IntPtr sender, IntPtr connId)
+        {
+            if (ConnectionTimeout > 0 && NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero)
+            {
+                var nativeExtra = extra.ToNativeExtra();
+                extra.FreeNativeExtraIntPtr();
+
+                nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
+                if (!NativeSetConnectionExtra(connId, nativeExtra.ToIntPtr()))
+                {
+                    return HandleResult.Error;
+                }
+            }
+
+            return OnConnect?.Invoke(this, connId, null) ?? HandleResult.Ignore;
+        }
+
         protected HandleResult SdkOnConnect(IntPtr sender, IntPtr connId)
         {
-            if ((_useProxy || ConnectionTimeout > 0) && NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero)
+            if ((ProxyList?.Count > 0 || ConnectionTimeout > 0) && NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero)
             {
                 var nativeExtra = extra.ToNativeExtra();
                 extra.FreeNativeExtraIntPtr();
@@ -788,6 +807,17 @@ namespace HPSocket.Base
             return OnConnect?.Invoke(this, connId, null) ?? HandleResult.Ignore;
         }
 
+        protected HandleResult SdkOnReceiveNoProxy(IntPtr sender, IntPtr connId, IntPtr data, int length)
+        {
+            var bytes = new byte[length];
+            if (bytes.Length > 0)
+            {
+                Marshal.Copy(data, bytes, 0, length);
+            }
+
+            return OnReceive?.Invoke(this, connId, bytes) ?? HandleResult.Ignore;
+        }
+
         protected HandleResult SdkOnReceive(IntPtr sender, IntPtr connId, IntPtr data, int length)
         {
             var bytes = new byte[length];
@@ -796,7 +826,7 @@ namespace HPSocket.Base
                 Marshal.Copy(data, bytes, 0, length);
             }
 
-            if (_useProxy && _connProxy.ContainsKey(connId) && ProxyList?.Count > 0 && NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero)
+            if (_connProxy.ContainsKey(connId) && ProxyList?.Count > 0 && NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero)
             {
                 var nativeExtra = extra.ToNativeExtra();
                 if (nativeExtra.ProxyConnectionState == ProxyConnectionState.Normal)
