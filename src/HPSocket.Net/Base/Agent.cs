@@ -727,11 +727,19 @@ namespace HPSocket.Base
                     {
                         case ProxyConnectionState.Step1:
                         {
-                            if (!(proxy is ISocks5Proxy socks5Proxy))
+                            byte[] data;
+                            switch (proxy)
                             {
-                                return HandleResult.Error;
+                                case IHttpProxy httpProxy:
+                                    data = httpProxy.GetConnectData();
+                                    break;
+                                case ISocks5Proxy socks5Proxy:
+                                    data = socks5Proxy.GetConnectData();
+                                    break;
+                                default:
+                                    return HandleResult.Error;
                             }
-                            var data = socks5Proxy.GetConnectData();
+
                             if (!Send(connId, data, data.Length))
                             {
                                 return HandleResult.Error;
