@@ -29,7 +29,7 @@ Or right-click on the project name in the solution of Visual Studio-> Manage NuG
 
 
 ## Components List
-### Basic COmponents
+### Basic Components
 Basic component is the original component provided by HP-Socket. For related usage, please refer to [HP-Socket Doc](https://github.com/ldcsaa/HP-Socket/tree/master/Doc)
 
 ##### TCP
