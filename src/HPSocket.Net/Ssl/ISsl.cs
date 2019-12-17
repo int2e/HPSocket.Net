@@ -8,6 +8,12 @@
         #region SSL属性
 
         /// <summary>
+        /// 获取或设置 SSL 加密算法列表
+        /// <remarks>使用方法请参阅:<see cref="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_cipher_list.html"/>  和 <see cref="https://www.openssl.org/docs/manmaster/man1/openssl-ciphers.html"/></remarks>
+        /// </summary>
+        string CipherList { get; set; }
+
+        /// <summary>
         /// 获取或设置通信组件握手方式（默认：true，自动握手)
         /// </summary>
         bool AutoHandShake { get; set; }
@@ -36,6 +42,7 @@
         /// CA 证书文件或目录（单向验证或客户端可选）
         /// </summary>
         string CaPemCertFileOrPath { get; set; }
+
 
         #endregion
 
