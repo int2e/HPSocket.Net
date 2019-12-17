@@ -43,6 +43,13 @@ namespace HPSocket.Http
         public string CaPemCertFileOrPath { get; set; }
 
         /// <inheritdoc />
+        public string CipherList
+        {
+            get => Sdk.Ssl.HP_SSLAgent_GetSSLCipherList(SenderPtr).PtrToAnsiString();
+            set => Sdk.Ssl.HP_SSLAgent_SetSSLCipherList(SenderPtr, value);
+        }
+
+        /// <inheritdoc />
         public bool AutoHandShake
         {
             get => Sdk.Ssl.HP_SSLAgent_IsSSLAutoHandShake(SenderPtr);

@@ -127,6 +127,12 @@ namespace HPSocket.Sdk
         public static extern bool HP_SSLServer_IsSSLAutoHandShake(IntPtr pServer);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_SSLServer_SetSSLCipherList(IntPtr pServer, string lpszCipherList);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern IntPtr HP_SSLServer_GetSSLCipherList(IntPtr pServer);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLServer_GetSSLSessionInfo(IntPtr pServer, IntPtr connId, SslSessionInfo enInfo, ref IntPtr lppInfo);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
@@ -139,6 +145,12 @@ namespace HPSocket.Sdk
         public static extern bool HP_SSLAgent_IsSSLAutoHandShake(IntPtr pAgent);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_SSLAgent_SetSSLCipherList(IntPtr pAgent, string lpszCipherList);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern IntPtr HP_SSLAgent_GetSSLCipherList(IntPtr pAgent);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLAgent_GetSSLSessionInfo(IntPtr pAgent, IntPtr connId, SslSessionInfo enInfo, ref IntPtr lppInfo);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
@@ -149,6 +161,12 @@ namespace HPSocket.Sdk
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLClient_IsSSLAutoHandShake(IntPtr pClient);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_SSLClient_SetSSLCipherList(IntPtr pClient, string lpszCipherList);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern IntPtr HP_SSLClient_GetSSLCipherList(IntPtr pClient);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_SSLClient_GetSSLSessionInfo(IntPtr pClient, SslSessionInfo sessionInfo, ref IntPtr lppInfo);

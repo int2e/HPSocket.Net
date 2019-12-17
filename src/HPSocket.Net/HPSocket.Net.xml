@@ -1879,6 +1879,9 @@
         <member name="P:HPSocket.Http.HttpsAgent.CaPemCertFileOrPath">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Http.HttpsAgent.CipherList">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Http.HttpsAgent.AutoHandShake">
             <inheritdoc />
         </member>
@@ -1920,6 +1923,9 @@
         <member name="P:HPSocket.Http.HttpsClient.CaPemCertFileOrPath">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Http.HttpsClient.CipherList">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Http.HttpsClient.AutoHandShake">
             <inheritdoc />
         </member>
@@ -1953,6 +1959,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Http.HttpsEasyAgent.CaPemCertFileOrPath">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsEasyAgent.CipherList">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Http.HttpsEasyAgent.AutoHandShake">
@@ -1996,6 +2005,9 @@
         <member name="P:HPSocket.Http.HttpsEasyClient.CaPemCertFileOrPath">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Http.HttpsEasyClient.CipherList">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Http.HttpsEasyClient.AutoHandShake">
             <inheritdoc />
         </member>
@@ -2029,6 +2041,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Http.HttpsEasyServer.CaPemCertFileOrPath">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsEasyServer.CipherList">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Http.HttpsEasyServer.AutoHandShake">
@@ -2216,6 +2231,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Http.HttpsServer.CaPemCertFileOrPath">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsServer.CipherList">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Http.HttpsServer.AutoHandShake">
@@ -6077,6 +6095,12 @@
             ssl 基础接口
             </summary>
         </member>
+        <member name="P:HPSocket.Ssl.ISsl.CipherList">
+            <summary>
+            获取或设置 SSL 加密算法列表
+            <remarks>使用方法请参阅:<see cref="!:https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_cipher_list.html"/>  和 <see cref="!:https://www.openssl.org/docs/manmaster/man1/openssl-ciphers.html"/></remarks>
+            </summary>
+        </member>
         <member name="P:HPSocket.Ssl.ISsl.AutoHandShake">
             <summary>
             获取或设置通信组件握手方式（默认：true，自动握手)
@@ -6139,6 +6163,9 @@
         <member name="P:HPSocket.Ssl.SslAgent.CaPemCertFileOrPath">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Ssl.SslAgent.CipherList">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Ssl.SslAgent.AutoHandShake">
             <inheritdoc />
         </member>
@@ -6184,6 +6211,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Ssl.SslClient.CaPemCertFileOrPath">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Ssl.SslClient.CipherList">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Ssl.SslClient.AutoHandShake">
@@ -6313,6 +6343,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Ssl.SslServer.CaPemCertFileOrPath">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Ssl.SslServer.CipherList">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Ssl.SslServer.AutoHandShake">

@@ -122,4 +122,9 @@ namespace HPSocket.Ssl
         /// </summary>
         ClientOnce = 0x04,
     }
+
+    public enum SslCipherList
+    {
+        SSL_CTX_set_cipher_list
+    }
 }
