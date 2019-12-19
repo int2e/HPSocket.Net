@@ -9,7 +9,7 @@
 
         /// <summary>
         /// 获取或设置 SSL 加密算法列表
-        /// <remarks>使用方法请参阅:<see cref="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_cipher_list.html"/>  和 <see cref="https://www.openssl.org/docs/manmaster/man1/openssl-ciphers.html"/></remarks>
+        /// <remarks>使用方法请参阅:<see href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_cipher_list.html"/>  和 <see href="https://www.openssl.org/docs/manmaster/man1/openssl-ciphers.html"/></remarks>
         /// </summary>
         string CipherList { get; set; }
 
