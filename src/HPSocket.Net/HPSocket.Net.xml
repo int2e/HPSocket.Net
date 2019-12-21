@@ -4,6 +4,41 @@
         <name>HPSocket.Net</name>
     </assembly>
     <members>
+        <member name="T:HPSocket.Adapter.BetweenAndDataReceiveAdapter`1">
+            <summary>
+            区间数据接收适配器基类
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="F:HPSocket.Adapter.BetweenAndDataReceiveAdapter`1._startBoyerMoore">
+            <summary>
+            Start Boyer Moore
+            <remarks>因为同一个连接不会同时触发OnReceive回调, 所以可以这么玩</remarks>
+            </summary>
+        </member>
+        <member name="F:HPSocket.Adapter.BetweenAndDataReceiveAdapter`1._endBoyerMoore">
+            <summary>
+            End Boyer Moore
+            <remarks>因为同一个连接不会同时触发OnReceive回调, 所以可以这么玩</remarks>
+            </summary>
+        </member>
+        <member name="M:HPSocket.Adapter.BetweenAndDataReceiveAdapter`1.#ctor(System.Byte[],System.Byte[])">
+            <summary>
+            区间数据接收适配器基类构造函数
+            </summary>
+            <param name="start">区间起始</param>
+            <param name="end">区间结束</param>
+        </member>
+        <member name="M:HPSocket.Adapter.BetweenAndDataReceiveAdapter`1.OnReceive``1(``0,System.IntPtr,System.Byte[],HPSocket.Adapter.ParseRequestBody{``0,`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Adapter.BetweenAndDataReceiveAdapter`1.ParseRequestBody(System.Byte[])">
+            <summary>
+            解析请求包体到对象
+            </summary>
+            <param name="data">包体</param>
+            <returns>需子类根据包体data自己解析对象并返回</returns>
+        </member>
         <member name="T:HPSocket.Adapter.DataReceiveAdapter`1">
             <summary>
             数据接收适配器基类
@@ -126,9 +161,10 @@
             </summary>
             <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
         </member>
-        <member name="F:HPSocket.Adapter.TerminatorDataReceiveAdapter`1._terminator">
+        <member name="F:HPSocket.Adapter.TerminatorDataReceiveAdapter`1._boyerMoore">
             <summary>
-            结束符
+            Boyer Moore
+            <remarks>因为同一个连接不会同时触发OnReceive回调, 所以可以这么玩</remarks>
             </summary>
         </member>
         <member name="M:HPSocket.Adapter.TerminatorDataReceiveAdapter`1.#ctor(System.Byte[])">
@@ -1325,6 +1361,27 @@
             </summary>
             <param name="state"></param>
             <returns></returns>
+        </member>
+        <member name="T:HPSocket.BytesExtensions">
+            <summary>
+            bytes扩展
+            </summary>
+        </member>
+        <member name="M:HPSocket.BytesExtensions.IndexesOf(System.Byte[],System.Int32,System.Byte[])">
+            <summary>
+            查找bytes
+            <remarks>Boyer-Moore-Horspool 搜索, 来自 https://blog.csdn.net/lindexi_gd/article/details/100174714 </remarks>
+            </summary>
+            <param name="source"></param>
+            <param name="start"></param>
+            <param name="pattern"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HPSocket.BoyerMoore">
+            <summary>
+            Boyer-Moore
+            <remarks>BoyerMoore类来自 https://gist.github.com/mjs3339/0772431281093f1bca1fce2f2eca527d</remarks>
+            </summary>
         </member>
         <member name="M:HPSocket.ExtraData`2.ContainsKey(`0)">
             <summary>
@@ -6397,9 +6454,6 @@
         <member name="M:HPSocket.Ssl.SslAgent`1.Start">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Ssl.SslAgent`1.SetCallback">
-            <inheritdoc />
-        </member>
         <member name="P:HPSocket.Ssl.SslAgent.IsInitSsl">
             <summary>
             获取或设置是否初始化ssl环境
@@ -6466,9 +6520,6 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Ssl.SslClient`1.Connect(System.String,System.UInt16)">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Ssl.SslClient`1.SetCallback">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Ssl.SslClient.IsInitSsl">
@@ -6605,9 +6656,6 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Ssl.SslServer`1.Start">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Ssl.SslServer`1.SetCallback">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.Ssl.SslServer">
@@ -6762,9 +6810,6 @@
         <member name="M:HPSocket.Tcp.TcpAgent`1.Start">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Tcp.TcpAgent`1.SetCallback">
-            <inheritdoc />
-        </member>
         <member name="T:HPSocket.Tcp.TcpAgent">
             <summary>
             tcp agent
@@ -6801,9 +6846,6 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpClient`1.Connect(System.String,System.UInt16)">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Tcp.TcpClient`1.SetCallback">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.Tcp.TcpClient">
@@ -7094,9 +7136,6 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpServer`1.Start">
-            <inheritdoc />
-        </member>
-        <member name="M:HPSocket.Tcp.TcpServer`1.SetCallback">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.Tcp.TcpServer">
