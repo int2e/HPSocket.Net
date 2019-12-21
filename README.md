@@ -171,7 +171,7 @@ using(IHttpEasyClient httpClient = new HttpEasyClient())
 
 Full Example: `demo/TcpServer-TestEcho-Adapter`
 
-This series of components are `Data Receive Adapter` extension components of` HPSocket.Net`. Users can process `sticky packets`,` half packets', etc. that may occur in TCP communication through `Custom Data Receive Adapter`. The `Data Receive Adapter` component looks similar to the` Pack` component of HP-Socket, but it is more flexible and the adaptation is very simple and convenient.
+This series of components are `Data Receive Adapter` extension components of `HPSocket.Net`. Users can process `sticky packets`,`half packets`, etc. that may occur in TCP communication through `Custom Data Receive Adapter`. The `Data Receive Adapter` component looks similar to the `Pack` component of HP-Socket, but it is more flexible and the adaptation is very simple and convenient.
 
 
 + `ITcpServer<TRequestBodyType>`/`ITcpClient<TRequestBodyType>`/`ITcpAgent<TRequestBodyType>`
