@@ -1,8 +1,79 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using HPSocket.Adapter;
 
 namespace HPSocket.Tcp
 {
+    /// <summary>
+    /// tcp client
+    /// </summary>
+    /// <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+    public class TcpClient<TRequestBodyType> : TcpClient, ITcpClient<TRequestBodyType>
+    {
+        public TcpClient()
+        {
+            OnConnect += TcpClient_OnConnect;
+            base.OnReceive += TcpClient_OnReceive;
+            OnClose += TcpClient_OnClose;
+        }
+        
+#pragma warning disable 0067
+        [Obsolete("adapter组件无需添加OnReceive事件, 请添加OnParseRequestBody事件", true)]
+        public new event ClientReceiveEventHandler OnReceive;
+#pragma warning restore
+
+        /// <inheritdoc />
+        public event ParseRequestBody<ITcpClient, TRequestBodyType> OnParseRequestBody;
+
+        /// <inheritdoc />
+        public DataReceiveAdapter<TRequestBodyType> DataReceiveAdapter { get; set; }
+
+        private HandleResult TcpClient_OnConnect(IClient sender)
+        {
+            DataReceiveAdapter.OnOpen(ConnectionId);
+            return HandleResult.Ok;
+        }
+
+        private HandleResult TcpClient_OnReceive(IClient sender, byte[] data)
+        {
+            return DataReceiveAdapter.OnReceive(this, ConnectionId, data, OnParseRequestBody);
+        }
+
+        private HandleResult TcpClient_OnClose(IClient sender, SocketOperation socketOperation, int errorCode)
+        {
+            DataReceiveAdapter.OnClose(ConnectionId);
+            return HandleResult.Ok;
+        }
+
+        #region 重写父类方法
+
+        /// <inheritdoc />
+        public new bool Connect()
+        {
+            if (DataReceiveAdapter == null || OnParseRequestBody == null)
+            {
+                throw new InitializationException("DataReceiveAdapter属性和OnParseRequestBody事件必须赋值");
+            }
+
+            return base.Connect();
+        }
+
+        /// <inheritdoc />
+        public new bool Connect(string address, ushort port)
+        {
+            if (DataReceiveAdapter == null || OnParseRequestBody == null)
+            {
+                throw new InitializationException("DataReceiveAdapter属性和OnParseRequestBody事件必须赋值");
+            }
+
+            return base.Connect(address, port);
+        }
+
+        #endregion
+    }
+
+
     /// <summary>
     /// tcp client
     /// </summary>

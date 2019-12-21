@@ -1,8 +1,67 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using HPSocket.Adapter;
+
 
 namespace HPSocket.Tcp
 {
+    /// <summary>
+    /// tcp server
+    /// </summary>
+    /// <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+    public class TcpServer<TRequestBodyType> : TcpServer, ITcpServer<TRequestBodyType>
+    {
+        public TcpServer()
+        {
+            OnAccept += TcpServer_OnAccept;
+            base.OnReceive += TcpServer_OnReceive;
+            OnClose += TcpServer_OnClose;
+        }
+
+#pragma warning disable 0067
+        [Obsolete("adapter组件无需添加OnReceive事件, 请添加OnParseRequestBody事件", true)]
+        public new event ServerReceiveEventHandler OnReceive;
+#pragma warning restore
+
+        /// <inheritdoc />
+        public event ParseRequestBody<ITcpServer, TRequestBodyType> OnParseRequestBody;
+
+        /// <inheritdoc />
+        public DataReceiveAdapter<TRequestBodyType> DataReceiveAdapter { get; set; }
+
+        private HandleResult TcpServer_OnAccept(IServer sender, IntPtr connId, IntPtr client)
+        {
+            DataReceiveAdapter.OnOpen(connId);
+            return HandleResult.Ok;
+        }
+
+        private HandleResult TcpServer_OnReceive(IServer sender, IntPtr connId, byte[] data)
+        {
+            return DataReceiveAdapter.OnReceive(this, connId, data, OnParseRequestBody);
+        }
+
+        private HandleResult TcpServer_OnClose(IServer sender, IntPtr connId, SocketOperation socketOperation, int errorCode)
+        {
+            DataReceiveAdapter.OnClose(connId);
+            return HandleResult.Ok;
+        }
+
+        #region 重写父类方法
+
+        /// <inheritdoc />
+        public override bool Start()
+        {
+            if (DataReceiveAdapter == null || OnParseRequestBody == null)
+            {
+                throw new InitializationException("DataReceiveAdapter属性和OnParseRequestBody事件必须赋值");
+            }
+
+            return base.Start();
+        }
+
+        #endregion
+    }
+
     /// <summary>
     /// tcp server
     /// </summary>

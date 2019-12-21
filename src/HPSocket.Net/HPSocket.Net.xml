@@ -4,6 +4,149 @@
         <name>HPSocket.Net</name>
     </assembly>
     <members>
+        <member name="T:HPSocket.Adapter.DataReceiveAdapter`1">
+            <summary>
+            数据接收适配器基类
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="F:HPSocket.Adapter.DataReceiveAdapter`1._dataReceiveAdapterCache">
+            <summary>
+            数据接收适配器信息
+            </summary>
+        </member>
+        <member name="M:HPSocket.Adapter.DataReceiveAdapter`1.OnOpen(System.IntPtr)">
+            <summary>
+            打开连接
+            </summary>
+            <param name="connId"></param>
+        </member>
+        <member name="M:HPSocket.Adapter.DataReceiveAdapter`1.OnReceive``1(``0,System.IntPtr,System.Byte[],HPSocket.Adapter.ParseRequestBody{``0,`0})">
+            <summary>
+            数据到达
+            </summary>
+            <typeparam name="TSender"></typeparam>
+            <param name="sender"></param>
+            <param name="connId"></param>
+            <param name="data"></param>
+            <param name="parseRequestBody"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.Adapter.DataReceiveAdapter`1.OnClose(System.IntPtr)">
+            <summary>
+            关闭连接
+            </summary>
+            <param name="connId"></param>
+        </member>
+        <member name="T:HPSocket.Adapter.DataReceiveAdapterInfo">
+            <summary>
+            数据接收适配器信息
+            </summary>
+        </member>
+        <member name="P:HPSocket.Adapter.DataReceiveAdapterInfo.ConnId">
+            <summary>
+            连接id
+            </summary>
+        </member>
+        <member name="P:HPSocket.Adapter.DataReceiveAdapterInfo.Data">
+            <summary>
+            数据
+            </summary>
+        </member>
+        <member name="T:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1">
+            <summary>
+            固定包头数据接收适配器基类
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="F:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1._headerSize">
+            <summary>
+            包头长度, 组件在调用GetBodySize()方法时候会给定此长度的数据, 需要继承当前接口的类在构造函数中设置包头长度
+            </summary>
+        </member>
+        <member name="F:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1._maxPacketSize">
+            <summary>
+             最大封包长度
+            </summary>
+        </member>
+        <member name="M:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1.#ctor(System.Int32,System.Int32)">
+            <summary>
+            固定包头数据接收适配器基类构造函数
+            </summary>
+            <param name="headerSize">包头长度</param>
+            <param name="maxPacketSize">最大封包长度, 0.不限</param>
+        </member>
+        <member name="M:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1.OnReceive``1(``0,System.IntPtr,System.Byte[],HPSocket.Adapter.ParseRequestBody{``0,`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1.GetBodySize(System.Byte[])">
+            <summary>
+            获取包体长度
+            </summary>
+            <param name="header">包头, 其长度是HeaderLength属性指定的长度</param>
+            <returns>需子类根据header自己解析包体实际长度并返回</returns>
+        </member>
+        <member name="M:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1.ParseRequestBody(System.Byte[])">
+            <summary>
+            解析请求包体到对象
+            </summary>
+            <param name="data">包体</param>
+            <returns>需子类根据包体data自己解析对象并返回</returns>
+        </member>
+        <member name="T:HPSocket.Adapter.FixedSizeDataReceiveAdapter`1">
+            <summary>
+            定长数据接收适配器基类
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="F:HPSocket.Adapter.FixedSizeDataReceiveAdapter`1._packetSize">
+            <summary>
+            封包长度
+            </summary>
+        </member>
+        <member name="M:HPSocket.Adapter.FixedSizeDataReceiveAdapter`1.#ctor(System.Int32)">
+            <summary>
+            定长数据接收适配器基类构造函数
+            </summary>
+            <param name="packetSize">包长</param>
+        </member>
+        <member name="M:HPSocket.Adapter.FixedSizeDataReceiveAdapter`1.OnReceive``1(``0,System.IntPtr,System.Byte[],HPSocket.Adapter.ParseRequestBody{``0,`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Adapter.FixedSizeDataReceiveAdapter`1.ParseRequestBody(System.Byte[])">
+            <summary>
+            解析请求包体到对象
+            </summary>
+            <param name="data">包体</param>
+            <returns>需子类根据包体data自己解析对象并返回</returns>
+        </member>
+        <member name="T:HPSocket.Adapter.TerminatorDataReceiveAdapter`1">
+            <summary>
+            结束符数据接收适配器基类
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="F:HPSocket.Adapter.TerminatorDataReceiveAdapter`1._terminator">
+            <summary>
+            结束符
+            </summary>
+        </member>
+        <member name="M:HPSocket.Adapter.TerminatorDataReceiveAdapter`1.#ctor(System.Byte[])">
+            <summary>
+            结束符数据接收适配器基类构造函数
+            </summary>
+            <param name="terminator">结束符</param>
+        </member>
+        <member name="M:HPSocket.Adapter.TerminatorDataReceiveAdapter`1.OnReceive``1(``0,System.IntPtr,System.Byte[],HPSocket.Adapter.ParseRequestBody{``0,`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Adapter.TerminatorDataReceiveAdapter`1.ParseRequestBody(System.Byte[])">
+            <summary>
+            解析请求包体到对象
+            </summary>
+            <param name="data">包体</param>
+            <returns>需子类根据包体data自己解析对象并返回</returns>
+        </member>
         <member name="F:HPSocket.Base.Agent._disposed">
             <summary>
             是否释放了
@@ -4171,6 +4314,22 @@
             <param name="data"></param>
             <returns></returns>
         </member>
+        <member name="T:HPSocket.ISslAgent`1">
+            <summary>
+            ssl agent
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.ISslAgent`1.OnParseRequestBody">
+            <summary>
+            解析请求包体对象事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.ISslAgent`1.DataReceiveAdapter">
+            <summary>
+            数据接收适配器
+            </summary>
+        </member>
         <member name="T:HPSocket.ISslAgent">
             <summary>
             ssl agent
@@ -4191,6 +4350,22 @@
             <param name="info"></param>
             <param name="sessionInfo"></param>
             <returns></returns>
+        </member>
+        <member name="T:HPSocket.ISslClient`1">
+            <summary>
+            ssl client
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.ISslClient`1.OnParseRequestBody">
+            <summary>
+            解析请求包体对象事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.ISslClient`1.DataReceiveAdapter">
+            <summary>
+            数据接收适配器
+            </summary>
         </member>
         <member name="T:HPSocket.ISslClient">
             <summary>
@@ -4390,6 +4565,22 @@
             <param name="bytes"></param>
             <returns></returns>
         </member>
+        <member name="T:HPSocket.ISslServer`1">
+            <summary>
+            ssl server
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.ISslServer`1.OnParseRequestBody">
+            <summary>
+            解析请求包体对象事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.ISslServer`1.DataReceiveAdapter">
+            <summary>
+            数据接收适配器
+            </summary>
+        </member>
         <member name="T:HPSocket.ISslServer">
             <summary>
             ssl server
@@ -4456,6 +4647,22 @@
             <param name="sessionInfo"></param>
             <returns></returns>
         </member>
+        <member name="T:HPSocket.ITcpAgent`1">
+            <summary>
+            tcp agent
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.ITcpAgent`1.OnParseRequestBody">
+            <summary>
+            解析请求包体对象事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpAgent`1.DataReceiveAdapter">
+            <summary>
+            数据接收适配器
+            </summary>
+        </member>
         <member name="T:HPSocket.ITcpAgent">
             <summary>
             tcp agent
@@ -4497,6 +4704,22 @@
             <param name="head">头部附加数据,可以为null</param>
             <param name="tail">尾部附加数据,可以为null</param>
             <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
+        </member>
+        <member name="T:HPSocket.ITcpClient`1">
+            <summary>
+            tcp client
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.ITcpClient`1.OnParseRequestBody">
+            <summary>
+            解析请求包体对象事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpClient`1.DataReceiveAdapter">
+            <summary>
+            数据接收适配器
+            </summary>
         </member>
         <member name="T:HPSocket.ITcpClient">
             <summary>
@@ -4826,6 +5049,22 @@
             <param name="length"></param>
             <param name="bytes"></param>
             <returns></returns>
+        </member>
+        <member name="T:HPSocket.ITcpServer`1">
+            <summary>
+            tcp server
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.ITcpServer`1.OnParseRequestBody">
+            <summary>
+            解析请求包体对象事件
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpServer`1.DataReceiveAdapter">
+            <summary>
+            数据接收适配器
+            </summary>
         </member>
         <member name="T:HPSocket.ITcpServer">
             <summary>
@@ -6143,6 +6382,24 @@
             卸载ssl环境
             </summary>
         </member>
+        <member name="T:HPSocket.Ssl.SslAgent`1">
+            <summary>
+            ssl agent
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.Ssl.SslAgent`1.OnParseRequestBody">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Ssl.SslAgent`1.DataReceiveAdapter">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Ssl.SslAgent`1.Start">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Ssl.SslAgent`1.SetCallback">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Ssl.SslAgent.IsInitSsl">
             <summary>
             获取或设置是否初始化ssl环境
@@ -6192,6 +6449,27 @@
             释放资源
             </summary>
             <param name="disposing"></param>
+        </member>
+        <member name="T:HPSocket.Ssl.SslClient`1">
+            <summary>
+            ssl client
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.Ssl.SslClient`1.OnParseRequestBody">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Ssl.SslClient`1.DataReceiveAdapter">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Ssl.SslClient`1.Connect">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Ssl.SslClient`1.Connect(System.String,System.UInt16)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Ssl.SslClient`1.SetCallback">
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.Ssl.SslClient.IsInitSsl">
             <summary>
@@ -6312,6 +6590,24 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Ssl.SslPullServer.Peek(System.IntPtr,System.Int32,System.Byte[]@)">
+            <inheritdoc />
+        </member>
+        <member name="T:HPSocket.Ssl.SslServer`1">
+            <summary>
+            ssl server
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.Ssl.SslServer`1.OnParseRequestBody">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Ssl.SslServer`1.DataReceiveAdapter">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Ssl.SslServer`1.Start">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Ssl.SslServer`1.SetCallback">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.Ssl.SslServer">
@@ -6451,6 +6747,24 @@
             释放方式
             </summary>
         </member>
+        <member name="T:HPSocket.Tcp.TcpAgent`1">
+            <summary>
+            tcp agent
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.Tcp.TcpAgent`1.OnParseRequestBody">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Tcp.TcpAgent`1.DataReceiveAdapter">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpAgent`1.Start">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpAgent`1.SetCallback">
+            <inheritdoc />
+        </member>
         <member name="T:HPSocket.Tcp.TcpAgent">
             <summary>
             tcp agent
@@ -6469,6 +6783,27 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpAgent.SendSmallFile(System.IntPtr,System.String,System.Byte[],System.Byte[])">
+            <inheritdoc />
+        </member>
+        <member name="T:HPSocket.Tcp.TcpClient`1">
+            <summary>
+            tcp client
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.Tcp.TcpClient`1.OnParseRequestBody">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Tcp.TcpClient`1.DataReceiveAdapter">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpClient`1.Connect">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpClient`1.Connect(System.String,System.UInt16)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpClient`1.SetCallback">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.Tcp.TcpClient">
@@ -6744,6 +7079,24 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpPullServer.Peek(System.IntPtr,System.Int32,System.Byte[]@)">
+            <inheritdoc />
+        </member>
+        <member name="T:HPSocket.Tcp.TcpServer`1">
+            <summary>
+            tcp server
+            </summary>
+            <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+        </member>
+        <member name="E:HPSocket.Tcp.TcpServer`1.OnParseRequestBody">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Tcp.TcpServer`1.DataReceiveAdapter">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpServer`1.Start">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpServer`1.SetCallback">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.Tcp.TcpServer">

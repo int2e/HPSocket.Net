@@ -2,6 +2,8 @@
 /*
  *
  * 部分websocket相关扩展方法抄自 websocket-sharp  https://github.com/sta/websocket-sharp
+ * BytesExtensions.IndexesOf() 方法 Boyer-Moore-Horspool 搜索, 来自 https://blog.csdn.net/lindexi_gd/article/details/100174714 
+ * BoyerMoore 类来自 https://gist.github.com/mjs3339/0772431281093f1bca1fce2f2eca527d
  *
  */
 #endregion
@@ -710,5 +712,156 @@ namespace HPSocket
         }
     }
 
+    /// <summary>
+    /// bytes扩展
+    /// </summary>
+    public static class BytesExtensions
+    {
+        /// <summary>
+        /// 查找bytes
+        /// <remarks>Boyer-Moore-Horspool 搜索, 来自 https://blog.csdn.net/lindexi_gd/article/details/100174714 </remarks>
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="start"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        public static IEnumerable<int> IndexesOf(byte[] source, int start, byte[] pattern)
+        {
+            var valueLength = source.Length;
+            var patternLength = pattern.Length;
+
+            if ((valueLength == 0) || (patternLength == 0) || (patternLength > valueLength))
+            {
+                yield break;
+            }
+
+            var badCharacters = new int[256];
+
+            for (var i = 0; i < 256; i++)
+            {
+                badCharacters[i] = patternLength;
+            }
+
+            var lastPatternByte = patternLength - 1;
+
+            for (var i = 0; i < lastPatternByte; i++)
+            {
+                badCharacters[pattern[i]] = lastPatternByte - i;
+            }
+
+            var index = start;
+
+            while (index <= valueLength - patternLength)
+            {
+                for (var i = lastPatternByte; source[index + i] == pattern[i]; i--)
+                {
+                    if (i != 0) continue;
+                    yield return index;
+                    break;
+                }
+
+                index += badCharacters[source[index + lastPatternByte]];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Boyer-Moore
+    /// <remarks>BoyerMoore类来自 https://gist.github.com/mjs3339/0772431281093f1bca1fce2f2eca527d</remarks>
+    /// </summary>
+    public class BoyerMoore
+    {
+        private int[] _jumpTable;
+        private byte[] _pattern;
+        public int PatternLength { get; private set; }
+        public BoyerMoore()
+        {
+        }
+        public BoyerMoore(byte[] pattern)
+        {
+            _pattern = pattern;
+            _jumpTable = new int[256];
+            PatternLength = _pattern.Length;
+            for (var index = 0; index < 256; index++)
+                _jumpTable[index] = PatternLength;
+            for (var index = 0; index < PatternLength - 1; index++)
+                _jumpTable[_pattern[index]] = PatternLength - index - 1;
+        }
+        public void SetPattern(byte[] pattern)
+        {
+            _pattern = pattern;
+            _jumpTable = new int[256];
+            PatternLength = _pattern.Length;
+            for (var index = 0; index < 256; index++)
+                _jumpTable[index] = PatternLength;
+            for (var index = 0; index < PatternLength - 1; index++)
+                _jumpTable[_pattern[index]] = PatternLength - index - 1;
+        }
+        public unsafe int Search(byte[] searchArray, int startIndex = 0)
+        {
+            if (_pattern == null)
+                throw new Exception("Pattern has not been set.");
+            if (PatternLength > searchArray.Length)
+                throw new Exception("Search Pattern length exceeds search array length.");
+            var index = 0;
+            var limit = searchArray.Length - PatternLength;
+            var patternLengthMinusOne = PatternLength - 1;
+            fixed (byte* pointerToByteArray = searchArray)
+            {
+                var pointerToByteArrayStartingIndex = pointerToByteArray + startIndex;
+                fixed (byte* pointerToPattern = _pattern)
+                {
+                    while (index <= limit)
+                    {
+                        var j = patternLengthMinusOne;
+                        while (j >= 0 && pointerToPattern[j] == pointerToByteArrayStartingIndex[index + j])
+                            j--;
+                        if (j < 0)
+                            return index;
+                        index += Math.Max(_jumpTable[pointerToByteArrayStartingIndex[index + j]] - PatternLength + 1 + j, 1);
+                    }
+                }
+            }
+            return -1;
+        }
+        public unsafe List<int> SearchAll(byte[] searchArray, int startIndex = 0)
+        {
+            var index = 0;
+            var limit = searchArray.Length - PatternLength;
+            var patternLengthMinusOne = PatternLength - 1;
+            var list = new List<int>();
+            fixed (byte* pointerToByteArray = searchArray)
+            {
+                var pointerToByteArrayStartingIndex = pointerToByteArray + startIndex;
+                fixed (byte* pointerToPattern = _pattern)
+                {
+                    while (index <= limit)
+                    {
+                        var j = patternLengthMinusOne;
+                        while (j >= 0 && pointerToPattern[j] == pointerToByteArrayStartingIndex[index + j])
+                            j--;
+                        if (j < 0)
+                            list.Add(index);
+                        index += Math.Max(_jumpTable[pointerToByteArrayStartingIndex[index + j]] - PatternLength + 1 + j, 1);
+                    }
+                }
+            }
+            return list;
+        }
+        public int SuperSearch(byte[] searchArray, int nth, int start = 0)
+        {
+            var e = start;
+            var c = 0;
+            do
+            {
+                e = Search(searchArray, e);
+                if (e == -1)
+                    return -1;
+                c++;
+                e++;
+            } while (c < nth);
+            return e - 1;
+        }
+    }
     #endregion
 }

@@ -1,7 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using HPSocket.Adapter;
 
 namespace HPSocket
 {
+    /// <summary>
+    /// tcp agent
+    /// </summary>
+    /// <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+    public interface ITcpAgent<TRequestBodyType> : ITcpAgent
+    {
+        [Obsolete("adapter组件无需添加OnReceive事件, 请添加OnParseRequestBody事件", true)]
+        new event AgentReceiveEventHandler OnReceive;
+
+        /// <summary>
+        /// 解析请求包体对象事件
+        /// </summary>
+        event ParseRequestBody<ITcpAgent, TRequestBodyType> OnParseRequestBody;
+
+        /// <summary>
+        /// 数据接收适配器
+        /// </summary>
+        DataReceiveAdapter<TRequestBodyType> DataReceiveAdapter { get; set; }
+    }
+
+
     /// <summary>
     /// tcp agent
     /// </summary>

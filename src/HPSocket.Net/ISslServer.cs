@@ -1,8 +1,30 @@
 ﻿using System;
+using HPSocket.Adapter;
 using HPSocket.Ssl;
 
 namespace HPSocket
 {
+    /// <summary>
+    /// ssl server
+    /// </summary>
+    /// <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+    public interface ISslServer<TRequestBodyType> : ISslServer
+    {
+        [Obsolete("adapter组件无需添加OnReceive事件, 请添加OnParseRequestBody事件", true)]
+        new event ServerReceiveEventHandler OnReceive;
+
+        /// <summary>
+        /// 解析请求包体对象事件
+        /// </summary>
+        event ParseRequestBody<ITcpServer, TRequestBodyType> OnParseRequestBody;
+
+        /// <summary>
+        /// 数据接收适配器
+        /// </summary>
+        DataReceiveAdapter<TRequestBodyType> DataReceiveAdapter { get; set; }
+    }
+
+
     /// <summary>
     /// ssl server
     /// </summary>
