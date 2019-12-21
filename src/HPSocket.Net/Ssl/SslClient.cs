@@ -1,8 +1,79 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using HPSocket.Adapter;
 using HPSocket.Tcp;
 
 namespace HPSocket.Ssl
 {
+    /// <summary>
+    /// ssl client
+    /// </summary>
+    /// <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+    public class SslClient<TRequestBodyType> : SslClient, ISslClient<TRequestBodyType>
+    {
+        public SslClient()
+        {
+            OnConnect += SslClient_OnConnect;
+            base.OnReceive += SslClient_OnReceive;
+            OnClose += SslClient_OnClose;
+        }
+
+#pragma warning disable 0067
+        [Obsolete("adapter组件无需添加OnReceive事件, 请添加OnParseRequestBody事件", true)]
+        public new event ClientReceiveEventHandler OnReceive;
+#pragma warning restore
+
+        /// <inheritdoc />
+        public event ParseRequestBody<ISslClient, TRequestBodyType> OnParseRequestBody;
+
+        /// <inheritdoc />
+        public DataReceiveAdapter<TRequestBodyType> DataReceiveAdapter { get; set; }
+
+        private HandleResult SslClient_OnConnect(IClient sender)
+        {
+            DataReceiveAdapter.OnOpen(ConnectionId);
+            return HandleResult.Ok;
+        }
+
+        private HandleResult SslClient_OnReceive(IClient sender, byte[] data)
+        {
+            return DataReceiveAdapter.OnReceive(this, ConnectionId, data, OnParseRequestBody);
+        }
+
+        private HandleResult SslClient_OnClose(IClient sender, SocketOperation socketOperation, int errorCode)
+        {
+            DataReceiveAdapter.OnClose(ConnectionId);
+            return HandleResult.Ok;
+        }
+
+        #region 重写父类方法
+
+        /// <inheritdoc />
+        public new bool Connect()
+        {
+            if (DataReceiveAdapter == null || OnParseRequestBody == null)
+            {
+                throw new InitializationException("DataReceiveAdapter属性和OnParseRequestBody事件必须赋值");
+            }
+
+            return base.Connect();
+        }
+
+        /// <inheritdoc />
+        public new bool Connect(string address, ushort port)
+        {
+            if (DataReceiveAdapter == null || OnParseRequestBody == null)
+            {
+                throw new InitializationException("DataReceiveAdapter属性和OnParseRequestBody事件必须赋值");
+            }
+
+            return base.Connect(address, port);
+        }
+
+        #endregion
+    }
+
+
     public class SslClient : TcpClient, ISslClient
     {
         #region 保护成员

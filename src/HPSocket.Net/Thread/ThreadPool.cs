@@ -296,6 +296,7 @@ namespace HPSocket.Thread
             if (disposing)
             {
                 // 释放托管对象资源
+                _extraData.Clear();
             }
             Destroy();
 

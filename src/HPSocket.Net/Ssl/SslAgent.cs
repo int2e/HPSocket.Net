@@ -1,8 +1,69 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using HPSocket.Adapter;
 using HPSocket.Tcp;
 
 namespace HPSocket.Ssl
 {
+    /// <summary>
+    /// ssl agent
+    /// </summary>
+    /// <typeparam name="TRequestBodyType">包体解析对象类型</typeparam>
+    public class SslAgent<TRequestBodyType> : SslAgent, ISslAgent<TRequestBodyType>
+    {
+        public SslAgent()
+        {
+            OnConnect += SslAgent_OnConnect;
+            base.OnReceive += SslAgent_OnReceive;
+            OnClose += SslAgent_OnClose;
+        }
+
+#pragma warning disable 0067
+        [Obsolete("adapter组件无需添加OnReceive事件, 请添加OnParseRequestBody事件", true)]
+        public new event AgentReceiveEventHandler OnReceive;
+#pragma warning restore
+
+        /// <inheritdoc />
+        public event ParseRequestBody<ITcpAgent, TRequestBodyType> OnParseRequestBody;
+
+        /// <inheritdoc />
+        public DataReceiveAdapter<TRequestBodyType> DataReceiveAdapter { get; set; }
+
+        private HandleResult SslAgent_OnConnect(IAgent sender, IntPtr connId, IProxy proxy)
+        {
+            DataReceiveAdapter.OnOpen(connId);
+            return HandleResult.Ok;
+        }
+
+        private HandleResult SslAgent_OnReceive(IAgent sender, IntPtr connId, byte[] data)
+        {
+            return DataReceiveAdapter.OnReceive(this, connId, data, OnParseRequestBody);
+        }
+
+        private HandleResult SslAgent_OnClose(IAgent sender, IntPtr connId, SocketOperation socketOperation, int errorCode)
+        {
+            DataReceiveAdapter.OnClose(connId);
+            return HandleResult.Ok;
+        }
+
+        #region 重写父类方法
+
+        /// <inheritdoc />
+        public override bool Start()
+        {
+            if (DataReceiveAdapter == null || OnParseRequestBody == null)
+            {
+                throw new InitializationException("DataReceiveAdapter属性和OnParseRequestBody事件必须赋值");
+            }
+
+            return base.Start();
+        }
+
+        #endregion
+    }
+
+
     public class SslAgent : TcpAgent, ISslAgent
     {
         #region 保护成员
