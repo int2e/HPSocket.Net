@@ -39,7 +39,7 @@ namespace TcpServerTestEchoAdapter
                 };
 
                 // 不需要在绑定OnReceive事件
-                // 这里解析请求体事件的data就是TextDataReceiveAdapter.ParseRequestBody()返回的数据
+                // 这里解析请求体事件的data就是BinaryDataReceiveAdapter.ParseRequestBody()返回的数据
                 server.OnParseRequestBody += (sender, id, data) =>
                 {
                     Console.WriteLine($"OnParseRequestBody({id}) -> data length: {data.Length}");
