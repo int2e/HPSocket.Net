@@ -25,7 +25,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
 
         /// <summary>
         /// 获取请求体长度方法
-        /// <remarks>子类必须重写此方法</remarks>
+        /// <remarks>子类必须覆盖此方法</remarks>
         /// </summary>
         /// <param name="header">包头, header的长度是构造函数里指定的长度, 构造函数里指定包头长度多少, 父类就等到了指定长度在调用此方法</param>
         /// <returns>返回真实长度</returns>

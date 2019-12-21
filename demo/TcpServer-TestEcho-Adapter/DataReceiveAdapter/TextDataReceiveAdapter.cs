@@ -20,7 +20,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
 
         /// <summary>
         /// 解析请求体
-        /// <remarks>子类必须重写此方法</remarks>
+        /// <remarks>子类必须覆盖此方法</remarks>
         /// </summary>
         /// <param name="data">父类处理好不含结束符的数据</param>
         /// <returns></returns>
