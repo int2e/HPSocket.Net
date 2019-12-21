@@ -302,7 +302,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         /// </summary>
         public BinaryDataReceiveAdapter()
             : base(
-                packetSize: 4 // 固定包长1K字节
+                packetSize: 1024 // 固定包长1K字节
             )
         {
         }
