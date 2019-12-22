@@ -64,7 +64,7 @@ namespace TcpServerTestEchoAdapter
                 };
 
                 // 不需要在绑定OnReceive事件
-                // 这里解析请求体事件的data就是PacketDataReceiveAdapter.ParseRequestBody()返回的数据
+                // 这里解析请求体事件的packet就是PacketDataReceiveAdapter.ParseRequestBody()返回的数据
                 server.OnParseRequestBody += (sender, id, packet) =>
                 {
                     Console.WriteLine($"OnParseRequestBody({id}) -> type: {packet.Type}, data: {packet.Data}");
