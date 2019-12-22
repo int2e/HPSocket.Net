@@ -23,7 +23,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
 [Oo]bj/
 [Ll]og/
 
@@ -340,4 +339,25 @@ ASALocalRun/
 # BeatPulse healthcheck temp database 
 healthchecksdb
 
-HPSocket
+# HPSocket.Net
+HPSocket/
+
+*.dll
+*.exe
+*.pdb
+
+/demo/[Bb]in/*.config
+/demo/[Bb]in/*.json
+/demo/[Bb]in/*.xml
+/demo/[Bb]in/*/*.config
+/demo/[Bb]in/*/*.json
+/demo/[Bb]in/*/*.xml
+
+/demo_vs2107/[Bb]in/*.config
+/demo_vs2107/[Bb]in/*.json
+/demo_vs2107/[Bb]in/*.xml
+/demo_vs2107/[Bb]in/*/*.config
+/demo_vs2107/[Bb]in/*/*.json
+/demo_vs2107/[Bb]in/*/*.xml
+
+runtimes/
