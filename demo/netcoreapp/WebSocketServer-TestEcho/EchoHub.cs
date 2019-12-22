@@ -2,7 +2,7 @@
 using HPSocket;
 using HPSocket.WebSocket;
 
-namespace WebSocketEchoServer
+namespace WebSocketServerTestEcho
 {
     public class EchoHub : IHub
     {
