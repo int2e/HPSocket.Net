@@ -4,7 +4,7 @@ using HPSocket.Adapter;
 namespace TcpServerTestEchoAdapter.DataReceiveAdapter
 {
     /// <summary>
-    /// 定长包数据接收适配器
+    /// 终止符数据接收适配器
     /// </summary>
     public class TextDataReceiveAdapter : TerminatorDataReceiveAdapter<string>
     {

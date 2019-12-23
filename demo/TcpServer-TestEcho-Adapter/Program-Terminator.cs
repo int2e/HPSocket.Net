@@ -6,7 +6,7 @@ using TcpServerTestEchoAdapter.DataReceiveAdapter;
 namespace TcpServerTestEchoAdapter
 {
     /// <summary>
-    /// 定长包数据适配器示例
+    /// 终止符数据适配器示例
     /// </summary>
     class ProgramTerminator
     {

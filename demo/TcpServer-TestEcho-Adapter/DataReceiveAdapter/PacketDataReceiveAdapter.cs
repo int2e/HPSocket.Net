@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace TcpServerTestEchoAdapter.DataReceiveAdapter
 {
     /// <summary>
-    /// Packet类型数据接收适配器
+    /// 固定包头数据接收适配器
     /// </summary>
     public class PacketDataReceiveAdapter : FixedHeaderDataReceiveAdapter<Packet>
     {
