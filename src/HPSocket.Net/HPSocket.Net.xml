@@ -1894,21 +1894,19 @@
         <member name="M:HPSocket.Http.HttpClient.SendRequest(HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Http.HttpClient.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
+        <member name="M:HPSocket.Http.HttpClient.SendSmallFile(System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
             <summary>
             http agent 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法
             </summary>
-            <param name="connId"></param>
             <param name="filePath"></param>
             <param name="head"></param>
             <param name="tail"></param>
             <returns></returns>
         </member>
-        <member name="M:HPSocket.Http.HttpClient.SendSmallFile(System.IntPtr,System.String,System.Byte[],System.Byte[])">
+        <member name="M:HPSocket.Http.HttpClient.SendSmallFile(System.String,System.Byte[],System.Byte[])">
             <summary>
             http server 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法
             </summary>
-            <param name="connId"></param>
             <param name="filePath"></param>
             <param name="head"></param>
             <param name="tail"></param>
@@ -4799,23 +4797,21 @@
              读取或设置心跳确认包检测间隔（毫秒，0 不发送心跳包，如果超过若干次 [默认：WinXP 5 次, Win7 10 次] 检测不到心跳确认包则认为已断线）
             </summary>
         </member>
-        <member name="M:HPSocket.ITcpClient.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
+        <member name="M:HPSocket.ITcpClient.SendSmallFile(System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
             <summary>
             发送本地小文件
             <para>向指定连接发送 4096 KB 以下的小文件</para>
             </summary>
-            <param name="connId"></param>
             <param name="filePath">文件路径</param>
             <param name="head">头部附加数据</param>
             <param name="tail">尾部附加数据</param>
             <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
         </member>
-        <member name="M:HPSocket.ITcpClient.SendSmallFile(System.IntPtr,System.String,System.Byte[],System.Byte[])">
+        <member name="M:HPSocket.ITcpClient.SendSmallFile(System.String,System.Byte[],System.Byte[])">
             <summary>
             发送本地小文件
             <para>向指定连接发送 4096 KB 以下的小文件</para>
             </summary>
-            <param name="connId"></param>
             <param name="filePath">文件路径</param>
             <param name="head">头部附加数据,可以为null</param>
             <param name="tail">尾部附加数据,可以为null</param>
@@ -6863,10 +6859,10 @@
         <member name="P:HPSocket.Tcp.TcpClient.KeepAliveInterval">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Tcp.TcpClient.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
+        <member name="M:HPSocket.Tcp.TcpClient.SendSmallFile(System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.Tcp.TcpClient.SendSmallFile(System.IntPtr,System.String,System.Byte[],System.Byte[])">
+        <member name="M:HPSocket.Tcp.TcpClient.SendSmallFile(System.String,System.Byte[],System.Byte[])">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.Tcp.TcpPackAgent">

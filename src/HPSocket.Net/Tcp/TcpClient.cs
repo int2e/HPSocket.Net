@@ -114,10 +114,10 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
-        public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail) => Sdk.Tcp.HP_TcpClient_SendSmallFile(SenderPtr, filePath, ref head, ref tail);
+        public bool SendSmallFile(string filePath, ref Wsabuf head, ref Wsabuf tail) => Sdk.Tcp.HP_TcpClient_SendSmallFile(SenderPtr, filePath, ref head, ref tail);
 
         /// <inheritdoc />
-        public bool SendSmallFile(IntPtr connId, string filePath, byte[] head, byte[] tail)
+        public bool SendSmallFile(string filePath, byte[] head, byte[] tail)
         {
             var wsaHead = new Wsabuf() { Length = 0, Buffer = IntPtr.Zero };
             var wsaTail = new Wsabuf() { Length = 0, Buffer = IntPtr.Zero };
@@ -136,7 +136,7 @@ namespace HPSocket.Tcp
                 wsaHead.Buffer = gchTail.AddrOfPinnedObject();
             }
 
-            var ok = SendSmallFile(connId, filePath, ref wsaHead, ref wsaTail);
+            var ok = SendSmallFile(filePath, ref wsaHead, ref wsaTail);
             gchHead.Free();
             gchTail.Free();
 
