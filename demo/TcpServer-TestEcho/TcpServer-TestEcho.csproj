@@ -98,6 +98,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncQueue\AsyncQueue.cs" />
+    <Compile Include="AsyncQueue\Worker.cs" />
     <Compile Include="FormServer.cs">
       <SubType>Form</SubType>
     </Compile>
