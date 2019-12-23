@@ -58,7 +58,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HPSocket.Net, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HPSocket.Net.5.7.1-rc2\lib\net461\HPSocket.Net.dll</HintPath>
+      <HintPath>..\packages\HPSocket.Net.5.7.1-rc3\lib\net461\HPSocket.Net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -124,11 +124,11 @@
     <Content Include="HPSocket\hpsocket_en.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\HPSocket.Net.5.7.1-rc2\build\HPSocket.Net.targets" Condition="Exists('..\packages\HPSocket.Net.5.7.1-rc2\build\HPSocket.Net.targets')" />
+  <Import Project="..\packages\HPSocket.Net.5.7.1-rc3\build\HPSocket.Net.targets" Condition="Exists('..\packages\HPSocket.Net.5.7.1-rc3\build\HPSocket.Net.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\HPSocket.Net.5.7.1-rc2\build\HPSocket.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\HPSocket.Net.5.7.1-rc2\build\HPSocket.Net.targets'))" />
+    <Error Condition="!Exists('..\packages\HPSocket.Net.5.7.1-rc3\build\HPSocket.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\HPSocket.Net.5.7.1-rc3\build\HPSocket.Net.targets'))" />
   </Target>
 </Project>

@@ -121,10 +121,11 @@
             <param name="header">包头, 其长度是HeaderLength属性指定的长度</param>
             <returns>需子类根据header自己解析包体实际长度并返回</returns>
         </member>
-        <member name="M:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1.ParseRequestBody(System.Byte[])">
+        <member name="M:HPSocket.Adapter.FixedHeaderDataReceiveAdapter`1.ParseRequestBody(System.Byte[],System.Byte[])">
             <summary>
             解析请求包体到对象
             </summary>
+            <param name="header">包头</param>
             <param name="data">包体</param>
             <returns>需子类根据包体data自己解析对象并返回</returns>
         </member>

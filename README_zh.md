@@ -268,9 +268,10 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         /// 解析请求体
         /// <remarks>子类必须覆盖此方法</remarks>
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="header">包头</param>
+        /// <param name="data">包体</param>
         /// <returns></returns>
-        protected override Packet ParseRequestBody(byte[] data)
+        protected override Packet ParseRequestBody(byte[] header, byte[] data)
         {
             // 将data反序列化为对象
             // 这里是Packet类的对象

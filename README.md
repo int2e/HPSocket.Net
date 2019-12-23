@@ -266,9 +266,10 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         /// Parsing the request body
         /// <remarks>Subclasses must override this method</remarks>
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="header">header</param>
+        /// <param name="data">body data</param>
         /// <returns></returns>
-        protected override Packet ParseRequestBody(byte[] data)
+        protected override Packet ParseRequestBody(byte[] header, byte[] data)
         {
             // Deserialize data into object
             // Here is the object of the Packet class

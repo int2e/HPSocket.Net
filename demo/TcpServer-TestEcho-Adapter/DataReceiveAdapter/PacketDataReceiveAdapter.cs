@@ -46,11 +46,12 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
 
         /// <summary>
         /// 解析请求体
-        /// <remarks>子类必须重写此方法</remarks>
+        /// <remarks>子类必须覆盖此方法</remarks>
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="header">包头</param>
+        /// <param name="data">包体</param>
         /// <returns></returns>
-        protected override Packet ParseRequestBody(byte[] data)
+        protected override Packet ParseRequestBody(byte[] header, byte[] data)
         {
             // 将data转换为泛型传入的类型对象
             // 我这里是Packet类的对象

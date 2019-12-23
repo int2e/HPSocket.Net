@@ -57,8 +57,11 @@ namespace HPSocket.Adapter
                     return HandleResult.Ok;
                 }
 
+                // 包头
+                var header = cache.Data.GetRange(0, _headerSize).ToArray();
+
                 // 包体长度从适配器子类中获取
-                var bodySize = GetBodySize(cache.Data.GetRange(0, _headerSize).ToArray());
+                var bodySize = GetBodySize(header);
 
                 // 完整的包长度(含包头和完整数据的大小)
                 var fullSize = bodySize + _headerSize;
@@ -84,7 +87,7 @@ namespace HPSocket.Adapter
                     var bodyData = cache.Data.GetRange(_headerSize, bodySize).ToArray();
 
                     // 包体解析对象从适配器子类中获取
-                    var obj = ParseRequestBody(bodyData);
+                    var obj = ParseRequestBody(header, bodyData);
 
                     // 调用解析请求包体事件
                     result = parseRequestBody.Invoke(sender, connId, obj);
@@ -122,9 +125,10 @@ namespace HPSocket.Adapter
         /// <summary>
         /// 解析请求包体到对象
         /// </summary>
+        /// <param name="header">包头</param>
         /// <param name="data">包体</param>
         /// <returns>需子类根据包体data自己解析对象并返回</returns>
-        protected virtual TRequestBodyType ParseRequestBody(byte[] data)
+        protected virtual TRequestBodyType ParseRequestBody(byte[] header, byte[] data)
         {
             return default;
         }
