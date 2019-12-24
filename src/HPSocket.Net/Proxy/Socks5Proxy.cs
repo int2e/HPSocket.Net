@@ -8,8 +8,8 @@ namespace HPSocket.Proxy
 {
     public class Socks5Proxy : Base.Proxy, ISocks5Proxy
     {
-        private static readonly byte[] NoAuthBytes = { 0x05, 0x02, 0x00 };
-        private static readonly byte[] AuthBytes = { 0x05, 0x02, 0x02 };
+        private static readonly byte[] NoAuthBytes = { 0x05, 0x01, 0x00 };
+        private static readonly byte[] AuthBytes = { 0x05, 0x01, 0x02 };
 
         /// <summary>
         /// 设置远程地址端口
