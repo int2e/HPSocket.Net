@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HPSocket.AsyncQueue
 {
-    public class Worker<T>
+    public class Worker<T> :IDisposable
     {
         /// <summary>
         /// 消费队列实体
@@ -19,30 +19,30 @@ namespace HPSocket.AsyncQueue
         /// <summary>
         /// 控制线程令牌
         /// </summary>
-        private CancellationToken ct { get; set; }
+        private CancellationTokenSource cts { get; set; }
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="collection">消费队列实体</param>
         /// <param name="taskProc">任务处理函数</param>
         /// <param name="ct"></param>
-        public Worker(BlockingCollection<T> collection, Action<T> taskProc, CancellationToken ct)
+        public Worker(BlockingCollection<T> collection, Action<T> taskProc)
         {
             this.collection = collection ?? throw new ArgumentNullException(nameof(collection));
             this.taskProc = taskProc ?? throw new ArgumentNullException(nameof(taskProc));
-            this.ct = ct;
-            Task.Factory.StartNew(this.DoWork, ct);
+            this.cts = new CancellationTokenSource();
+            Task.Factory.StartNew(this.DoWork, cts.Token);
         }
         /// <summary>
         /// 消费数据方法
         /// </summary>
         private void DoWork()
         {
-            while (!this.ct.IsCancellationRequested)
+            while (!this.cts.Token.IsCancellationRequested)
             {
                 try
                 {
-                    var item = this.collection.Take(this.ct);
+                    var item = this.collection.Take(this.cts.Token);
                     this.taskProc?.Invoke(item);
                 }
                 catch (OperationCanceledException)
@@ -51,6 +51,12 @@ namespace HPSocket.AsyncQueue
                 }
             }
         }
+        /// <summary>
+        /// 停止线程工作
+        /// </summary>
+        public void Stop() => cts.Cancel();
+
+        public void Dispose() => Stop();
     }
 }
 #endif

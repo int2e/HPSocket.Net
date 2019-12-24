@@ -1,7 +1,6 @@
 ﻿#if !NET20
 using System;
 using System.Collections.Concurrent;
-using System.Threading;
 
 namespace HPSocket.AsyncQueue
 {
@@ -21,9 +20,9 @@ namespace HPSocket.AsyncQueue
         /// </summary>
         private BlockingCollection<T> queue { get; set; }
         /// <summary>
-        /// 控制线程令牌源
+        /// 任务处理函数
         /// </summary>
-        private CancellationTokenSource cts { get; set; }
+        private Action<T> taskProc { get; set; }
         #endregion
         /// <summary>
         /// 构造方法
@@ -34,12 +33,12 @@ namespace HPSocket.AsyncQueue
         {
             if (consumerCount == 0) { throw new ArgumentException($"{nameof(consumerCount)} must be > 0"); }
             if (taskProc == null) { throw new ArgumentNullException($"{nameof(taskProc)} must not be null"); }
-            workers = new ConcurrentBag<Worker<T>>();
-            queue = new BlockingCollection<T>();
-            cts = new CancellationTokenSource();
+            this.workers = new ConcurrentBag<Worker<T>>();
+            this.queue = new BlockingCollection<T>();
+            this.taskProc = taskProc;
             for (var i = 0; i < consumerCount; i++)
             {
-                workers.Add(new Worker<T>(queue, taskProc, cts.Token));
+                workers.Add(new Worker<T>(queue, taskProc));
             }
         }
         /// <summary>
@@ -54,15 +53,43 @@ namespace HPSocket.AsyncQueue
         /// <returns>成功返回true，失败返回false</returns>
         public bool Enqueue(T item) => this.queue.TryAdd(item);
         /// <summary>
+        /// 消费者数量
+        /// </summary>
+        public int ConsumerCount { get => this.workers.Count; }
+        /// <summary>
+        /// 添加消费者
+        /// </summary>
+        public void AddConsumer(uint consumerCount)
+        {
+            for (var i = 0; i < consumerCount; i++)
+            {
+                workers.Add(new Worker<T>(queue, taskProc));
+            }
+        }
+        /// <summary>
+        /// 删除消费者
+        /// </summary>
+        public void RemoveConsumer(uint consumerCount)
+        {
+            while (!this.workers.IsEmpty && consumerCount-- > 0)
+            {
+                if(workers.TryTake(out var w))
+                {
+                    w.Stop();
+                }
+            }
+        }
+        /// <summary>
         /// 停止消费
         /// </summary>
         public void Shutdown()
         {
-            this.cts.Cancel();
             while (!this.workers.IsEmpty)
             {
-                Worker<T> w;
-                this.workers.TryTake(out w);
+                if(workers.TryTake(out var w))
+                {
+                    w.Stop();
+                }
             }
         }
         public void Dispose() => Shutdown();
