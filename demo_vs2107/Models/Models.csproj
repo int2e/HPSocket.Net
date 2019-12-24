@@ -44,6 +44,9 @@
     <Compile Include="..\..\demo\Models\ClientInfo.cs">
       <Link>ClientInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\demo\Models\MyFileInfo.cs">
+      <Link>MyFileInfo.cs</Link>
+    </Compile>
     <Compile Include="..\..\demo\Models\Packet.cs">
       <Link>Packet.cs</Link>
     </Compile>
