@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29326.143
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.960
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpClient-TestEcho", "TcpClient-TestEcho\TcpClient-TestEcho.csproj", "{C76C5BFC-6741-464D-8C19-1B526F546627}"
 EndProject
@@ -38,6 +38,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServer-TestEcho", "TcpServer-TestEcho\TcpServer-TestEcho.csproj", "{5BC55483-F140-4C87-B6DD-ECA268DEBD9C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServer-TestEcho-Adapter", "TcpServer-TestEcho-Adapter\TcpServer-TestEcho-Adapter.csproj", "{BB5B3E95-69CF-4867-8C0E-C989525342DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tcp-SendSmallFile", "Tcp-SendSmallFile\Tcp-SendSmallFile.csproj", "{BC11E0DF-C2B9-433A-AB60-C9506F003895}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -253,6 +255,18 @@ Global
 		{BB5B3E95-69CF-4867-8C0E-C989525342DA}.Release|x64.Build.0 = Release|Any CPU
 		{BB5B3E95-69CF-4867-8C0E-C989525342DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{BB5B3E95-69CF-4867-8C0E-C989525342DA}.Release|x86.Build.0 = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x64.ActiveCfg = Debug|x64
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x64.Build.0 = Debug|x64
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x86.ActiveCfg = Debug|x86
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x86.Build.0 = Debug|x86
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x64.ActiveCfg = Release|x64
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x64.Build.0 = Release|x64
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x86.ActiveCfg = Release|x86
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

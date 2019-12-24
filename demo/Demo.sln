@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServer-TestEcho", "TcpSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServer-TestEcho-Adapter", "TcpServer-TestEcho-Adapter\TcpServer-TestEcho-Adapter.csproj", "{BB5B3E95-69CF-4867-8C0E-C989525342DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tcp-SendSmallFile", "Tcp-SendSmallFile\Tcp-SendSmallFile.csproj", "{BC11E0DF-C2B9-433A-AB60-C9506F003895}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -253,6 +255,18 @@ Global
 		{BB5B3E95-69CF-4867-8C0E-C989525342DA}.Release|x64.Build.0 = Release|Any CPU
 		{BB5B3E95-69CF-4867-8C0E-C989525342DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{BB5B3E95-69CF-4867-8C0E-C989525342DA}.Release|x86.Build.0 = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x64.Build.0 = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Debug|x86.Build.0 = Debug|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x64.ActiveCfg = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x64.Build.0 = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC11E0DF-C2B9-433A-AB60-C9506F003895}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
