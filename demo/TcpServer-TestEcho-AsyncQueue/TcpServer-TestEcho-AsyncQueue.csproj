@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5BC55483-F140-4C87-B6DD-ECA268DEBD9C}</ProjectGuid>
+    <ProjectGuid>{86B081F3-3799-42FF-8FB5-259AB1126940}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TcpServerTestEcho</RootNamespace>
-    <AssemblyName>TcpServer-TestEcho</AssemblyName>
+    <RootNamespace>TcpServerTestEchoAsyncQueue</RootNamespace>
+    <AssemblyName>TcpServer-TestEcho-AsyncQueue</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

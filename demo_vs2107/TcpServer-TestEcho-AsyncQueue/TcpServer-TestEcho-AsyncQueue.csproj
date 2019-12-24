@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5BC55483-F140-4C87-B6DD-ECA268DEBD9C}</ProjectGuid>
+    <ProjectGuid>{86B081F3-3799-42FF-8FB5-259AB1126940}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TcpServerTestEcho</RootNamespace>
-    <AssemblyName>TcpServer-TestEcho</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RootNamespace>TcpServerTestEchoAsyncQueue</RootNamespace>
+    <AssemblyName>TcpServer-TestEcho-AsyncQueue</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -81,7 +81,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HPSocket.Net, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HPSocket.Net.5.7.1-rc5\lib\net48\HPSocket.Net.dll</HintPath>
+      <HintPath>..\packages\HPSocket.Net.5.7.1-rc5\lib\net461\HPSocket.Net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -98,15 +98,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormServer.cs">
+    <Compile Include="..\..\demo\TcpServer-TestEcho-AsyncQueue\FormServer.cs">
+      <Link>FormServer.cs</Link>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormServer.Designer.cs">
+    <Compile Include="..\..\demo\TcpServer-TestEcho-AsyncQueue\FormServer.designer.cs">
+      <Link>FormServer.designer.cs</Link>
       <DependentUpon>FormServer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="..\..\demo\TcpServer-TestEcho-AsyncQueue\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FormServer.resx">
+    <EmbeddedResource Include="..\..\demo\TcpServer-TestEcho-AsyncQueue\FormServer.resx">
+      <Link>FormServer.resx</Link>
       <DependentUpon>FormServer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
