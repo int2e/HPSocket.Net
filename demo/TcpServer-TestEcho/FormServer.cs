@@ -1,16 +1,21 @@
-﻿using System;
+﻿//#define ThreadPool
+#define AsyncQueue
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using HPSocket;
 using HPSocket.Tcp;
-using HPSocket.Thread;
 using Models;
 using Newtonsoft.Json;
-using ThreadPool = HPSocket.Thread.ThreadPool;
 using Timer = System.Timers.Timer;
-
+#if ThreadPool
+using HPSocket.Thread;
+using ThreadPool = HPSocket.Thread.ThreadPool;
+#elif AsyncQueue
+using HPSocket.AsyncQueue;
+#endif
 namespace TcpServerTestEcho
 {
     public partial class FormServer : Form
@@ -19,12 +24,17 @@ namespace TcpServerTestEcho
 
 #pragma warning disable IDE0069 // 应释放可释放的字段
         private readonly ITcpServer _server = new TcpServer();
-
+#if ThreadPool
         /// <summary>
         /// 线程池
         /// </summary>
         private readonly ThreadPool _threadPool = new ThreadPool();
-
+#elif AsyncQueue
+        /// <summary>
+        /// 异步消费者队列
+        /// </summary>
+        private AsyncQueue<TaskInfo> _asyncQueue;
+#endif
         /// <summary>
         /// 定时器
         /// </summary>
@@ -34,12 +44,12 @@ namespace TcpServerTestEcho
         };
 
 #pragma warning restore IDE0069 // 应释放可释放的字段
-
+#if ThreadPool
         /// <summary>
         /// 线程池回调函数
         /// </summary>
         private TaskProcEx _taskTaskProc;
-
+#endif
         /// <summary>
         /// 最大封包长度
         /// </summary>
@@ -70,7 +80,7 @@ namespace TcpServerTestEcho
             _server.OnClose += OnClose;
             _server.OnShutdown += OnShutdown;
 
-
+#if ThreadPool
             // 线程池相关设置
             // 线程池回调函数
             _taskTaskProc = TaskTaskProc;
@@ -83,6 +93,19 @@ namespace TcpServerTestEcho
                     AddLog($"线程池当前在执行的任务数: {_threadPool.TaskCount}, 任务队列数: {_threadPool.QueueSize}");
                 }
             };
+#elif AsyncQueue
+            uint ConsumerCount = 2;
+            _asyncQueue = new AsyncQueue<TaskInfo>(ConsumerCount, TaskTaskProc);
+
+            // 定时输出线程池任务数
+            _timer.Elapsed += (_, args) =>
+            {
+                if (_server.HasStarted)
+                {
+                    AddLog($"异步消费者队列的消费者数: {ConsumerCount}, 未执行任务队列数: {_asyncQueue.Count}");
+                }
+            };
+#endif
             _timer.Start();
         }
 
@@ -91,12 +114,17 @@ namespace TcpServerTestEcho
             if (_server.HasStarted)
             {
                 MessageBox.Show(@"请先停止服务", @"服务正在运行:", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+#if AsyncQueue
+                _asyncQueue.Shutdown();
+#endif
                 e.Cancel = true;
                 return;
             }
 
+#if ThreadPool
             // 停止并释放线程池, 会等待所有任务结束
             _threadPool.Dispose();
+#endif
 
             // 停止并释放定时器
             _timer.Stop();
@@ -286,9 +314,14 @@ namespace TcpServerTestEcho
                 }
                 case PacketType.Time: // 假如获取服务器时间是耗时操作, 将该操作放入队列
                 {
+#if ThreadPool
                     // 向线程池提交任务
                     if (!_threadPool.Submit(_taskTaskProc, new TaskInfo
-                    {
+#elif AsyncQueue
+                    // 向异步队列添加数据
+                    if (!_asyncQueue.Enqueue(new TaskInfo
+#endif
+                        {
                         Client = client,
                         Packet = packet,
                     }))
@@ -309,13 +342,17 @@ namespace TcpServerTestEcho
         /// 线程池任务回调函数
         /// </summary>
         /// <param name="obj">任务参数</param>
+#if ThreadPool
         private void TaskTaskProc(object obj)
         {
             if (!(obj is TaskInfo taskInfo))
             {
                 return;
             }
-
+#elif AsyncQueue
+        private void TaskTaskProc(TaskInfo taskInfo)
+        {
+#endif
             // 如果连接已经断开了(可能被踢了)
             // 它的任务就不做了(根据自己业务需求来, 也许你的任务就是要完成每个连接的所有任务, 每个包都要处理, 不管连接断开与否, 就不要写这个判断, 但是你回发包的时候要判断是否有效连接)
             if (!_server.IsConnected(taskInfo.Client.ConnId))
@@ -392,13 +429,14 @@ namespace TcpServerTestEcho
             {
                 if (btnSwitchService.Text == @"启动")
                 {
+#if ThreadPool
                     // 2个线程处理耗时操作, 作为相对耗时的任务, 可根据业务需求多开线程处理
                     if (!_threadPool.Start(2, RejectedPolicy.WaitFor))
                     {
                         btnSwitchService.Enabled = false;
                         throw new Exception($"线程池启动失败, 错误码: {_threadPool.ErrorCode}");
                     }
-
+#endif
                     // 启动服务
                     if (!_server.Start())
                     {
@@ -406,10 +444,10 @@ namespace TcpServerTestEcho
                     }
 
                     btnSwitchService.Text = @"停止";
-
+#if ThreadPool
                     // 等待线程池停止
                     await _threadPool.WaitAsync();
-
+#endif
                     // 等待服务停止
                     await _server.WaitAsync();
 
@@ -421,9 +459,10 @@ namespace TcpServerTestEcho
                 else
                 {
                     btnSwitchService.Enabled = false;
+#if ThreadPool
                     // 停止并等待线程池任务全部完成
                     await _threadPool.StopAsync();
-
+#endif
                     // 等待服务停止
                     await _server.StopAsync();
                 }
