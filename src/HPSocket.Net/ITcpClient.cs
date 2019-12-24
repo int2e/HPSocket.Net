@@ -52,23 +52,21 @@ namespace HPSocket
         /// 发送本地小文件
         /// <para>向指定连接发送 4096 KB 以下的小文件</para>
         /// </summary>
-        /// <param name="connId"></param>
         /// <param name="filePath">文件路径</param>
         /// <param name="head">头部附加数据</param>
         /// <param name="tail">尾部附加数据</param>
         /// <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
-        bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail);
+        bool SendSmallFile(string filePath, ref Wsabuf head, ref Wsabuf tail);
 
         /// <summary>
         /// 发送本地小文件
         /// <para>向指定连接发送 4096 KB 以下的小文件</para>
         /// </summary>
-        /// <param name="connId"></param>
         /// <param name="filePath">文件路径</param>
         /// <param name="head">头部附加数据,可以为null</param>
         /// <param name="tail">尾部附加数据,可以为null</param>
         /// <returns>true.成功,false.失败，可通过 SYSGetLastError() 获取 Windows 错误代码</returns>
-        bool SendSmallFile(IntPtr connId, string filePath, byte[] head, byte[] tail);
+        bool SendSmallFile(string filePath, byte[] head, byte[] tail);
         #endregion
     }
 }

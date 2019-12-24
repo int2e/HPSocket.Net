@@ -93,24 +93,22 @@ namespace HPSocket.Http
         /// <summary>
         /// http agent 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法
         /// </summary>
-        /// <param name="connId"></param>
         /// <param name="filePath"></param>
         /// <param name="head"></param>
         /// <param name="tail"></param>
         /// <returns></returns>
         [Obsolete("http/https client 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法", true)]
-        public new bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail) => false;
+        public new bool SendSmallFile(string filePath, ref Wsabuf head, ref Wsabuf tail) => false;
 
         /// <summary>
         /// http server 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法
         /// </summary>
-        /// <param name="connId"></param>
         /// <param name="filePath"></param>
         /// <param name="head"></param>
         /// <param name="tail"></param>
         /// <returns></returns>
         [Obsolete("http/https client 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法", true)]
-        public new bool SendSmallFile(IntPtr connId, string filePath, byte[] head, byte[] tail) => false;
+        public new bool SendSmallFile(string filePath, byte[] head, byte[] tail) => false;
 
         /// <inheritdoc />
         public bool SendSmallFile(HttpMethod method, string filePath, List<NameValue> headers, string path) => Sdk.Http.HP_HttpClient_SendLocalFile(SenderPtr, filePath, method.ToNameString(), path, headers.ToArray(), headers.Count);

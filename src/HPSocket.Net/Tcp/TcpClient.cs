@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using HPSocket.Adapter;
+using System;
 using System.Runtime.InteropServices;
-using HPSocket.Adapter;
 
 namespace HPSocket.Tcp
 {
@@ -114,10 +113,10 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
-        public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail) => Sdk.Tcp.HP_TcpClient_SendSmallFile(SenderPtr, filePath, ref head, ref tail);
+        public bool SendSmallFile(string filePath, ref Wsabuf head, ref Wsabuf tail) => Sdk.Tcp.HP_TcpClient_SendSmallFile(SenderPtr, filePath, ref head, ref tail);
 
         /// <inheritdoc />
-        public bool SendSmallFile(IntPtr connId, string filePath, byte[] head, byte[] tail)
+        public bool SendSmallFile(string filePath, byte[] head, byte[] tail)
         {
             var wsaHead = new Wsabuf() { Length = 0, Buffer = IntPtr.Zero };
             var wsaTail = new Wsabuf() { Length = 0, Buffer = IntPtr.Zero };
@@ -132,11 +131,11 @@ namespace HPSocket.Tcp
 
             if (tail != null)
             {
-                wsaHead.Length = tail.Length;
-                wsaHead.Buffer = gchTail.AddrOfPinnedObject();
+                wsaTail.Length = tail.Length;
+                wsaTail.Buffer = gchTail.AddrOfPinnedObject();
             }
 
-            var ok = SendSmallFile(connId, filePath, ref wsaHead, ref wsaTail);
+            var ok = SendSmallFile(filePath, ref wsaHead, ref wsaTail);
             gchHead.Free();
             gchTail.Free();
 
