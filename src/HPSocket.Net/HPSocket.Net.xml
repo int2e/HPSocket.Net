@@ -184,6 +184,109 @@
             <param name="data">包体</param>
             <returns>需子类根据包体data自己解析对象并返回</returns>
         </member>
+        <member name="T:HPSocket.AsyncQueue.AsyncQueue`1">
+            <summary>
+            多消费者异步消费队列
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="F:HPSocket.AsyncQueue.AsyncQueue`1._workers">
+            <summary>
+            数据操作类
+            </summary>
+        </member>
+        <member name="F:HPSocket.AsyncQueue.AsyncQueue`1._queue">
+            <summary>
+            消费队列实体
+            </summary>
+        </member>
+        <member name="F:HPSocket.AsyncQueue.AsyncQueue`1._taskProc">
+            <summary>
+            任务处理函数
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.AsyncQueue`1.#ctor(System.UInt32,System.Action{`0})">
+            <summary>
+            构造方法
+            </summary>
+            <param name="consumerCount">消费者数量</param>
+            <param name="taskProc">任务处理函数</param>
+        </member>
+        <member name="P:HPSocket.AsyncQueue.AsyncQueue`1.Count">
+            <summary>
+            剩余数据数量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.AsyncQueue`1.Enqueue(`0)">
+            <summary>
+            队列添加数据
+            </summary>
+            <param name="item">数据实体</param>
+            <returns>成功返回true，失败返回false</returns>
+        </member>
+        <member name="P:HPSocket.AsyncQueue.AsyncQueue`1.ConsumerCount">
+            <summary>
+            消费者数量
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.AsyncQueue`1.AddConsumer(System.UInt32)">
+            <summary>
+            添加消费者
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.AsyncQueue`1.RemoveConsumer(System.UInt32)">
+            <summary>
+            删除消费者
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.AsyncQueue`1.Shutdown">
+            <summary>
+            停止消费
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.AsyncQueue`1.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="F:HPSocket.AsyncQueue.Worker`1._collection">
+            <summary>
+            消费队列实体
+            </summary>
+        </member>
+        <member name="F:HPSocket.AsyncQueue.Worker`1._taskProc">
+            <summary>
+            任务处理函数
+            </summary>
+        </member>
+        <member name="F:HPSocket.AsyncQueue.Worker`1._cts">
+            <summary>
+            控制线程令牌
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.Worker`1.#ctor(System.Collections.Concurrent.BlockingCollection{`0},System.Action{`0})">
+            <summary>
+            构造方法
+            </summary>
+            <param name="collection">消费队列实体</param>
+            <param name="taskProc">任务处理函数</param>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.Worker`1.DoWork">
+            <summary>
+            消费数据方法
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.Worker`1.Stop">
+            <summary>
+            停止线程工作
+            </summary>
+        </member>
+        <member name="M:HPSocket.AsyncQueue.Worker`1.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
         <member name="F:HPSocket.Base.Agent._disposed">
             <summary>
             是否释放了
