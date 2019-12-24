@@ -91,6 +91,7 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP
 + `ISslServer<TRequestBodyType>`
 + `ISslClient<TRequestBodyType>`
 + `ISslAgent<TRequestBodyType>`
++ `AsyncQueue`
 
 `HPSocket.Net` 提供一个Tcp端口转发组件`ITcpPortForwarding`，10行代码即可完成TCP端口转发
 
@@ -105,6 +106,8 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP
 + `IWebSocketServer` WebSocket 服务端
 + `IWebSocketAgent` WebSocket 客户端  （与其他Agent组件不同，WebSocket的Agent组件不支持连接到不同的WebSocket Server，也就是说`IWebSocketAgent`组件所有的连接都只能连接到同一个服务器）
 
+
+`AsyncQueue` 来自 [qq:842352715](https://gitee.com/zhige777/HPSocket.Net)
 
 
 ## 使用说明
