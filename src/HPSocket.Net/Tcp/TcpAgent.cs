@@ -120,8 +120,8 @@ namespace HPSocket.Tcp
 
             if (tail != null)
             {
-                wsaHead.Length = tail.Length;
-                wsaHead.Buffer = gchTail.AddrOfPinnedObject();
+                wsaTail.Length = tail.Length;
+                wsaTail.Buffer = gchTail.AddrOfPinnedObject();
             }
 
             var ok = SendSmallFile(connId, filePath, ref wsaHead, ref wsaTail);
