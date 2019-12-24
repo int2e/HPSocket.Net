@@ -91,6 +91,7 @@ Basic component is the original component provided by HP-Socket. For related usa
 + `ISslServer<TRequestBodyType>`
 + `ISslClient<TRequestBodyType>`
 + `ISslAgent<TRequestBodyType>`
++ `AsyncQueue`
 
 `HPSocket.Net` provides a TCP port forwarding component` ITcpPortForwarding`, 10 lines of code can complete TCP port forwarding.
 
@@ -105,6 +106,8 @@ Basic component is the original component provided by HP-Socket. For related usa
 + `IWebSocketServer` WebSocket Server
 + `IWebSocketAgent` WebSocket Client (Unlike other Agent components, the WebSocket Agent component does not support connecting to different WebSocket Servers, which means that all connections of the `IWebSocketAgent` component can only connect to the same server)
 
+
+`AsyncQueue` from [qq:842352715](https://gitee.com/zhige777/HPSocket.Net)
 
 ## Instructions
 1. For the use of most components, please refer to the project in the `demo` directory.
