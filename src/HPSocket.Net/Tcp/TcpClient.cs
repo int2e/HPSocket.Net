@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using HPSocket.Adapter;
+using System;
 using System.Runtime.InteropServices;
-using HPSocket.Adapter;
 
 namespace HPSocket.Tcp
 {
@@ -132,8 +131,8 @@ namespace HPSocket.Tcp
 
             if (tail != null)
             {
-                wsaHead.Length = tail.Length;
-                wsaHead.Buffer = gchTail.AddrOfPinnedObject();
+                wsaTail.Length = tail.Length;
+                wsaTail.Buffer = gchTail.AddrOfPinnedObject();
             }
 
             var ok = SendSmallFile(filePath, ref wsaHead, ref wsaTail);
