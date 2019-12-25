@@ -106,7 +106,11 @@ namespace HPSocket.WebSocket
 
         #region 公有方法
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 创建websocket客户端实例
+        /// </summary>
+        /// <param name="url">协议地址, 例如ws://127.0.0.1:8080/chat或wss://127.0.0.1:8080/chat</param>
+        /// <param name="protocols">支持的子协议</param>
         public WebSocketAgent(string url, params string[] protocols)
         {
             if (string.IsNullOrEmpty(url))
