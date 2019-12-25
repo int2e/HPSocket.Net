@@ -1,0 +1,1 @@
+dotnet WebSocketClient-TestEcho.dll

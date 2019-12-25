@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HPSocket.Net" Version="5.7.1-rc5" />
+    <PackageReference Include="HPSocket.Net" Version="5.7.1-rc7" />
   </ItemGroup>
 
 </Project>
