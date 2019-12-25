@@ -7021,11 +7021,6 @@
             agent
             </summary>
         </member>
-        <member name="F:HPSocket.Tcp.TcpPortForwarding._resetEvent">
-            <summary>
-            等待
-            </summary>
-        </member>
         <member name="E:HPSocket.Tcp.TcpPortForwarding.OnServerAccept">
             <inheritdoc />
         </member>
