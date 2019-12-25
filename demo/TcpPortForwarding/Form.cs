@@ -174,7 +174,7 @@ namespace TcpPortForwarding
                 else
                 {
                     // 断开所有连接并停止服务
-                    await _portForwarding.StopAsync();
+                     await _portForwarding.StopAsync();
                 }
             }
             catch (Exception ex)

@@ -32,10 +32,6 @@ namespace HPSocket.Tcp
         /// </summary>
         private TcpAgent _agent;
 
-        /// <summary>
-        /// 等待
-        /// </summary>
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(true);
         #endregion
 
         #region 公有成员
@@ -344,9 +340,7 @@ namespace HPSocket.Tcp
                 _agent.Stop();
                 return false;
             }
-
-            _resetEvent.Reset();
-
+            
             return true;
         }
 
@@ -356,14 +350,13 @@ namespace HPSocket.Tcp
             _agent?.Stop();
             _server?.Stop();
 
-            _resetEvent.WaitOne();
             return true;
         }
 
         /// <inheritdoc />
         public bool Wait(int milliseconds = -1)
         {
-            return _resetEvent.WaitOne();
+            return _agent.Wait(milliseconds) && _server.Wait(milliseconds);
         }
 
 #if !NET20 && !NET30 && !NET35
@@ -396,7 +389,6 @@ namespace HPSocket.Tcp
                 // 释放托管对象资源
                 _agent?.Dispose();
                 _server?.Dispose();
-                _resetEvent.Close();
             }
 
             _disposed = true;
