@@ -8100,7 +8100,11 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.#ctor(System.String,System.String[])">
-            <inheritdoc />
+            <summary>
+            创建websocket客户端实例
+            </summary>
+            <param name="url">协议地址, 例如ws://127.0.0.1:8080/chat或wss://127.0.0.1:8080/chat</param>
+            <param name="protocols">支持的子协议</param>
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Start">
             <inheritdoc />
