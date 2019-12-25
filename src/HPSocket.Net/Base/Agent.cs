@@ -284,16 +284,18 @@ namespace HPSocket.Base
             get => _proxyList;
             set
             {
-                _proxyList = value ?? throw new InvalidOperationException("不允许null值, 如果不使用, 请不要设置");
+                _proxyList = value;
+                if (_proxyList != null)
+                {
+                    _onConnect = SdkOnConnect;
+                    _onReceive = SdkOnReceive;
 
-                _onConnect = SdkOnConnect;
-                _onReceive = SdkOnReceive;
+                    Sdk.Agent.HP_Set_FN_Agent_OnConnect(ListenerPtr, _onConnect);
+                    Sdk.Agent.HP_Set_FN_Agent_OnReceive(ListenerPtr, _onReceive);
 
-                Sdk.Agent.HP_Set_FN_Agent_OnConnect(ListenerPtr, _onConnect);
-                Sdk.Agent.HP_Set_FN_Agent_OnReceive(ListenerPtr, _onReceive);
-
-                GC.KeepAlive(_onConnect);
-                GC.KeepAlive(_onReceive);
+                    GC.KeepAlive(_onConnect);
+                    GC.KeepAlive(_onReceive);
+                }
             }
         }
 

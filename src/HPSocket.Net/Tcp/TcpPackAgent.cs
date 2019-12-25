@@ -22,7 +22,14 @@ namespace HPSocket.Tcp
         }
 
         [Obsolete("tcp pack agent 不支持设置代理", true)]
-        public new List<IProxy> ProxyList { get; set; }
+        public new List<IProxy> ProxyList
+        {
+            get => null;
+            set
+            {
+
+            }
+        }
 
         /// <inheritdoc />
         public uint MaxPackSize
