@@ -256,8 +256,7 @@ namespace HPSocket.Http
             if (count > 0)
             {
                 var headersArr = new NameValueIntPtr[count];
-                var gch = GCHandle.Alloc(headersArr, GCHandleType.Pinned);
-                if (Sdk.Http.HP_HttpServer_GetAllHeaders(SenderPtr, connId, gch.AddrOfPinnedObject(), ref count))
+                if (Sdk.Http.HP_HttpServer_GetAllHeaders(SenderPtr, connId, Marshal.UnsafeAddrOfPinnedArrayElement(headersArr, 0), ref count))
                 {
                     foreach (var item in headersArr)
                     {
@@ -268,7 +267,6 @@ namespace HPSocket.Http
                         });
                     }
                 }
-                gch.Free();
             }
             return list;
         }
@@ -314,8 +312,7 @@ namespace HPSocket.Http
             if (count > 0)
             {
                 var headersArr = new NameValueIntPtr[count];
-                var gch = GCHandle.Alloc(headersArr, GCHandleType.Pinned);
-                if (Sdk.Http.HP_HttpServer_GetAllCookies(SenderPtr, connId, gch.AddrOfPinnedObject(), ref count))
+                if (Sdk.Http.HP_HttpServer_GetAllCookies(SenderPtr, connId, Marshal.UnsafeAddrOfPinnedArrayElement(headersArr, 0), ref count))
                 {
                     foreach (var item in headersArr)
                     {
@@ -326,7 +323,6 @@ namespace HPSocket.Http
                         });
                     }
                 }
-                gch.Free();
             }
             return list;
         }
@@ -349,9 +345,9 @@ namespace HPSocket.Http
         /// <inheritdoc />
         public string GetMethod(IntPtr connId) => Sdk.Http.HP_HttpServer_GetMethod(SenderPtr, connId).PtrToAnsiString();
 
-        #region SDK事件
+#region SDK事件
 
-        #region SDK回调委托,防止GC
+#region SDK回调委托,防止GC
 
         private Sdk.OnPrepareListen _onPrepareListen;
         private Sdk.OnAccept _onAccept;
@@ -376,7 +372,7 @@ namespace HPSocket.Http
         private Sdk.OnWsMessageBody _onWsMessageBody;
         private Sdk.OnWsMessageComplete _onWsMessageComplete;
 
-        #endregion
+#endregion
 
         protected override void SetCallback()
         {
@@ -494,6 +490,6 @@ namespace HPSocket.Http
 
         protected HttpParseResult SdkOnParseError(IntPtr sender, IntPtr connId, int errorCode, string errorDesc) => OnParseError?.Invoke(this, connId, errorCode, errorDesc) ?? HttpParseResult.Ok;
 
-        #endregion
+#endregion
     }
 }

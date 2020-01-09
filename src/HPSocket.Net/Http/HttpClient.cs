@@ -292,13 +292,11 @@ namespace HPSocket.Http
         {
             var list = new List<NameValue>();
             uint count = 0;
-            var ptr = IntPtr.Zero;
-            Sdk.Http.HP_HttpClient_GetAllHeaders(SenderPtr, ptr, ref count);
+            Sdk.Http.HP_HttpClient_GetAllHeaders(SenderPtr, IntPtr.Zero, ref count);
             if (count > 0)
             {
                 var headersArr = new NameValueIntPtr[count];
-                var gch = GCHandle.Alloc(headersArr, GCHandleType.Pinned);
-                if (Sdk.Http.HP_HttpClient_GetAllHeaders(SenderPtr, gch.AddrOfPinnedObject(), ref count))
+                if (Sdk.Http.HP_HttpClient_GetAllHeaders(SenderPtr, Marshal.UnsafeAddrOfPinnedArrayElement(headersArr, 0), ref count))
                 {
                     foreach (var item in headersArr)
                     {
@@ -309,7 +307,6 @@ namespace HPSocket.Http
                         });
                     }
                 }
-                gch.Free();
             }
             return list;
         }
@@ -355,8 +352,7 @@ namespace HPSocket.Http
             if (count > 0)
             {
                 var headersArr = new NameValueIntPtr[count];
-                var gch = GCHandle.Alloc(headersArr, GCHandleType.Pinned);
-                if (Sdk.Http.HP_HttpClient_GetAllCookies(SenderPtr, gch.AddrOfPinnedObject(), ref count))
+                if (Sdk.Http.HP_HttpClient_GetAllCookies(SenderPtr, Marshal.UnsafeAddrOfPinnedArrayElement(headersArr, 0), ref count))
                 {
                     foreach (var item in headersArr)
                     {
@@ -367,7 +363,6 @@ namespace HPSocket.Http
                         });
                     }
                 }
-                gch.Free();
             }
             return list;
         }

@@ -309,8 +309,7 @@ namespace HPSocket.Http
             if (count > 0)
             {
                 var headersArr = new NameValueIntPtr[count];
-                var gch = GCHandle.Alloc(headersArr, GCHandleType.Pinned);
-                if (Sdk.Http.HP_HttpAgent_GetAllHeaders(SenderPtr, connId, gch.AddrOfPinnedObject(), ref count))
+                if (Sdk.Http.HP_HttpAgent_GetAllHeaders(SenderPtr, connId, Marshal.UnsafeAddrOfPinnedArrayElement(headersArr, 0), ref count))
                 {
                     foreach (var item in headersArr)
                     {
@@ -321,7 +320,6 @@ namespace HPSocket.Http
                         });
                     }
                 }
-                gch.Free();
             }
             return list;
         }
@@ -367,8 +365,7 @@ namespace HPSocket.Http
             if (count > 0)
             {
                 var headersArr = new NameValueIntPtr[count];
-                var gch = GCHandle.Alloc(headersArr, GCHandleType.Pinned);
-                if (Sdk.Http.HP_HttpAgent_GetAllCookies(SenderPtr, connId, gch.AddrOfPinnedObject(), ref count))
+                if (Sdk.Http.HP_HttpAgent_GetAllCookies(SenderPtr, connId, Marshal.UnsafeAddrOfPinnedArrayElement(headersArr, 0), ref count))
                 {
                     foreach (var item in headersArr)
                     {
@@ -379,7 +376,6 @@ namespace HPSocket.Http
                         });
                     }
                 }
-                gch.Free();
             }
             return list;
         }
