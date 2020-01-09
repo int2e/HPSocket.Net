@@ -56,6 +56,66 @@ namespace HPSocket.Http
         {
         }
 
+        ~HttpEasyAgent()
+        {
+            _easyData.Clear();
+            _easyWsMessageData.Clear();
+        }
+
+        #region SDK回调委托,防止GC
+
+        private Sdk.OnClose _onClose;
+
+        private Sdk.OnHeadersComplete _onHeadersComplete;
+        private Sdk.OnBody _onBody;
+        private Sdk.OnChunkHeader _onChunkHeader;
+        private Sdk.OnChunkComplete _onChunkComplete;
+        private Sdk.OnMessageComplete _onMessageComplete;
+
+        private Sdk.OnWsMessageHeader _onWsMessageHeader;
+        private Sdk.OnWsMessageBody _onWsMessageBody;
+        private Sdk.OnWsMessageComplete _onWsMessageComplete;
+
+        #endregion
+
+        protected override void SetCallback()
+        {
+            base.SetCallback();
+
+
+            _onClose = SdkOnClose;
+            Sdk.Http.HP_Set_FN_HttpAgent_OnClose(ListenerPtr, _onClose);
+
+            _onHeadersComplete = SdkOnHeadersComplete;
+            _onBody = SdkOnBody;
+            _onChunkHeader = SdkOnChunkHeader;
+            _onChunkComplete = SdkOnChunkComplete;
+            _onMessageComplete = SdkOnMessageComplete;
+            Sdk.Http.HP_Set_FN_HttpAgent_OnHeadersComplete(ListenerPtr, _onHeadersComplete);
+            Sdk.Http.HP_Set_FN_HttpAgent_OnBody(ListenerPtr, _onBody);
+            Sdk.Http.HP_Set_FN_HttpAgent_OnChunkHeader(ListenerPtr, _onChunkHeader);
+            Sdk.Http.HP_Set_FN_HttpAgent_OnChunkComplete(ListenerPtr, _onChunkComplete);
+            Sdk.Http.HP_Set_FN_HttpAgent_OnMessageComplete(ListenerPtr, _onMessageComplete);
+
+            _onWsMessageHeader = SdkOnWsMessageHeader;
+            _onWsMessageBody = SdkOnWsMessageBody;
+            _onWsMessageComplete = SdkOnWsMessageComplete;
+            Sdk.Http.HP_Set_FN_HttpAgent_OnWSMessageHeader(ListenerPtr, _onWsMessageHeader);
+            Sdk.Http.HP_Set_FN_HttpAgent_OnWSMessageBody(ListenerPtr, _onWsMessageBody);
+            Sdk.Http.HP_Set_FN_HttpAgent_OnWSMessageComplete(ListenerPtr, _onWsMessageComplete);
+
+            GC.KeepAlive(_onClose);
+
+            GC.KeepAlive(_onHeadersComplete);
+            GC.KeepAlive(_onBody);
+            GC.KeepAlive(_onChunkHeader);
+            GC.KeepAlive(_onChunkComplete);
+            GC.KeepAlive(_onMessageComplete);
+
+            GC.KeepAlive(_onWsMessageHeader);
+            GC.KeepAlive(_onWsMessageBody);
+            GC.KeepAlive(_onWsMessageComplete);
+        }
 
         #region 重写父类websocket相关方法, 父类相关事件不会继续触发 
         protected new HandleResult SdkOnWsMessageHeader(IntPtr sender, IntPtr connId, bool final, Rsv rsv, OpCode opCode, byte[] mask, ulong bodyLength)
