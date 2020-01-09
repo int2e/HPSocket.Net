@@ -15,9 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="HPSocket.Net">
-      <HintPath>..\..\..\src\HPSocket.Net\bin\Debug\netstandard2.0\HPSocket.Net.dll</HintPath>
-    </Reference>
+    <PackageReference Include="HPSocket.Net" Version="5.7.1.1" />
   </ItemGroup>
 
 </Project>
