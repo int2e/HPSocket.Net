@@ -71,6 +71,9 @@ namespace HPSocket.Tcp
         /// </summary>
         public IntPtr SenderPtr => IntPtr.Zero;
 
+        /// <inheritdoc />
+        public object Tag { get; set; }
+
         /// <summary>
         /// 当前组件版本
         /// </summary>

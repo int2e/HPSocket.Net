@@ -17,6 +17,11 @@ namespace HPSocket
         IntPtr SenderPtr { get; }
 
         /// <summary>
+        /// 获取或设置包含有关组件的数据的对象
+        /// </summary>
+        object Tag { get; set; }
+
+        /// <summary>
         /// 当前组件版本
         /// </summary>
         string Version { get; }

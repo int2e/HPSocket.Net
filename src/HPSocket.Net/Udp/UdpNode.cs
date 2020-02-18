@@ -40,6 +40,9 @@ namespace HPSocket.Udp
         public IntPtr SenderPtr { get; protected set; } = IntPtr.Zero;
 
         /// <inheritdoc />
+        public object Tag { get; set; }
+
+        /// <inheritdoc />
         public string Address { get; set; } = "0.0.0.0";
 
         /// <inheritdoc />

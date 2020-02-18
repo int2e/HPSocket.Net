@@ -345,6 +345,9 @@
         <member name="P:HPSocket.Base.Agent.SenderPtr">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Base.Agent.Tag">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Agent.Address">
             <inheritdoc />
         </member>
@@ -610,6 +613,9 @@
         <member name="P:HPSocket.Base.Client.SenderPtr">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Base.Client.Tag">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Client.Address">
             <inheritdoc />
         </member>
@@ -803,6 +809,9 @@
             </summary>
         </member>
         <member name="P:HPSocket.Base.Server.SenderPtr">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Base.Server.Tag">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.Address">
@@ -4414,6 +4423,11 @@
             <para>比如在 hp-socket 的线程池中需要使用</para>
             </summary>
         </member>
+        <member name="P:HPSocket.ISocket.Tag">
+            <summary>
+            获取或设置包含有关组件的数据的对象
+            </summary>
+        </member>
         <member name="P:HPSocket.ISocket.Version">
             <summary>
             当前组件版本
@@ -7050,6 +7064,9 @@
             该属性不适用在当前组件
             </summary>
         </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwarding.Tag">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Tcp.TcpPortForwarding.Version">
             <summary>
             当前组件版本
@@ -7644,6 +7661,9 @@
         <member name="P:HPSocket.Udp.UdpNode.SenderPtr">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Udp.UdpNode.Tag">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Udp.UdpNode.Address">
             <inheritdoc />
         </member>
@@ -8034,6 +8054,9 @@
             从内存加载证书
             </summary>
         </member>
+        <member name="P:HPSocket.WebSocket.WebSocketAgent.Tag">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.BindAddress">
             <inheritdoc />
         </member>
@@ -8163,6 +8186,9 @@
             <summary>
             释放资源
             </summary>
+        </member>
+        <member name="P:HPSocket.WebSocket.WebSocketServer.Tag">
+            <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.Http">
             <inheritdoc />

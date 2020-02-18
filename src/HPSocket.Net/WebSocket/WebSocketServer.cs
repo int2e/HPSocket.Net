@@ -33,6 +33,9 @@ namespace HPSocket.WebSocket
         #region 公有成员
 
         /// <inheritdoc />
+        public object Tag { get; set; }
+
+        /// <inheritdoc />
         public IHttpMultiId Http => _httpServer;
 
         /// <inheritdoc />
