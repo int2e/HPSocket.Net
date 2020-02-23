@@ -1,4 +1,10 @@
 ﻿using System;
+#if NET20 || NET30 || NET35
+using System.Collections.Generic;
+#else
+using System.Collections.Concurrent;
+#endif
+
 
 namespace HPSocket.WebSocket
 {
@@ -7,6 +13,22 @@ namespace HPSocket.WebSocket
     /// </summary>
     public abstract class Hub : IHub
     {
+#if NET20 || NET30 || NET35
+        private readonly List<IntPtr> _connectionIds = new List<IntPtr>();
+        
+        /// <summary>
+        /// 获取连接到当前Hub的连接
+        /// </summary>
+        protected List<IntPtr> ConnectionIds => _connectionIds;
+#else
+        private readonly ConcurrentBag<IntPtr> _connectionIds = new ConcurrentBag<IntPtr>();
+
+        /// <summary>
+        /// 获取连接到当前Hub的连接
+        /// </summary>
+        protected IntPtr[] ConnectionIds => _connectionIds.ToArray();
+#endif
+
         /// <summary>
         /// cont/text/binary 消息
         /// </summary>
@@ -25,7 +47,18 @@ namespace HPSocket.WebSocket
         /// <param name="sender"></param>
         /// <param name="connId"></param>
         /// <returns></returns>
-        public virtual HandleResult OnOpen(IWebSocketServer sender, IntPtr connId) => HandleResult.Ok;
+        public virtual HandleResult OnOpen(IWebSocketServer sender, IntPtr connId)
+        {
+#if NET20 || NET30 || NET35
+            lock (_connectionIds)
+            {
+                _connectionIds.Add(connId);
+            }
+#else
+            _connectionIds.Add(connId);
+#endif
+            return HandleResult.Ok;
+        }
 
         /// <summary>
         /// 连接关闭
@@ -35,7 +68,18 @@ namespace HPSocket.WebSocket
         /// <param name="socketOperation"></param>
         /// <param name="errorCode"></param>
         /// <returns></returns>
-        public virtual HandleResult OnClose(IWebSocketServer sender, IntPtr connId, SocketOperation socketOperation, int errorCode) => HandleResult.Ok;
+        public virtual HandleResult OnClose(IWebSocketServer sender, IntPtr connId, SocketOperation socketOperation, int errorCode)
+        {
+#if NET20 || NET30 || NET35
+            lock (_connectionIds)
+            {
+                _connectionIds.Remove(connId);
+            }
+#else
+            _connectionIds.TryTake(out var _);
+#endif
+            return HandleResult.Ok; ;
+        }
 
         /// <summary>
         /// ping 消息
