@@ -8,11 +8,6 @@ namespace HPSocket.WebSocket
     public interface IHub
     {
         /// <summary>
-        /// 获取连接到当前Hub的连接
-        /// </summary>
-        IntPtr[] ConnectionIds { get; }
-
-        /// <summary>
         /// cont/text/binary 消息
         /// </summary>
         /// <param name="sender"></param>
