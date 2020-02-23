@@ -17,7 +17,7 @@ namespace WebSocketServerTestEcho
 
                 using (IWebSocketServer server = new WebSocketServer($"{(wss ? "wss" : "ws")}://127.0.0.1:8800")
                 {
-                    // 忽略压缩扩展, 不忽略支持数据包压缩解压缩, 主流浏览器都支持持
+                    // 忽略压缩扩展, 不忽略支持数据包压缩解压缩, 主流浏览器都支持
                     IgnoreCompressionExtensions = false,
 
                     // 自动发送ping消息的时间间隔
