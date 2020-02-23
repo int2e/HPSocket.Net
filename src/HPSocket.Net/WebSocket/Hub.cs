@@ -19,14 +19,14 @@ namespace HPSocket.WebSocket
         /// <summary>
         /// 获取连接到当前Hub的连接
         /// </summary>
-        protected List<IntPtr> ConnectionIds => _connectionIds;
+        public IntPtr[] ConnectionIds => _connectionIds.ToArray();
 #else
         private readonly ConcurrentBag<IntPtr> _connectionIds = new ConcurrentBag<IntPtr>();
 
         /// <summary>
         /// 获取连接到当前Hub的连接
         /// </summary>
-        protected IntPtr[] ConnectionIds => _connectionIds.ToArray();
+        public IntPtr[] ConnectionIds => _connectionIds.ToArray();
 #endif
 
         /// <summary>
