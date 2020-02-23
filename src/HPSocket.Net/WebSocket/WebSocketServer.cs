@@ -230,6 +230,17 @@ namespace HPSocket.WebSocket
         }
 
         /// <inheritdoc />
+        public THubWithNew GetHub<THubWithNew>(string path) where THubWithNew : IHub, new()
+        {
+            var obj = _services.Get(path);
+            if (obj is THubWithNew hub)
+            {
+                return hub;
+            }
+            return default;
+        }
+
+        /// <inheritdoc />
         public void RemoveHub(string path)
         {
             _services.Remove(path);
@@ -480,8 +491,8 @@ namespace HPSocket.WebSocket
                     path = "/";
                 }
 
-                var behavior = _services.Get(path);
-                if (behavior == null)
+                var hub = _services.Get(path);
+                if (hub == null)
                 {
                     httpServer.SendResponse(connId, HttpStatusCode.BadRequest, headers, null, 0);
                     Close(connId);
@@ -503,7 +514,7 @@ namespace HPSocket.WebSocket
                     ok = _sessions.Set(connId, session);
                     if (ok)
                     {
-                        ok = behavior.OnOpen(this, connId) != HandleResult.Error;
+                        ok = hub.OnOpen(this, connId) != HandleResult.Error;
                         PingTimer(connId);
                     }
                 }
@@ -597,24 +608,24 @@ namespace HPSocket.WebSocket
                 data = data.Decompress(session.Compression);
             }
 
-            var behavior = _services.Get(session.Path);
+            var hub = _services.Get(session.Path);
 
             switch (session.OpCode)
             {
                 case OpCode.Ping:
                     Pong(connId, data, data.Length);
-                    behavior.OnPing(this, connId, data);
+                    hub.OnPing(this, connId, data);
                     return HandleResult.Ok;
                 case OpCode.Pong:
                     if (PingInterval == 0)
                     {
                         Ping(connId, null, 0);
                     }
-                    behavior.OnPong(this, connId, data);
+                    hub.OnPong(this, connId, data);
                     return HandleResult.Ok;
             }
 
-            return behavior.OnMessage(this, connId, session.Final, session.OpCode, session.Mask, data);
+            return hub.OnMessage(this, connId, session.Final, session.OpCode, session.Mask, data);
         }
 
         // ReSharper disable once InconsistentNaming
