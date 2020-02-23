@@ -257,6 +257,9 @@ namespace HPSocket.WebSocket
             _httpAgent.Disconnect(connId);
         }
 
+        /// <inheritdoc />
+        public List<IntPtr> GetAllConnectionIds() => _httpAgent.GetAllConnectionIds();
+
         #endregion
 
         #region httpAgent组件对象回调

@@ -91,7 +91,6 @@ namespace HPSocket.WebSocket
 
         #region 公有方法
 
-        /// <inheritdoc />
         public WebSocketServer(string url)
         {
             if (string.IsNullOrEmpty(url))
@@ -214,6 +213,9 @@ namespace HPSocket.WebSocket
             // 延迟释放
             _httpServer.Release(connId);
         }
+
+        /// <inheritdoc />
+        public List<IntPtr> GetAllConnectionIds() => _httpServer.GetAllConnectionIds();
 
         /// <inheritdoc />
         public bool HasStarted => _httpServer.HasStarted;

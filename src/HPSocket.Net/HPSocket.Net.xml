@@ -5826,6 +5826,12 @@
             </summary>
             <param name="connId"></param>
         </member>
+        <member name="M:HPSocket.IWebSocket.GetAllConnectionIds">
+            <summary>
+            获取所有连接
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:HPSocket.IWebSocketAgent">
             <summary>
             websocket agent
@@ -7882,6 +7888,11 @@
             web socket hub
             </summary>
         </member>
+        <member name="P:HPSocket.WebSocket.Hub.ConnectionIds">
+            <summary>
+            获取连接到当前Hub的连接
+            </summary>
+        </member>
         <member name="M:HPSocket.WebSocket.Hub.OnMessage(HPSocket.IWebSocketServer,System.IntPtr,System.Boolean,HPSocket.WebSocket.OpCode,System.Byte[],System.Byte[])">
             <summary>
             cont/text/binary 消息
@@ -8171,6 +8182,9 @@
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Close(System.IntPtr)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.WebSocket.WebSocketAgent.GetAllConnectionIds">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.WebSocket.WebSocketAgent.Destroy">
             <summary>
             释放资源
@@ -8220,9 +8234,6 @@
         <member name="P:HPSocket.WebSocket.WebSocketServer.SubProtocols">
             <inheritdoc />
         </member>
-        <member name="M:HPSocket.WebSocket.WebSocketServer.#ctor(System.String)">
-            <inheritdoc />
-        </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Start">
             <inheritdoc />
         </member>
@@ -8254,6 +8265,9 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.Close(System.IntPtr)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.GetAllConnectionIds">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.HasStarted">

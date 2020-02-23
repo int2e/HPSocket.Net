@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using HPSocket.WebSocket;
 
 namespace HPSocket
@@ -111,6 +112,11 @@ namespace HPSocket
         /// <param name="connId"></param>
         void Close(IntPtr connId);
 
+        /// <summary>
+        /// 获取所有连接
+        /// </summary>
+        /// <returns></returns>
+        List<IntPtr> GetAllConnectionIds();
 
         #endregion
     }
