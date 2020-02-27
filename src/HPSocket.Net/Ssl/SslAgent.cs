@@ -150,7 +150,7 @@ namespace HPSocket.Ssl
         {
             if (IsInitSsl)
             {
-                Sdk.Ssl.HP_SSLServer_CleanupSSLContext(SenderPtr);
+                Sdk.Ssl.HP_SSLAgent_CleanupSSLContext(SenderPtr);
                 IsInitSsl = false;
             }
         }
