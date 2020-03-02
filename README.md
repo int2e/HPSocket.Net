@@ -417,7 +417,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         public HeadTailDataReceiveAdapter() 
             : base( // For example, the data format is "#* 123456 *#", which starts with #* and ends with *#, and the middle 123456 part is the real data
                 start : Encoding.UTF8.GetBytes("#*"),  // Section start identifier, starting with #* here, pay attention to encoding issues, and be consistent at both sides
-                end : Encoding.UTF8.GetBytes("*#")  // Section end identifier, starting with *# here, pay attention to encoding issues, and be consistent at both sides
+                end : Encoding.UTF8.GetBytes("*#")  // Section end identifier, ends with *# here, pay attention to encoding issues, and be consistent at both sides
                 )
         {
         }

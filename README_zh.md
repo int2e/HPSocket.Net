@@ -419,7 +419,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         public HeadTailDataReceiveAdapter() 
             : base( // 例如数据格式是"#*123456*#"，其中以#*开头，以*#结尾，中间123456部分是真实数据
                 start : Encoding.UTF8.GetBytes("#*")， // 区间起始标志，这里以#*开始，注意编码问题，要两端保持一致
-                end : Encoding.UTF8.GetBytes("*#")  // 区间结束标志，这里以*#开始，注意编码问题，要两端保持一致
+                end : Encoding.UTF8.GetBytes("*#")  // 区间结束标志，这里以*#结束，注意编码问题，要两端保持一致
                 )
         {
         }
