@@ -388,7 +388,7 @@ namespace HPSocket.WebSocket
                 _httpSessions.Set(connId, session);
             }
 
-            var httpServer = (HttpsServer)sender;
+            var httpServer = (IHttpServer)sender;
             session.Cookies = httpServer.GetAllCookies(connId);
             session.Headers = httpServer.GetAllHeaders(connId);
             session.QueryString = httpServer.GetUrlField(connId, HttpUrlField.QueryString);
