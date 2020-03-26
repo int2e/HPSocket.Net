@@ -229,25 +229,25 @@ namespace HPSocket.WebSocket
         }
 
         /// <inheritdoc />
-        public void AddHub<THubWithNew>(string path) where THubWithNew : IHub, new()
+        public void AddHub<THub>(string path) where THub : IHub, new()
         {
             if (String.IsNullOrWhiteSpace(path))
             {
-                throw new ArgumentException("参数不能为null", nameof(path));
+                throw new ArgumentException("参数不能为空", nameof(path));
             }
 
-            if (!_services.Set(path, new THubWithNew()))
+            if (!_services.Set(path, new THub()))
             {
                 throw new WebSocketException("绑定失败");
             }
         }
 
         /// <inheritdoc />
-        public void AddHub<THubWithNew>(string path, THubWithNew obj) where THubWithNew : IHub
+        public void AddHub<THub>(string path, THub obj) where THub : IHub
         {
             if (String.IsNullOrWhiteSpace(path))
             {
-                throw new ArgumentException("参数不能为null", nameof(path));
+                throw new ArgumentException("参数不能为空", nameof(path));
             }
 
             if (obj == null)
@@ -262,15 +262,15 @@ namespace HPSocket.WebSocket
         }
 
         /// <inheritdoc />
-        public THubWithNew GetHub<THubWithNew>(string path) where THubWithNew : IHub
+        public THub GetHub<THub>(string path) where THub : IHub
         {
             if (String.IsNullOrWhiteSpace(path))
             {
-                throw new ArgumentException("参数不能为null", nameof(path));
+                throw new ArgumentException("参数不能为空", nameof(path));
             }
 
             var obj = _services.Get(path);
-            if (obj is THubWithNew hub)
+            if (obj is THub hub)
             {
                 return hub;
             }

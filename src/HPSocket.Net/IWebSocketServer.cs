@@ -37,26 +37,26 @@ namespace HPSocket
         /// 对path注册特定服务
         /// <para>例如: AddHub&lt;Chat&gt;("/chat")</para>
         /// </summary>
-        /// <typeparam name="THubWithNew">继承自THubWithNew的类</typeparam>
+        /// <typeparam name="THub">继承自THubWithNew的类</typeparam>
         /// <param name="path">url path</param>
-        void AddHub<THubWithNew>(string path) where THubWithNew : IHub, new();
+        void AddHub<THub>(string path) where THub : IHub, new();
 
         /// <summary>
         /// 对path注册特定服务且绑定到已有对象实例
         /// <para>例如: AddHub&lt;Chat&gt;("/chat", form1)</para>
         /// </summary>
-        /// <typeparam name="THubWithNew">继承自THubWithNew的类</typeparam>
+        /// <typeparam name="THub">继承自THubWithNew的类</typeparam>
         /// <param name="path">url path</param>
         /// <param name="obj">已THubWithNew类型的对象实例，例如：form1</param>
-        void AddHub<THubWithNew>(string path, THubWithNew obj) where THubWithNew : IHub;
+        void AddHub<THub>(string path, THub obj) where THub : IHub;
 
         /// <summary>
         /// 获取指定类型的已注册过的服务
         /// </summary>
-        /// <typeparam name="THubWithNew">继承自THubWithNew的类</typeparam>
+        /// <typeparam name="THub">继承自THubWithNew的类</typeparam>
         /// <param name="path"></param>
         /// <returns>path有效返回对象，path无效返回T的默认类型</returns>
-        THubWithNew GetHub<THubWithNew>(string path) where THubWithNew : IHub;
+        THub GetHub<THub>(string path) where THub : IHub;
 
         /// <summary>
         /// 移除已注册的服务
