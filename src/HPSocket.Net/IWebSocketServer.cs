@@ -1,4 +1,5 @@
-﻿using HPSocket.WebSocket;
+﻿using System;
+using HPSocket.WebSocket;
 
 namespace HPSocket
 {
@@ -26,6 +27,13 @@ namespace HPSocket
         #region 服务器方法
 
         /// <summary>
+        /// 获取连接的http会话信息
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <returns></returns>
+        HttpSession GetHttpSession(IntPtr connId);
+
+        /// <summary>
         /// 对path注册特定服务
         /// <para>例如: AddHub&lt;Chat&gt;("/chat")</para>
         /// </summary>
@@ -34,12 +42,21 @@ namespace HPSocket
         void AddHub<THubWithNew>(string path) where THubWithNew : IHub, new();
 
         /// <summary>
+        /// 对path注册特定服务且绑定到已有对象实例
+        /// <para>例如: AddHub&lt;Chat&gt;("/chat", form1)</para>
+        /// </summary>
+        /// <typeparam name="THubWithNew">继承自THubWithNew的类</typeparam>
+        /// <param name="path">url path</param>
+        /// <param name="obj">已THubWithNew类型的对象实例，例如：form1</param>
+        void AddHub<THubWithNew>(string path, THubWithNew obj) where THubWithNew : IHub;
+
+        /// <summary>
         /// 获取指定类型的已注册过的服务
         /// </summary>
         /// <typeparam name="THubWithNew">继承自THubWithNew的类</typeparam>
         /// <param name="path"></param>
         /// <returns>path有效返回对象，path无效返回T的默认类型</returns>
-        THubWithNew GetHub<THubWithNew>(string path) where THubWithNew : IHub, new();
+        THubWithNew GetHub<THubWithNew>(string path) where THubWithNew : IHub;
 
         /// <summary>
         /// 移除已注册的服务

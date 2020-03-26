@@ -25,7 +25,8 @@ namespace HPSocket.WebSocket
         private bool _disposed;
         private readonly IHttpServer _httpServer;
         private SslConfiguration _sslConfiguration;
-        private readonly ExtraData<IntPtr, WebSocketSession> _sessions = new ExtraData<IntPtr, WebSocketSession>();
+        private readonly ExtraData<IntPtr, WebSocketSession> _wsSessions = new ExtraData<IntPtr, WebSocketSession>();
+        private readonly ExtraData<IntPtr, HttpSession> _httpSessions = new ExtraData<IntPtr, HttpSession>();
         private readonly ExtraData<string, IHub> _services = new ExtraData<string, IHub>();
 
         #endregion
@@ -108,6 +109,7 @@ namespace HPSocket.WebSocket
             IsSecure = Uri.Scheme == "wss";
             _httpServer = IsSecure ? new HttpsServer() : new HttpServer();
             _httpServer.ReleaseDelay = 3000;
+            _httpServer.OnHeadersComplete += OnHttpServerHeadersComplete;
             _httpServer.OnUpgrade += OnHttpServerUpgrade;
             _httpServer.OnWsMessageHeader += OnWsMessageHeader;
             _httpServer.OnWsMessageBody += OnWsMessageBody;
@@ -161,7 +163,7 @@ namespace HPSocket.WebSocket
         /// <inheritdoc />
         public bool Send(IntPtr connId, bool final, OpCode opCode, byte[] data, int length)
         {
-            var session = _sessions.Get(connId);
+            var session = _wsSessions.Get(connId);
             if (session == null)
             {
                 return false;
@@ -221,8 +223,19 @@ namespace HPSocket.WebSocket
         public bool HasStarted => _httpServer.HasStarted;
 
         /// <inheritdoc />
+        public HttpSession GetHttpSession(IntPtr connId)
+        {
+            return _httpSessions.Get(connId);
+        }
+
+        /// <inheritdoc />
         public void AddHub<THubWithNew>(string path) where THubWithNew : IHub, new()
         {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("参数不能为null", nameof(path));
+            }
+
             if (!_services.Set(path, new THubWithNew()))
             {
                 throw new WebSocketException("绑定失败");
@@ -230,8 +243,32 @@ namespace HPSocket.WebSocket
         }
 
         /// <inheritdoc />
-        public THubWithNew GetHub<THubWithNew>(string path) where THubWithNew : IHub, new()
+        public void AddHub<THubWithNew>(string path, THubWithNew obj) where THubWithNew : IHub
         {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("参数不能为null", nameof(path));
+            }
+
+            if (obj == null)
+            {
+                throw new ArgumentException("参数不能为null", nameof(obj));
+            }
+
+            if (!_services.Set(path, obj))
+            {
+                throw new WebSocketException("绑定失败");
+            }
+        }
+
+        /// <inheritdoc />
+        public THubWithNew GetHub<THubWithNew>(string path) where THubWithNew : IHub
+        {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("参数不能为null", nameof(path));
+            }
+
             var obj = _services.Get(path);
             if (obj is THubWithNew hub)
             {
@@ -342,6 +379,21 @@ namespace HPSocket.WebSocket
 
         #region httpserver组件对象回调
 
+        private HttpParseResultEx OnHttpServerHeadersComplete(IHttp sender, IntPtr connId)
+        {
+            var session = _httpSessions.Get(connId);
+            if (session == null)
+            {
+                session = new HttpSession();
+                _httpSessions.Set(connId, session);
+            }
+
+            var httpServer = (HttpsServer)sender;
+            session.Cookies = httpServer.GetAllCookies(connId);
+            session.Headers = httpServer.GetAllHeaders(connId);
+            session.QueryString = httpServer.GetUrlField(connId, HttpUrlField.QueryString);
+            return HttpParseResultEx.Ok;
+        }
 
         // ReSharper disable once InconsistentNaming
         private HttpParseResult OnHttpServerUpgrade(IHttp sender, IntPtr connId, HttpUpgradeType upgradeType)
@@ -511,7 +563,7 @@ namespace HPSocket.WebSocket
                         Compression = compressionMethod,
                         Rsv = compressionMethod == CompressionMethod.None ? Rsv.Off : Rsv.Compression,
                     };
-                    ok = _sessions.Set(connId, session);
+                    ok = _wsSessions.Set(connId, session);
                     if (ok)
                     {
                         ok = hub.OnOpen(this, connId) != HandleResult.Error;
@@ -530,7 +582,7 @@ namespace HPSocket.WebSocket
             //    return HandleResult.Error;
             //}
 
-            var session = _sessions.Get(connId);
+            var session = _wsSessions.Get(connId);
             if (session == null)
             {
                 return HandleResult.Error;
@@ -572,7 +624,7 @@ namespace HPSocket.WebSocket
         // ReSharper disable once InconsistentNaming
         private HandleResult OnWsMessageBody(IHttp sender, IntPtr connId, byte[] data)
         {
-            var session = _sessions.Get(connId);
+            var session = _wsSessions.Get(connId);
             if (session == null)
             {
                 return HandleResult.Error;
@@ -596,7 +648,7 @@ namespace HPSocket.WebSocket
         // ReSharper disable once InconsistentNaming
         private HandleResult OnWsMessageComplete(IHttp sender, IntPtr connId)
         {
-            var session = _sessions.Get(connId);
+            var session = _wsSessions.Get(connId);
             if (session?.Data == null)
             {
                 return HandleResult.Error;
@@ -631,14 +683,16 @@ namespace HPSocket.WebSocket
         // ReSharper disable once InconsistentNaming
         private HandleResult OnHttpServerClose(IServer sender, IntPtr connId, SocketOperation socketOperation, int errorCode)
         {
-            var session = _sessions.Get(connId);
+            _httpSessions.Remove(connId);
+
+            var session = _wsSessions.Get(connId);
             if (session == null)
             {
                 return HandleResult.Error;
             }
 
             session.Data = null;
-            _sessions.Remove(connId);
+            _wsSessions.Remove(connId);
 
             return _services.Get(session.Path).OnClose(this, connId, socketOperation, errorCode);
         }
@@ -671,7 +725,7 @@ namespace HPSocket.WebSocket
             if (disposing)
             {
                 // 释放托管对象资源
-                _sessions.Clear();
+                _wsSessions.Clear();
                 _services.Clear();
             }
 
