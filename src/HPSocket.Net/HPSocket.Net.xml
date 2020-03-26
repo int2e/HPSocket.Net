@@ -5938,6 +5938,13 @@
             获取是否启动
             </summary>
         </member>
+        <member name="M:HPSocket.IWebSocketServer.GetHttpSession(System.IntPtr)">
+            <summary>
+            获取连接的http会话信息
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IWebSocketServer.AddHub``1(System.String)">
             <summary>
             对path注册特定服务
@@ -5945,6 +5952,15 @@
             </summary>
             <typeparam name="THubWithNew">继承自THubWithNew的类</typeparam>
             <param name="path">url path</param>
+        </member>
+        <member name="M:HPSocket.IWebSocketServer.AddHub``1(System.String,``0)">
+            <summary>
+            对path注册特定服务且绑定到已有对象实例
+            <para>例如: AddHub&lt;Chat&gt;("/chat", form1)</para>
+            </summary>
+            <typeparam name="THubWithNew">继承自THubWithNew的类</typeparam>
+            <param name="path">url path</param>
+            <param name="obj">已THubWithNew类型的对象实例，例如：form1</param>
         </member>
         <member name="M:HPSocket.IWebSocketServer.GetHub``1(System.String)">
             <summary>
@@ -7891,6 +7907,21 @@
             表示 RSV1 = 1, 压缩位
             </summary>
         </member>
+        <member name="P:HPSocket.WebSocket.HttpSession.Cookies">
+            <summary>
+            cookie list
+            </summary>
+        </member>
+        <member name="P:HPSocket.WebSocket.HttpSession.Headers">
+            <summary>
+            header list
+            </summary>
+        </member>
+        <member name="P:HPSocket.WebSocket.HttpSession.QueryString">
+            <summary>
+            query string
+            </summary>
+        </member>
         <member name="T:HPSocket.WebSocket.Hub">
             <summary>
             web socket hub
@@ -8281,7 +8312,13 @@
         <member name="P:HPSocket.WebSocket.WebSocketServer.HasStarted">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.GetHttpSession(System.IntPtr)">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.AddHub``1(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.AddHub``1(System.String,``0)">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.GetHub``1(System.String)">
