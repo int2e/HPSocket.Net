@@ -334,13 +334,15 @@ namespace HPSocket.WebSocket
         {
             if (upgradeType == HttpUpgradeType.WebSocket)
             {
+                var compressionMethod = IgnoreCompressionExtensions ? CompressionMethod.None : CompressionMethod.Deflate;
+
                 _sessions.Set(connId, new WebSocketSession
                 {
-                    Compression = CompressionMethod.Deflate,
+                    Compression = compressionMethod,
                     Final = true,
                     Mask = DefaultMask,
                     OpCode = OpCode.Text,
-                    Rsv = Rsv.Compression,
+                    Rsv = compressionMethod == CompressionMethod.None ? Rsv.Off : Rsv.Compression,
                     Path = Uri.AbsolutePath,
                 });
 
