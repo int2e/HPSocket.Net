@@ -59,7 +59,7 @@ namespace HPSocket.Adapter
             foreach (var index in findList)
             {
                 // 数量
-                var bodyLength = index + 1 - lastPosition;
+                var bodyLength = index - lastPosition;
 
                 // 得到一条完整数据包
                 var bodyData = cache.Data.GetRange(lastPosition, bodyLength).ToArray();
