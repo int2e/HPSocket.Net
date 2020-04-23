@@ -5087,6 +5087,38 @@
             停止服务
             </summary>
         </member>
+        <member name="M:HPSocket.ITcpPortForwarding.SetExtraByAgentConnId(System.IntPtr,System.Object)">
+            <summary>
+            根据Agent组件的连接id设置附加数据
+            </summary>
+            <param name="connId"></param>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.ITcpPortForwarding.SetExtraByServerConnId(System.IntPtr,System.Object)">
+            <summary>
+            根据Server组件的连接id设置附加数据
+            </summary>
+            <param name="connId"></param>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.ITcpPortForwarding.GetExtraByAgentConnId``1(System.IntPtr)">
+            <summary>
+            根据Agent组件的连接id获取附加数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.ITcpPortForwarding.GetExtraByServerConnId``1(System.IntPtr)">
+            <summary>
+            根据Server组件的连接id获取附加数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
         <member name="T:HPSocket.ITcpPullAgent">
             <summary>
             tcp pull agent
@@ -7155,6 +7187,18 @@
         <member name="M:HPSocket.Tcp.TcpPortForwarding.Stop">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.SetExtraByAgentConnId(System.IntPtr,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.SetExtraByServerConnId(System.IntPtr,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.GetExtraByAgentConnId``1(System.IntPtr)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.GetExtraByServerConnId``1(System.IntPtr)">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Tcp.TcpPortForwarding.Wait(System.Int32)">
             <inheritdoc />
         </member>
@@ -7203,6 +7247,11 @@
         <member name="P:HPSocket.Tcp.TcpPortForwardingExtra.ReleaseType">
             <summary>
             释放方式
+            </summary>
+        </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwardingExtra.ExtraData">
+            <summary>
+            附加数据
             </summary>
         </member>
         <member name="T:HPSocket.Tcp.TcpPullAgent">

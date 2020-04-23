@@ -31,5 +31,10 @@ namespace HPSocket.Tcp
         /// 释放方式
         /// </summary>
         public TcpPortForwardingReleaseType ReleaseType { get; set; }
+
+        /// <summary>
+        /// 附加数据
+        /// </summary>
+        public object ExtraData { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace HPSocket
 {
@@ -111,6 +112,39 @@ namespace HPSocket
         /// 停止服务
         /// </summary>
         bool Stop();
+
+
+        /// <summary>
+        /// 根据Agent组件的连接id设置附加数据
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        bool SetExtraByAgentConnId (IntPtr connId, object obj);
+
+        /// <summary>
+        /// 根据Server组件的连接id设置附加数据
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        bool SetExtraByServerConnId(IntPtr connId, object obj);
+
+        /// <summary>
+        /// 根据Agent组件的连接id获取附加数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connId"></param>
+        /// <returns></returns>
+        T GetExtraByAgentConnId<T>(IntPtr connId);
+
+        /// <summary>
+        /// 根据Server组件的连接id获取附加数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connId"></param>
+        /// <returns></returns>
+        T GetExtraByServerConnId<T>(IntPtr connId);
 
         #endregion
     }

@@ -279,7 +279,7 @@ namespace HPSocket.Tcp
 
         private HandleResult AgentReceive(IAgent sender, IntPtr connId, byte[] data)
         {
-            var extra = _server.GetExtra<TcpPortForwardingExtra>(connId);
+            var extra = sender.GetExtra<TcpPortForwardingExtra>(connId);
             if (extra == null)
             {
                 return HandleResult.Error;
@@ -354,6 +354,46 @@ namespace HPSocket.Tcp
             _server?.Stop();
 
             return true;
+        }
+
+        /// <inheritdoc />
+        public bool SetExtraByAgentConnId(IntPtr connId, object obj)
+        {
+            var extra = _agent.GetExtra<TcpPortForwardingExtra>(connId);
+            if (extra == null)
+            {
+                return false;
+            }
+
+            extra.ExtraData = obj;
+            return true;
+        }
+
+        /// <inheritdoc />
+        public bool SetExtraByServerConnId(IntPtr connId, object obj)
+        {
+            var extra = _server.GetExtra<TcpPortForwardingExtra>(connId);
+            if (extra == null)
+            {
+                return false;
+            }
+
+            extra.ExtraData = obj;
+            return true;
+        }
+
+        /// <inheritdoc />
+        public T GetExtraByAgentConnId<T>(IntPtr connId)
+        {
+            var extra = _agent.GetExtra<TcpPortForwardingExtra>(connId);
+            return extra?.ExtraData == null ? default : (T) extra.ExtraData;
+        }
+
+        /// <inheritdoc />
+        public T GetExtraByServerConnId<T>(IntPtr connId)
+        {
+            var extra = _server.GetExtra<TcpPortForwardingExtra>(connId);
+            return extra?.ExtraData == null ? default : (T)extra.ExtraData;
         }
 
         /// <inheritdoc />
