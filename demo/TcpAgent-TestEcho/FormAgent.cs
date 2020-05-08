@@ -325,10 +325,11 @@ namespace TcpAgentTestEcho
                     }
 
                     // 连接到目标服务器 
-                    for (var i = 0; i < 10; i++)
+                    for (var i = 0; i < 100; i++)
                     {
                         // 这里模拟连接几个连接不上的服务器, 前面设置了超时3秒, 所以这些连接不上的到3秒会超时
-                        if (!_agent.Connect(i % 2 == 0 ? "127.0.0.1" : "192.168.37.38", 5555))
+                        //if (!_agent.Connect(i % 2 == 0 ? "127.0.0.1" : "192.168.37.38", 5555))
+                        if (!_agent.Connect(  "127.0.0.1"  , 5555))
                         {
                             throw new Exception($"error code: {_agent.ErrorCode}, error message: {_agent.ErrorMessage}");
                         }
