@@ -5970,6 +5970,13 @@
             获取是否启动
             </summary>
         </member>
+        <member name="M:HPSocket.IWebSocketServer.GetSubProtocol(System.IntPtr)">
+            <summary>
+            获取指定连接的子协议
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IWebSocketServer.GetHttpSession(System.IntPtr)">
             <summary>
             获取连接的http会话信息
@@ -8359,6 +8366,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.HasStarted">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.GetSubProtocol(System.IntPtr)">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.GetHttpSession(System.IntPtr)">
