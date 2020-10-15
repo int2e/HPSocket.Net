@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
+#else
+using System.Collections.Generic;
 #endif
 
 namespace HPSocket.Base
@@ -427,6 +430,27 @@ namespace HPSocket.Base
             var obj = ExtraData.Get(connId);
             return obj == null ? default : (T)obj;
         }
+
+		#if NET20 || NET30 || NET35
+        /// <summary>
+        /// 获取所有扩展数据
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<IntPtr, object> GetAllExtra()
+        {
+            return ExtraData.GetAll();
+        }
+		#else
+        /// <summary>
+        /// 获取所有扩展数据
+        /// </summary>
+        /// <returns></returns>
+        public ConcurrentDictionary<IntPtr, object> GetAllExtra()
+        {
+            return ExtraData.GetAll();
+        }
+		#endif
+
 
         /// <inheritdoc />
         public bool RemoveExtra(IntPtr connId) => ExtraData.Remove(connId);

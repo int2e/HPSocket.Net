@@ -984,6 +984,12 @@
         <member name="M:HPSocket.Base.Server.GetExtra``1(System.IntPtr)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Base.Server.GetAllExtra">
+            <summary>
+            获取所有扩展数据
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.Base.Server.RemoveExtra(System.IntPtr)">
             <inheritdoc />
         </member>
@@ -1508,6 +1514,12 @@
             获取附加数据
             </summary>
             <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.ExtraData`2.GetAll">
+            <summary>
+            获取所有扩展数据
+            </summary>
             <returns></returns>
         </member>
         <member name="M:HPSocket.ExtraData`2.Set(`0,`1)">
@@ -4405,6 +4417,12 @@
             <param name="connId"></param>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IServer.GetAllExtra">
+            <summary>
+            获取所有扩展数据
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IServer.RemoveExtra(System.IntPtr)">
             <summary>
             删除附加数据
@@ -5969,6 +5987,13 @@
             <summary>
             获取是否启动
             </summary>
+        </member>
+        <member name="M:HPSocket.IWebSocketServer.GetSubProtocol(System.IntPtr)">
+            <summary>
+            获取指定连接的子协议
+            </summary>
+            <param name="connId"></param>
+            <returns></returns>
         </member>
         <member name="M:HPSocket.IWebSocketServer.GetHttpSession(System.IntPtr)">
             <summary>
@@ -8359,6 +8384,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.HasStarted">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.WebSocket.WebSocketServer.GetSubProtocol(System.IntPtr)">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.WebSocket.WebSocketServer.GetHttpSession(System.IntPtr)">

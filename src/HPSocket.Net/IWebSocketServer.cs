@@ -27,6 +27,13 @@ namespace HPSocket
         #region 服务器方法
 
         /// <summary>
+        /// 获取指定连接的子协议
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <returns></returns>
+        string GetSubProtocol(IntPtr connId);
+
+        /// <summary>
         /// 获取连接的http会话信息
         /// </summary>
         /// <param name="connId"></param>

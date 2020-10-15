@@ -223,6 +223,13 @@ namespace HPSocket.WebSocket
         public bool HasStarted => _httpServer.HasStarted;
 
         /// <inheritdoc />
+        public string GetSubProtocol(IntPtr connId)
+        {
+            var session = _wsSessions.Get(connId);
+            return session != null ? session.SecWebSocketProtocol : "";
+        }
+
+        /// <inheritdoc />
         public HttpSession GetHttpSession(IntPtr connId)
         {
             return _httpSessions.Get(connId);
