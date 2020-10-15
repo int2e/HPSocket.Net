@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 #if !NET20 && !NET30 && !NET35
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
-#else
-using System.Collections.Generic;
 #endif
 
 namespace HPSocket
@@ -339,15 +336,15 @@ namespace HPSocket
         /// <returns></returns>
         T GetExtra<T>(IntPtr connId);
 
-		#if NET20 || NET30 || NET35
+#if NET20 || NET30 || NET35
         /// <summary>
-        /// 获取所有扩展数据
+        /// 获取所有附加数据
         /// </summary>
         /// <returns></returns>
         Dictionary<IntPtr, object> GetAllExtra();
-		#else
+#else
         /// <summary>
-        /// 获取所有扩展数据
+        /// 获取所有附加数据
         /// </summary>
         /// <returns></returns>
         ConcurrentDictionary<IntPtr, object> GetAllExtra();

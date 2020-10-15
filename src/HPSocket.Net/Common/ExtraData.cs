@@ -46,19 +46,16 @@ namespace HPSocket
         }
 
         /// <summary>
-        /// 获取所有扩展数据
+        /// 获取所有附加数据
         /// </summary>
         /// <returns></returns>
         public Dictionary<TKey, TValue> GetAll()
         {
-            return _dict;
+            return new Dictionary<TKey, TValue>(_dict);
         }
-
-
 
         /// <summary>
         /// 设置附加数据
-        /// 
         /// </summary>
         /// <param name="key"></param>
         /// <param name="newValue"></param>
@@ -149,17 +146,16 @@ namespace HPSocket
         }
 
         /// <summary>
-        /// 获取所有扩展数据
+        /// 获取所有附加数据
         /// </summary>
         /// <returns></returns>
         public ConcurrentDictionary<TKey, TValue> GetAll()
         {
-            return _dict;
+            return new ConcurrentDictionary<TKey, TValue>(_dict);
         }
 
         /// <summary>
         /// 设置附加数据
-        /// 
         /// </summary>
         /// <param name="key"></param>
         /// <param name="newValue"></param>

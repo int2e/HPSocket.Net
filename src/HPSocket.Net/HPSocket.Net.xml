@@ -986,7 +986,7 @@
         </member>
         <member name="M:HPSocket.Base.Server.GetAllExtra">
             <summary>
-            获取所有扩展数据
+            获取所有附加数据
             </summary>
             <returns></returns>
         </member>
@@ -1518,14 +1518,13 @@
         </member>
         <member name="M:HPSocket.ExtraData`2.GetAll">
             <summary>
-            获取所有扩展数据
+            获取所有附加数据
             </summary>
             <returns></returns>
         </member>
         <member name="M:HPSocket.ExtraData`2.Set(`0,`1)">
             <summary>
             设置附加数据
-            
             </summary>
             <param name="key"></param>
             <param name="newValue"></param>
@@ -4419,7 +4418,7 @@
         </member>
         <member name="M:HPSocket.IServer.GetAllExtra">
             <summary>
-            获取所有扩展数据
+            获取所有附加数据
             </summary>
             <returns></returns>
         </member>
