@@ -6,7 +6,7 @@ the C# SDK for [HP-Socket](https://github.com/ldcsaa/HP-Socket)
 #### .Net Framework Supported
 * `.Net Framework 2.0+`
 * `.Net Core 2.0+`
-* `.Net Core 5.0+`
+* `.Net 5.0`
 
 #### Platform supported
 * `Windows 7+ x86/x64`
