@@ -46,7 +46,7 @@ namespace TcpPackServerTestEcho
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // 演示设置serer属性
+            // 演示设置server属性
 
             // 缓冲区大小应根据实际业务设置, 并发数和包大小都是考虑条件
             // 都是小包的情况下4K合适, 刚好是一个内存分页(在非托管内存, 相关知识查百度)
@@ -57,7 +57,7 @@ namespace TcpPackServerTestEcho
             _server.MaxPackSize = 4096;     // 最大封包
             _server.PackHeaderFlag = 0x01;  // 包头标识, 要与客户端对应, 否则无法通信
 
-            // serer绑定地址和端口
+            // server绑定地址和端口
             _server.Address = "0.0.0.0";
             _server.Port = 5555;
 

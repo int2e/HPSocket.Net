@@ -52,14 +52,14 @@ namespace SslServerTestEcho
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // 演示设置serer属性
+            // 演示设置server属性
 
             // 缓冲区大小应根据实际业务设置, 并发数和包大小都是考虑条件
             // 都是小包的情况下4K合适, 刚好是一个内存分页(在非托管内存, 相关知识查百度)
             // 大包比较多的情况下, 应根据并发数设置比较大但是又不会爆内存的值
             _server.SocketBufferSize = 4096; // 4K
 
-            // serer绑定地址和端口
+            // server绑定地址和端口
             _server.Address = "0.0.0.0";
             _server.Port = 5555;
 

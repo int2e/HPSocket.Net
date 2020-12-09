@@ -97,7 +97,7 @@
             this.MaximizeBox = false;
             this.Name = "FormServer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TcpServerTestEchoAsyncQueue - 与外面妖艳的贱货不一样的EchoSerer";
+            this.Text = "TcpServerTestEchoAsyncQueue - 与外面妖艳的贱货不一样的EchoServer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);

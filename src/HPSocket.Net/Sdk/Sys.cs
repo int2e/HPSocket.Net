@@ -371,5 +371,50 @@ namespace HPSocket.Sdk
         /// <param name="p"></param>
         [DllImport(HpSocketLibrary.DllName)]
         public static extern void SYS_Free(IntPtr p);
+
+
+        /// <summary>
+        /// Brotli 压缩
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="srcLen"></param>
+        /// <param name="dest"></param>
+        /// <param name="destLen"></param>
+        /// <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_BrotliCompress(byte[] src, int srcLen, ref IntPtr dest, ref uint destLen);
+
+        /// <summary>
+        /// Brotli 高级压缩
+        /// </summary>
+        /// <param name="lpszSrc"></param>
+        /// <param name="srcLen"></param>
+        /// <param name="dest"></param>
+        /// <param name="destLen"></param>
+        /// <param name="quality"></param>
+        /// <param name="window"></param>
+        /// <param name="mode"></param>
+        /// <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_BrotliCompressEx(IntPtr lpszSrc, uint srcLen, ref IntPtr dest, ref uint destLen, int quality, int window, int mode);
+  
+        /// <summary>
+        /// Brotli 解压
+        /// </summary>
+        /// <param name="lpszSrc"></param>
+        /// <param name="srcLen"></param>
+        /// <param name="dest"></param>
+        /// <param name="destLen"></param>
+        /// <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_BrotliUncompress(IntPtr lpszSrc, uint srcLen, ref IntPtr dest, ref uint destLen);
+
+        /// <summary>
+        /// Brotli 推测压缩结果长度
+        /// </summary>
+        /// <param name="srcLen"></param>
+        /// <returns></returns>
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern uint SYS_BrotliGuessCompressBound(uint srcLen);
     }
 }
