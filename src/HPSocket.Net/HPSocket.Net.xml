@@ -6451,6 +6451,46 @@
             </summary>
             <param name="p"></param>
         </member>
+        <member name="M:HPSocket.Sdk.Sys.SYS_BrotliCompress(System.Byte[],System.Int32,System.IntPtr@,System.UInt32@)">
+            <summary>
+            Brotli 压缩
+            </summary>
+            <param name="src"></param>
+            <param name="srcLen"></param>
+            <param name="dest"></param>
+            <param name="destLen"></param>
+            <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
+        </member>
+        <member name="M:HPSocket.Sdk.Sys.SYS_BrotliCompressEx(System.IntPtr,System.UInt32,System.IntPtr@,System.UInt32@,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Brotli 高级压缩
+            </summary>
+            <param name="lpszSrc"></param>
+            <param name="srcLen"></param>
+            <param name="dest"></param>
+            <param name="destLen"></param>
+            <param name="quality"></param>
+            <param name="window"></param>
+            <param name="mode"></param>
+            <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
+        </member>
+        <member name="M:HPSocket.Sdk.Sys.SYS_BrotliUncompress(System.IntPtr,System.UInt32,System.IntPtr@,System.UInt32@)">
+            <summary>
+            Brotli 解压
+            </summary>
+            <param name="lpszSrc"></param>
+            <param name="srcLen"></param>
+            <param name="dest"></param>
+            <param name="destLen"></param>
+            <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
+        </member>
+        <member name="M:HPSocket.Sdk.Sys.SYS_BrotliGuessCompressBound(System.UInt32)">
+            <summary>
+            Brotli 推测压缩结果长度
+            </summary>
+            <param name="srcLen"></param>
+            <returns></returns>
+        </member>
         <member name="T:HPSocket.Ssl.SslSessionInfo">
             <summary>
             SSL WebSocketSession 信息类型，用于 GetSSLSessionInfo()，标识输出的 WebSocketSession 信息类型
