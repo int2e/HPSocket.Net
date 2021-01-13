@@ -245,7 +245,7 @@ namespace HPSocket.Base
 
             if (!String.IsNullOrWhiteSpace(BindAddress) && BindPort > 0)
             {
-                return Sdk.Client.HP_Client_StartWithBindAddressAndLocalPort(SenderPtr, Address, Port, Async, BindAddress, Port);
+                return Sdk.Client.HP_Client_StartWithBindAddressAndLocalPort(SenderPtr, Address, Port, Async, BindAddress, BindPort);
             }
 
             if (!String.IsNullOrWhiteSpace(BindAddress))
