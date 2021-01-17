@@ -37,77 +37,84 @@ namespace HPSocket.Adapter
         /// <inheritdoc />
         internal override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
         {
-            var cache = _dataReceiveAdapterCache.Get(connId);
-            if (cache == null)
+            try
+            {
+                var cache = _dataReceiveAdapterCache.Get(connId);
+                if (cache == null)
+                {
+                    return HandleResult.Error;
+                }
+
+                cache.Data.AddRange(data);
+                if (cache.Data.Count > data.Length)
+                {
+                    data = cache.Data.ToArray();
+                }
+
+                var startLength = _startBoyerMoore.PatternLength;
+                var endLength = _endBoyerMoore.PatternLength;
+
+                HandleResult result;
+                var lastPosition = 0;
+                do
+                {
+                    // 长度不够一个包等下次再来
+                    if (data.Length - lastPosition < startLength + endLength)
+                    {
+                        result = HandleResult.Ok;
+                        break;
+                    }
+
+                    // 搜索起始标志
+                    var startPosition = _startBoyerMoore.Search(data, lastPosition);
+
+                    // 是否找到了
+                    if (startPosition == -1)
+                    {
+                        result = HandleResult.Error;
+                        break;
+                    }
+
+                    startPosition = lastPosition + startPosition + startLength;
+
+                    // 搜索结束标志, 从起始位置+起始标志长度开始找
+                    var count = _endBoyerMoore.Search(data, startPosition);
+                    if (count == -1)
+                    {
+                        result = HandleResult.Ignore;
+                        break;
+                    }
+
+                    // 得到一条完整数据包
+                    var bodyData = cache.Data.GetRange(startPosition, count).ToArray();
+                    lastPosition += count + startLength + endLength;
+
+                    // 包体解析对象从适配器子类中获取
+                    var obj = ParseRequestBody(bodyData);
+
+                    // 调用解析请求包体事件
+                    if (parseRequestBody.Invoke(sender, connId, obj) == HandleResult.Error)
+                    {
+                        result = HandleResult.Error;
+                        break;
+                    }
+
+                    // 下次继续解析
+
+                } while (true);
+
+                if (lastPosition > 0)
+                {
+                    // 再移除已经读了的数据
+                    cache.Data.RemoveRange(0, lastPosition);
+                }
+
+                return result;
+            }
+            catch (Exception/* ex*/)
             {
                 return HandleResult.Error;
             }
-
-            cache.Data.AddRange(data);
-            if (cache.Data.Count > data.Length)
-            {
-                data = cache.Data.ToArray();
-            }
-
-            var startLength = _startBoyerMoore.PatternLength;
-            var endLength = _endBoyerMoore.PatternLength;
-
-            HandleResult result;
-            var lastPosition = 0;
-            do
-            {
-                // 长度不够一个包等下次再来
-                if (data.Length - lastPosition < startLength + endLength)
-                {
-                    result = HandleResult.Ok;
-                    break;
-                }
-
-                // 搜索起始标志
-                var startPosition = _startBoyerMoore.Search(data, lastPosition);
-
-                // 是否找到了
-                if (startPosition == -1)
-                {
-                    result = HandleResult.Error;
-                    break;
-                }
-
-                startPosition = lastPosition + startPosition + startLength;
-
-                // 搜索结束标志, 从起始位置+起始标志长度开始找
-                var count = _endBoyerMoore.Search(data, startPosition);
-                if (count == -1)
-                {
-                    result = HandleResult.Ignore;
-                    break;
-                }
-
-                // 得到一条完整数据包
-                var bodyData = cache.Data.GetRange(startPosition, count).ToArray();
-                lastPosition += count + startLength + endLength;
-
-                // 包体解析对象从适配器子类中获取
-                var obj = ParseRequestBody(bodyData);
-
-                // 调用解析请求包体事件
-                if (parseRequestBody.Invoke(sender, connId, obj) == HandleResult.Error)
-                {
-                    result = HandleResult.Error;
-                    break;
-                }
-
-                // 下次继续解析
-
-            } while (true);
-
-            if (lastPosition > 0)
-            {
-                // 再移除已经读了的数据
-                cache.Data.RemoveRange(0, lastPosition);
-            }
-
-            return result;
         }
 
         /// <summary>

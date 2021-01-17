@@ -29,54 +29,61 @@ namespace HPSocket.Adapter
         /// <inheritdoc />
         internal override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
         {
-            var cache = _dataReceiveAdapterCache.Get(connId);
-            if (cache == null)
+            try
+            {
+                var cache = _dataReceiveAdapterCache.Get(connId);
+                if (cache == null)
+                {
+                    return HandleResult.Error;
+                }
+
+                cache.Data.AddRange(data);
+
+                HandleResult result;
+                do
+                {
+                    // 如果来的数据小于一个完整的包
+                    if (cache.Data.Count < _packetSize)
+                    {
+                        // 下次数据到达处理
+                        return HandleResult.Ignore;
+                    }
+
+                    // 如果来的数据比一个完整的包长
+                    if (cache.Data.Count >= _packetSize)
+                    {
+                        // 得到完整包并处理
+                        var bodyData = cache.Data.GetRange(0, _packetSize).ToArray();
+
+                        // 包体解析对象从适配器子类中获取
+                        var obj = ParseRequestBody(bodyData);
+
+                        // 调用解析请求包体事件
+                        result = parseRequestBody.Invoke(sender, connId, obj);
+                        if (result == HandleResult.Error)
+                        {
+                            break;
+                        }
+
+                        // 再移除已经读了的数据
+                        cache.Data.RemoveRange(0, _packetSize);
+
+                        // 没有数据了就返回了
+                        if (cache.Data.Count == 0)
+                        {
+                            break;
+                        }
+
+                        // 剩余的数据下个循环处理
+                    }
+                } while (true);
+
+                return result;
+            }
+            catch (Exception/* ex*/)
             {
                 return HandleResult.Error;
             }
-
-            cache.Data.AddRange(data);
-
-            HandleResult result;
-            do
-            {
-                // 如果来的数据小于一个完整的包
-                if (cache.Data.Count < _packetSize)
-                {
-                    // 下次数据到达处理
-                    return HandleResult.Ignore;
-                }
-
-                // 如果来的数据比一个完整的包长
-                if (cache.Data.Count >= _packetSize)
-                {
-                    // 得到完整包并处理
-                    var bodyData = cache.Data.GetRange(0, _packetSize).ToArray();
-
-                    // 包体解析对象从适配器子类中获取
-                    var obj = ParseRequestBody(bodyData);
-
-                    // 调用解析请求包体事件
-                    result = parseRequestBody.Invoke(sender, connId, obj);
-                    if (result == HandleResult.Error)
-                    {
-                        break;
-                    }
-
-                    // 再移除已经读了的数据
-                    cache.Data.RemoveRange(0, _packetSize);
-
-                    // 没有数据了就返回了
-                    if (cache.Data.Count == 0)
-                    {
-                        break;
-                    }
-
-                    // 剩余的数据下个循环处理
-                }
-            } while (true);
-
-            return result;
         }
 
         /// <summary>

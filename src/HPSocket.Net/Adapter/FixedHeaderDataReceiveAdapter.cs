@@ -40,78 +40,85 @@ namespace HPSocket.Adapter
         /// <inheritdoc />
         internal override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
         {
-            var cache = _dataReceiveAdapterCache.Get(connId);
-            if (cache == null)
+            try
             {
-                return HandleResult.Error;
-            }
-
-            cache.Data.AddRange(data);
-
-            HandleResult result;
-            do
-            {
-                // 数据小于包头长度
-                if (cache.Data.Count < _headerSize)
+                var cache = _dataReceiveAdapterCache.Get(connId);
+                if (cache == null)
                 {
-                    return HandleResult.Ok;
-                }
-
-                // 包头
-                var header = cache.Data.GetRange(0, _headerSize).ToArray();
-
-                // 包体长度从适配器子类中获取
-                var bodySize = GetBodySize(header);
-
-                // 完整的包长度(含包头和完整数据的大小)
-                var fullSize = bodySize + _headerSize;
-
-                // 判断最大封包长度
-                if (_maxPacketSize != 0 && fullSize > _maxPacketSize)
-                {
-                    // 超过断开
                     return HandleResult.Error;
                 }
 
-                // 如果来的数据小于一个完整的包
-                if (cache.Data.Count < fullSize)
+                cache.Data.AddRange(data);
+
+                HandleResult result;
+                do
                 {
-                    // 下次数据到达处理
-                    return HandleResult.Ignore;
-                }
-
-                // 如果来的数据比一个完整的包长
-                if (cache.Data.Count >= fullSize)
-                {
-                    // 得到完整包并处理
-                    var bodyData = cache.Data.GetRange(_headerSize, bodySize).ToArray();
-
-                    // 包体解析对象从适配器子类中获取
-                    var obj = ParseRequestBody(header, bodyData);
-
-                    // 调用解析请求包体事件
-                    result = parseRequestBody.Invoke(sender, connId, obj);
-                    if (result == HandleResult.Error)
+                    // 数据小于包头长度
+                    if (cache.Data.Count < _headerSize)
                     {
-                        break;
+                        return HandleResult.Ok;
                     }
 
-                    // 再移除已经读了的数据
-                    cache.Data.RemoveRange(0, fullSize);
+                    // 包头
+                    var header = cache.Data.GetRange(0, _headerSize).ToArray();
 
-                    // 没有数据了就返回了
-                    if (cache.Data.Count == 0)
+                    // 包体长度从适配器子类中获取
+                    var bodySize = GetBodySize(header);
+
+                    // 完整的包长度(含包头和完整数据的大小)
+                    var fullSize = bodySize + _headerSize;
+
+                    // 判断最大封包长度
+                    if (_maxPacketSize != 0 && fullSize > _maxPacketSize)
                     {
-                        break;
+                        // 超过断开
+                        return HandleResult.Error;
                     }
 
-                    // 剩余的数据下个循环处理
-                }
-            } while (true);
+                    // 如果来的数据小于一个完整的包
+                    if (cache.Data.Count < fullSize)
+                    {
+                        // 下次数据到达处理
+                        return HandleResult.Ignore;
+                    }
 
-            return result;
+                    // 如果来的数据比一个完整的包长
+                    if (cache.Data.Count >= fullSize)
+                    {
+                        // 得到完整包并处理
+                        var bodyData = cache.Data.GetRange(_headerSize, bodySize).ToArray();
+
+                        // 包体解析对象从适配器子类中获取
+                        var obj = ParseRequestBody(header, bodyData);
+
+                        // 调用解析请求包体事件
+                        result = parseRequestBody.Invoke(sender, connId, obj);
+                        if (result == HandleResult.Error)
+                        {
+                            break;
+                        }
+
+                        // 再移除已经读了的数据
+                        cache.Data.RemoveRange(0, fullSize);
+
+                        // 没有数据了就返回了
+                        if (cache.Data.Count == 0)
+                        {
+                            break;
+                        }
+
+                        // 剩余的数据下个循环处理
+                    }
+                } while (true);
+
+                return result;
+            }
+            catch (Exception/* ex*/)
+            {
+                return HandleResult.Error;
+            }
         }
-        
+
         /// <summary>
         /// 获取包体长度
         /// </summary>
