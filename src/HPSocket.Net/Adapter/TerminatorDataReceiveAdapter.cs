@@ -30,60 +30,67 @@ namespace HPSocket.Adapter
         /// <inheritdoc />
         internal override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
         {
-            var cache = _dataReceiveAdapterCache.Get(connId);
-            if (cache == null)
+            try
             {
-                return HandleResult.Error;
-            }
-
-            cache.Data.AddRange(data);
-            if (cache.Data.Count > data.Length)
-            {
-                data = cache.Data.ToArray();
-            }
-
-            // 在data中搜索terminator
-            var findList = _boyerMoore.SearchAll(data);
-            if (findList.Count == 0)
-            {
-                // 没找到等下次
-                return HandleResult.Ok;
-            }
-
-            // 终止符长度
-            var terminatorLength = _boyerMoore.PatternLength;
-
-            // 最后位置
-            var lastPosition = 0;
-
-            foreach (var index in findList)
-            {
-                // 数量
-                var bodyLength = index - lastPosition;
-
-                // 得到一条完整数据包
-                var bodyData = cache.Data.GetRange(lastPosition, bodyLength).ToArray();
-
-                // 记录最后位置
-                lastPosition += bodyLength + terminatorLength;
-
-                // 包体解析对象从适配器子类中获取
-                var obj = ParseRequestBody(bodyData);
-
-                // 调用解析请求包体事件
-                if (parseRequestBody.Invoke(sender, connId, obj) == HandleResult.Error)
+                var cache = _dataReceiveAdapterCache.Get(connId);
+                if (cache == null)
                 {
                     return HandleResult.Error;
                 }
-            }
 
-            if (lastPosition > 0)
+                cache.Data.AddRange(data);
+                if (cache.Data.Count > data.Length)
+                {
+                    data = cache.Data.ToArray();
+                }
+
+                // 在data中搜索terminator
+                var findList = _boyerMoore.SearchAll(data);
+                if (findList.Count == 0)
+                {
+                    // 没找到等下次
+                    return HandleResult.Ok;
+                }
+
+                // 终止符长度
+                var terminatorLength = _boyerMoore.PatternLength;
+
+                // 最后位置
+                var lastPosition = 0;
+
+                foreach (var index in findList)
+                {
+                    // 数量
+                    var bodyLength = index - lastPosition;
+
+                    // 得到一条完整数据包
+                    var bodyData = cache.Data.GetRange(lastPosition, bodyLength).ToArray();
+
+                    // 记录最后位置
+                    lastPosition += bodyLength + terminatorLength;
+
+                    // 包体解析对象从适配器子类中获取
+                    var obj = ParseRequestBody(bodyData);
+
+                    // 调用解析请求包体事件
+                    if (parseRequestBody.Invoke(sender, connId, obj) == HandleResult.Error)
+                    {
+                        return HandleResult.Error;
+                    }
+                }
+
+                if (lastPosition > 0)
+                {
+                    // 清除已使用缓存
+                    cache.Data.RemoveRange(0, lastPosition);
+                }
+
+                return HandleResult.Ignore;
+            }
+            catch (Exception/* ex*/)
             {
-                // 清除已使用缓存
-                cache.Data.RemoveRange(0, lastPosition);
+                return HandleResult.Error;
             }
-
-            return HandleResult.Ignore;
         }
 
         /// <summary>
