@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>WebSocketClient-TestEcho</AssemblyName>
-    <RootNamespace>WebSocketClientTestEcho</RootNamespace>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>WebSocketServer-TestEcho</AssemblyName>
+    <RootNamespace>WebSocketServerTestEcho</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HPSocket.Net" Version="5.8.1.1" />
+    <PackageReference Include="HPSocket.Net" Version="5.8.2" />
   </ItemGroup>
 
 </Project>
