@@ -5,9 +5,18 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>WebSocketServer-TestEcho</AssemblyName>
     <RootNamespace>WebSocketServerTestEcho</RootNamespace>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <OutputPath>..\..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>..\..\Bin\</OutputPath>
   </PropertyGroup>
 
@@ -15,8 +24,16 @@
     <OutputPath>..\..\Bin\</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <OutputPath>..\..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutputPath>..\..\Bin\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="HPSocket.Net" Version="5.8.2" />
+    <PackageReference Include="HPSocket.Net" Version="5.8.2.1" />
   </ItemGroup>
 
 </Project>
