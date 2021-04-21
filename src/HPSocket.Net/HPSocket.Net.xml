@@ -6073,6 +6073,11 @@
             cookie
             </summary>
         </member>
+        <member name="P:HPSocket.IWebSocketAgent.RequestHeaders">
+            <summary>
+            附加请求头, 除去UserAgent和Cookie头之外, 还想附加别的http请求头, 在此设置, 将在第一次访问, 升级协议的时候附加这些请求头
+            </summary>
+        </member>
         <member name="P:HPSocket.IWebSocketAgent.ConnectionTimeout">
             <summary>
             连接超时时间
@@ -8418,6 +8423,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Cookie">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.WebSocket.WebSocketAgent.RequestHeaders">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.ConnectionTimeout">
