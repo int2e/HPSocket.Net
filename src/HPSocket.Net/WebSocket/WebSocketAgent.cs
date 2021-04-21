@@ -1,4 +1,5 @@
 ﻿using HPSocket.Http;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -55,6 +56,9 @@ namespace HPSocket.WebSocket
 
         /// <inheritdoc />
         public string Cookie { get; set; }
+
+        /// <inheritdoc />
+        public List<NameValue> RequestHeaders { get; set; }
 
         /// <inheritdoc />
         public int ConnectionTimeout { get => _httpAgent.ConnectionTimeout; set => _httpAgent.ConnectionTimeout = value; }
@@ -174,7 +178,7 @@ namespace HPSocket.WebSocket
         {
             return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
         }
-        
+
         /// <inheritdoc />
         public Task<bool> StopAsync()
         {
@@ -306,7 +310,7 @@ namespace HPSocket.WebSocket
                 });
             }
 
-            if (string.IsNullOrEmpty(SubProtocols))
+            if (!string.IsNullOrEmpty(SubProtocols))
             {
                 headers.Add(new NameValue
                 {
@@ -324,7 +328,13 @@ namespace HPSocket.WebSocket
                 });
             }
 
-            var ok = _httpAgent.SendRequest(connId, HttpMethod.Get, Uri.AbsolutePath, headers, null, 0);
+            // 附加请求头
+            if (RequestHeaders != null && RequestHeaders.Count > 0)
+            {
+                headers.AddRange(RequestHeaders);
+            }
+
+            var ok = _httpAgent.SendRequest(connId, HttpMethod.Get, Uri.AbsolutePath, headers);
             return ok ? HandleResult.Ok : HandleResult.Error;
         }
 
