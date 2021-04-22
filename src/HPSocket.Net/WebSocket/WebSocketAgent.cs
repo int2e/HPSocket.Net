@@ -334,7 +334,7 @@ namespace HPSocket.WebSocket
                 headers.AddRange(RequestHeaders);
             }
 
-            var ok = _httpAgent.SendRequest(connId, HttpMethod.Get, Uri.AbsolutePath, headers);
+            var ok = _httpAgent.SendRequest(connId, HttpMethod.Get, Uri.PathAndQuery, headers);
             return ok ? HandleResult.Ok : HandleResult.Error;
         }
 
@@ -353,7 +353,7 @@ namespace HPSocket.WebSocket
                     Mask = DefaultMask,
                     OpCode = OpCode.Text,
                     Rsv = compressionMethod == CompressionMethod.None ? Rsv.Off : Rsv.Compression,
-                    Path = Uri.AbsolutePath,
+                    Path = Uri.PathAndQuery,
                 });
 
                 OnOpen?.Invoke(this, connId);
