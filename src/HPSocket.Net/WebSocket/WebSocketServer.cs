@@ -58,6 +58,9 @@ namespace HPSocket.WebSocket
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
+        public int SysErrorCode => Http.SysErrorCode;
+
+        /// <inheritdoc />
         public uint MaxPacketSize { get; set; } = 0;
 
         /// <inheritdoc />

@@ -1,6 +1,7 @@
 ﻿using HPSocket.Proxy;
 using HPSocket.Sdk;
 using HPSocket.Tcp;
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -279,6 +280,9 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
+        public int SysErrorCode { get; protected set; }
+
+        /// <inheritdoc />
         public string ErrorMessage => Sdk.Agent.HP_Agent_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
         /// <inheritdoc />
@@ -371,7 +375,12 @@ namespace HPSocket.Base
         public bool Stop() => HasStarted && Sdk.Agent.HP_Agent_Stop(SenderPtr);
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1)
+        {
+            var ok = Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+            return ok;
+        }
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
@@ -432,7 +441,12 @@ namespace HPSocket.Base
             var ok = Sdk.Agent.HP_Agent_ConnectWithExtraAndLocalAddressPort(SenderPtr, address, port, ref connId, nativeExtra.ToIntPtr(), localPort, localAddress);
             if (ok)
             {
+                SysErrorCode = 0;
                 DelayWaitConnectTimeout(connId);
+            }
+            else
+            {
+                SysErrorCode = Sys.SYS_GetLastError();
             }
 
             return ok;
@@ -510,6 +524,7 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Agent.HP_Agent_Send(SenderPtr, connId, gch.AddrOfPinnedObject(), length);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
@@ -519,12 +534,18 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Agent.HP_Agent_SendPart(SenderPtr, connId, gch.AddrOfPinnedObject(), length, offset);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool SendPackets(IntPtr connId, Wsabuf[] buffers) => Sdk.Agent.HP_Agent_SendPackets(SenderPtr, connId, buffers, buffers.Length);
+        public bool SendPackets(IntPtr connId, Wsabuf[] buffers)
+        {
+            var ok = Sdk.Agent.HP_Agent_SendPackets(SenderPtr, connId, buffers, buffers.Length);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool Disconnect(IntPtr connId, bool force = true) => Sdk.Agent.HP_Agent_Disconnect(SenderPtr, connId, force);
@@ -772,27 +793,27 @@ namespace HPSocket.Base
                     switch (nativeExtra.ProxyConnectionState)
                     {
                         case ProxyConnectionState.Step1:
-                        {
-                            byte[] data;
-                            switch (proxy)
                             {
-                                case IHttpProxy httpProxy:
-                                    data = httpProxy.GetConnectData();
-                                    break;
-                                case ISocks5Proxy socks5Proxy:
-                                    data = socks5Proxy.GetConnectData();
-                                    break;
-                                default:
-                                    return HandleResult.Error;
-                            }
+                                byte[] data;
+                                switch (proxy)
+                                {
+                                    case IHttpProxy httpProxy:
+                                        data = httpProxy.GetConnectData();
+                                        break;
+                                    case ISocks5Proxy socks5Proxy:
+                                        data = socks5Proxy.GetConnectData();
+                                        break;
+                                    default:
+                                        return HandleResult.Error;
+                                }
 
-                            if (!Send(connId, data, data.Length))
-                            {
-                                return HandleResult.Error;
+                                if (!Send(connId, data, data.Length))
+                                {
+                                    return HandleResult.Error;
+                                }
+                                _connProxy.Set(connId, proxy);
+                                break;
                             }
-                            _connProxy.Set(connId, proxy);
-                            break;
-                        }
                     }
                 }
                 else if (ConnectionTimeout > 0)
@@ -848,10 +869,98 @@ namespace HPSocket.Base
                 switch (nativeExtra.ProxyConnectionState)
                 {
                     case ProxyConnectionState.Step1:
-                    {
-                        if (proxy is HttpProxy httpProxy)
                         {
-                            if (!httpProxy.IsConnected(bytes))
+                            if (proxy is HttpProxy httpProxy)
+                            {
+                                if (!httpProxy.IsConnected(bytes))
+                                {
+                                    return HandleResult.Error;
+                                }
+
+                                if (ConnectionTimeout > 0)
+                                {
+                                    nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
+                                }
+
+                                nativeExtra.ProxyConnectionState = ProxyConnectionState.Normal;
+                                _connProxy.Remove(connId);
+
+                                OnProxyConnected?.Invoke(this, connId, proxy);
+
+                                if (OnConnect?.Invoke(this, connId, proxy) == HandleResult.Error)
+                                {
+                                    return HandleResult.Error;
+                                }
+                            }
+                            else
+                            {
+                                if (!(proxy is ISocks5Proxy socks5Proxy))
+                                {
+                                    return HandleResult.Error;
+                                }
+
+                                if (!socks5Proxy.GetAuthenticateData(bytes, out var sendBytes))
+                                {
+                                    return HandleResult.Error;
+                                }
+
+                                if (sendBytes?.Length > 0)
+                                {
+                                    if (!Send(connId, sendBytes, sendBytes.Length))
+                                    {
+                                        return HandleResult.Error;
+                                    }
+                                }
+                                else
+                                {
+                                    if (!socks5Proxy.GetConnectRemoteServerData(out sendBytes))
+                                    {
+                                        return HandleResult.Error;
+                                    }
+
+                                    if (!Send(connId, sendBytes, sendBytes.Length))
+                                    {
+                                        return HandleResult.Error;
+                                    }
+
+                                    nativeExtra.ProxyConnectionState = ProxyConnectionState.Step3;
+                                }
+                            }
+
+                            break;
+                        }
+                    case ProxyConnectionState.Step2:
+                        {
+                            if (!(proxy is ISocks5Proxy socks5Proxy))
+                            {
+                                return HandleResult.Error;
+                            }
+                            if (!socks5Proxy.CheckSubVersion(bytes))
+                            {
+                                return HandleResult.Error;
+                            }
+
+                            if (!socks5Proxy.GetConnectRemoteServerData(out var sendBytes))
+                            {
+                                return HandleResult.Error;
+                            }
+
+                            if (!Send(connId, sendBytes, sendBytes.Length))
+                            {
+                                return HandleResult.Error;
+                            }
+
+                            nativeExtra.ProxyConnectionState = ProxyConnectionState.Step3;
+
+                            break;
+                        }
+                    case ProxyConnectionState.Step3:
+                        {
+                            if (!(proxy is ISocks5Proxy socks5Proxy))
+                            {
+                                return HandleResult.Error;
+                            }
+                            if (!socks5Proxy.IsConnected(bytes))
                             {
                                 return HandleResult.Error;
                             }
@@ -870,96 +979,8 @@ namespace HPSocket.Base
                             {
                                 return HandleResult.Error;
                             }
+                            break;
                         }
-                        else
-                        {
-                            if (!(proxy is ISocks5Proxy socks5Proxy))
-                            {
-                                return HandleResult.Error;
-                            }
-
-                            if (!socks5Proxy.GetAuthenticateData(bytes, out var sendBytes))
-                            {
-                                return HandleResult.Error;
-                            }
-
-                            if (sendBytes?.Length > 0)
-                            {
-                                if (!Send(connId, sendBytes, sendBytes.Length))
-                                {
-                                    return HandleResult.Error;
-                                }
-                            }
-                            else
-                            {
-                                if (!socks5Proxy.GetConnectRemoteServerData(out sendBytes))
-                                {
-                                    return HandleResult.Error;
-                                }
-
-                                if (!Send(connId, sendBytes, sendBytes.Length))
-                                {
-                                    return HandleResult.Error;
-                                }
-
-                                nativeExtra.ProxyConnectionState = ProxyConnectionState.Step3;
-                            }
-                        }
-
-                        break;
-                    }
-                    case ProxyConnectionState.Step2:
-                    {
-                        if (!(proxy is ISocks5Proxy socks5Proxy))
-                        {
-                            return HandleResult.Error;
-                        }
-                        if (!socks5Proxy.CheckSubVersion(bytes))
-                        {
-                            return HandleResult.Error;
-                        }
-
-                        if (!socks5Proxy.GetConnectRemoteServerData(out var sendBytes))
-                        {
-                            return HandleResult.Error;
-                        }
-
-                        if (!Send(connId, sendBytes, sendBytes.Length))
-                        {
-                            return HandleResult.Error;
-                        }
-
-                        nativeExtra.ProxyConnectionState = ProxyConnectionState.Step3;
-
-                        break;
-                    }
-                    case ProxyConnectionState.Step3:
-                    {
-                        if (!(proxy is ISocks5Proxy socks5Proxy))
-                        {
-                            return HandleResult.Error;
-                        }
-                        if (!socks5Proxy.IsConnected(bytes))
-                        {
-                            return HandleResult.Error;
-                        }
-
-                        if (ConnectionTimeout > 0)
-                        {
-                            nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
-                        }
-
-                        nativeExtra.ProxyConnectionState = ProxyConnectionState.Normal;
-                        _connProxy.Remove(connId);
-
-                        OnProxyConnected?.Invoke(this, connId, proxy);
-
-                        if (OnConnect?.Invoke(this, connId, proxy) == HandleResult.Error)
-                        {
-                            return HandleResult.Error;
-                        }
-                        break;
-                    }
                 }
 
                 extra.FreeNativeExtraIntPtr();

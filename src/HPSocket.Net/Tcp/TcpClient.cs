@@ -113,7 +113,12 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
-        public bool SendSmallFile(string filePath, ref Wsabuf head, ref Wsabuf tail) => Sdk.Tcp.HP_TcpClient_SendSmallFile(SenderPtr, filePath, ref head, ref tail);
+        public bool SendSmallFile(string filePath, ref Wsabuf head, ref Wsabuf tail)
+        {
+            var ok = Sdk.Tcp.HP_TcpClient_SendSmallFile(SenderPtr, filePath, ref head, ref tail);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool SendSmallFile(string filePath, byte[] head, byte[] tail)

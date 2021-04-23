@@ -144,6 +144,7 @@ namespace HPSocket.Ssl
             IsInitSsl = memory
                 ? Sdk.Ssl.HP_SSLServer_SetupSSLContextByMemory(SenderPtr, VerifyMode, PemCertFile, PemKeyFile, KeyPassword, CaPemCertFileOrPath, null)
                 : Sdk.Ssl.HP_SSLServer_SetupSSLContext(SenderPtr, VerifyMode, PemCertFile, PemKeyFile, KeyPassword, CaPemCertFileOrPath, null);
+            SysErrorCode = IsInitSsl ? 0 : Sdk.Sys.SYS_GetLastError();
             return IsInitSsl;
         }
 
@@ -171,7 +172,9 @@ namespace HPSocket.Ssl
             keyPassword = String.IsNullOrWhiteSpace(keyPassword) ? null : keyPassword;
             caPemCertFileOrPath = String.IsNullOrWhiteSpace(caPemCertFileOrPath) ? null : caPemCertFileOrPath;
 
-            return Sdk.Ssl.HP_SSLServer_AddSSLContext(SenderPtr, verifyMode, pemCertFile, pemKeyFile, keyPassword, caPemCertFileOrPath);
+            var result = Sdk.Ssl.HP_SSLServer_AddSSLContext(SenderPtr, verifyMode, pemCertFile, pemKeyFile, keyPassword, caPemCertFileOrPath);
+            SysErrorCode = result > 0 ? 0 : Sdk.Sys.SYS_GetLastError();
+            return result;
         }
 
         /// <inheritdoc />
@@ -187,7 +190,9 @@ namespace HPSocket.Ssl
         public bool GetSessionInfo(IntPtr connId, SslSessionInfo info, out IntPtr sessionInfo)
         {
             sessionInfo = IntPtr.Zero;
-            return Sdk.Ssl.HP_SSLServer_GetSSLSessionInfo(SenderPtr, connId, info, ref sessionInfo);
+            var ok = Sdk.Ssl.HP_SSLServer_GetSSLSessionInfo(SenderPtr, connId, info, ref sessionInfo);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            return ok;
         }
 
         /// <summary>

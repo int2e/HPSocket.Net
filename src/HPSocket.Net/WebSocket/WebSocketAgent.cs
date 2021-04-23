@@ -49,6 +49,9 @@ namespace HPSocket.WebSocket
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
+        public int SysErrorCode => Http.SysErrorCode;
+
+        /// <inheritdoc />
         public byte[] DefaultMask { get; set; } = new byte[] { 0x01, 0x002, 0x3, 0x04 };
 
         /// <inheritdoc />
@@ -191,7 +194,7 @@ namespace HPSocket.WebSocket
         {
             if (!_httpAgent.Connect(Uri.Host, (ushort)Uri.Port))
             {
-                throw new WebSocketException(_httpAgent.ErrorCode, _httpAgent.ErrorMessage);
+                throw new WebSocketException($"sys error code: {SysErrorCode}");
             }
         }
 

@@ -154,6 +154,9 @@ namespace HPSocket.Udp
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
+        public int SysErrorCode { get; protected set; }
+
+        /// <inheritdoc />
         public string ErrorMessage => Sdk.Udp.HP_UdpNode_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
         /// <inheritdoc />
@@ -196,7 +199,12 @@ namespace HPSocket.Udp
         public bool Stop() => HasStarted && Sdk.Udp.HP_UdpNode_Stop(SenderPtr);
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1)
+        {
+            var ok = Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            return ok;
+        }
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
@@ -217,6 +225,7 @@ namespace HPSocket.Udp
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_Send(SenderPtr, remoteAddress, remotePort, gch.AddrOfPinnedObject(), length);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
@@ -226,18 +235,25 @@ namespace HPSocket.Udp
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_SendPart(SenderPtr, remoteAddress, remotePort, gch.AddrOfPinnedObject(), length, offset);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool Send(string remoteAddress, ushort remotePort, Wsabuf[] buffers, int count) => Sdk.Udp.HP_UdpNode_SendPackets(SenderPtr, remoteAddress, remotePort, buffers, count);
+        public bool Send(string remoteAddress, ushort remotePort, Wsabuf[] buffers, int count)
+        {
+            var ok = Sdk.Udp.HP_UdpNode_SendPackets(SenderPtr, remoteAddress, remotePort, buffers, count);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool SendCast(byte[] data, int length)
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_SendCast(SenderPtr, gch.AddrOfPinnedObject(), length);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
@@ -247,12 +263,18 @@ namespace HPSocket.Udp
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_SendCastPart(SenderPtr, gch.AddrOfPinnedObject(), length, offset);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool SendCast(Wsabuf[] buffers, int count) => Sdk.Udp.HP_UdpNode_SendCastPackets(SenderPtr, buffers, count);
+        public bool SendCast(Wsabuf[] buffers, int count)
+        {
+            var ok = Sdk.Udp.HP_UdpNode_SendCastPackets(SenderPtr, buffers, count);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool GetLocalAddress(out string address, out ushort port)

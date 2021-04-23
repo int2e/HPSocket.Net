@@ -156,6 +156,9 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
+        public int SysErrorCode { get; protected set; }
+
+        /// <inheritdoc />
         public string ErrorMessage => Sdk.Client.HP_Client_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
         /// <summary>
@@ -209,7 +212,12 @@ namespace HPSocket.Base
         }
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Client.HP_Client_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1)
+        {
+            var ok = Sdk.Client.HP_Client_Wait(SenderPtr, milliseconds);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+            return ok;
+        }
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
@@ -272,6 +280,7 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Client.HP_Client_Send(SenderPtr, gch.AddrOfPinnedObject(), length);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
@@ -281,12 +290,18 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Client.HP_Client_SendPart(SenderPtr, gch.AddrOfPinnedObject(), length, offset);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool SendPackets(Wsabuf[] buffers, int count) => Sdk.Client.HP_Client_SendPackets(SenderPtr, buffers, count);
+        public bool SendPackets(Wsabuf[] buffers, int count)
+        {
+            var ok = Sdk.Client.HP_Client_SendPackets(SenderPtr, buffers, count);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool GetPendingDataLength(out int length)

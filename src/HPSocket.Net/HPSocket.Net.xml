@@ -432,6 +432,9 @@
         <member name="P:HPSocket.Base.Agent.Version">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Base.Agent.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Agent.ErrorMessage">
             <inheritdoc />
         </member>
@@ -685,6 +688,9 @@
         <member name="P:HPSocket.Base.Client.Version">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Base.Client.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Client.ErrorMessage">
             <inheritdoc />
         </member>
@@ -890,6 +896,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Base.Server.SysErrorCode">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.ErrorMessage">
@@ -4617,6 +4626,11 @@
             当前组件版本
             </summary>
         </member>
+        <member name="P:HPSocket.ISocket.SysErrorCode">
+            <summary>
+            系统错误码
+            </summary>
+        </member>
         <member name="M:HPSocket.ISocket.Wait(System.Int32)">
             <summary>
             等待通信组件停止运行
@@ -6359,6 +6373,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.Sdk.Sys.SYS_GetLastError">
+            <summary>
+            调用系统的 ::GetLastError() 方法获取通信错误代码
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.Sdk.Sys.SYS_WSAGetLastError">
             <summary>
             调用系统的 ::WSAGetLastError() 方法获取通信错误代码
@@ -7370,6 +7390,9 @@
             当前组件版本
             </summary>
         </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwarding.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Tcp.TcpPortForwarding.LocalBindAddress">
             <inheritdoc />
         </member>
@@ -7722,6 +7745,11 @@
             任务回调函数, 用于产生扩展板回调函数
             </summary>
         </member>
+        <member name="P:HPSocket.Thread.ThreadPool.SysErrorCode">
+            <summary>
+            系统错误码
+            </summary>
+        </member>
         <member name="M:HPSocket.Thread.ThreadPool.Start(System.Int32,HPSocket.Thread.RejectedPolicy,System.UInt32,System.UInt32)">
             <summary>
             启动线程池组件
@@ -7730,14 +7758,14 @@
             <param name="policy">任务拒绝处理策略</param>
             <param name="maxQueueSize">任务队列最大容量（0：不限制，默认：0）</param>
             <param name="stackSize">线程堆栈空间大小（默认：0 -> 操作系统默认）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.Stop(System.Int32)">
             <summary>
             在规定时间内关闭线程池组件，如果工作线程在最大等待时间内未能正常关闭，会尝试强制关闭，这种情况下很可能会造成系统资源泄漏
             </summary>
             <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.Submit(HPSocket.Thread.TaskProcEx,System.Object,System.Int32)">
             <summary>
@@ -7746,7 +7774,7 @@
             <param name="taskProc">任务处理函数</param>
             <param name="obj">任务参数</param>
             <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.MyTaskProc(System.IntPtr)">
             <summary>
@@ -7759,7 +7787,7 @@
             增加或减少线程池的工作线程数量
             </summary>
             <param name="count">线程数量， 大于0: count， 等于0: (CPU核数 * 2 + 2)， 小于0: (CPU核数 * (-count))</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.Wait(System.Int32)">
             <summary>
@@ -7780,7 +7808,7 @@
             在规定时间内关闭线程池组件，如果工作线程在最大等待时间内未能正常关闭，会尝试强制关闭，这种情况下很可能会造成系统资源泄漏
             </summary>
             <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="P:HPSocket.Thread.ThreadPool.TaskCount">
             <summary>
@@ -8043,6 +8071,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Udp.UdpNode.SysErrorCode">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.ErrorMessage">
@@ -8416,6 +8447,9 @@
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Version">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.WebSocket.WebSocketAgent.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.DefaultMask">
             <inheritdoc />
         </member>
@@ -8550,6 +8584,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.WebSocket.WebSocketServer.SysErrorCode">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.MaxPacketSize">

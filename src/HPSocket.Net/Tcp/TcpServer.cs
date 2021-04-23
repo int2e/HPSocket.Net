@@ -116,7 +116,12 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
-        public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail) => Sdk.Tcp.HP_TcpServer_SendSmallFile(SenderPtr, connId, filePath, ref head, ref tail);
+        public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail)
+        {
+            var ok = Sdk.Tcp.HP_TcpServer_SendSmallFile(SenderPtr, connId, filePath, ref head, ref tail);
+            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool SendSmallFile(IntPtr connId, string filePath, byte[] head, byte[] tail)

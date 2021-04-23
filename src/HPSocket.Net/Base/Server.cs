@@ -184,6 +184,9 @@ namespace HPSocket.Base
         public string Version => Sys.GetVersion();
 
         /// <inheritdoc />
+        public int SysErrorCode { get; protected set; }
+
+        /// <inheritdoc />
         public string ErrorMessage => Sdk.Server.HP_Server_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
 
@@ -263,7 +266,12 @@ namespace HPSocket.Base
         public bool Stop() => HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1)
+        {
+            var ok = Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+            return ok;
+        }
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
@@ -284,6 +292,7 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Server.HP_Server_Send(SenderPtr, connId, gch.AddrOfPinnedObject(), length);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
@@ -293,12 +302,18 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Server.HP_Server_SendPart(SenderPtr, connId, gch.AddrOfPinnedObject(), length, offset);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool SendPackets(IntPtr connId, Wsabuf[] buffers) => Sdk.Server.HP_Server_SendPackets(SenderPtr, connId, buffers, buffers.Length);
+        public bool SendPackets(IntPtr connId, Wsabuf[] buffers)
+        {
+            var ok = Sdk.Server.HP_Server_SendPackets(SenderPtr, connId, buffers, buffers.Length);
+            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool Disconnect(IntPtr connId, bool force = true) => Sdk.Server.HP_Server_Disconnect(SenderPtr, connId, force);
@@ -447,7 +462,7 @@ namespace HPSocket.Base
         {
             return ExtraData.GetAll();
         }
-		#endif
+#endif
 
         /// <inheritdoc />
         public bool RemoveExtra(IntPtr connId) => ExtraData.Remove(connId);

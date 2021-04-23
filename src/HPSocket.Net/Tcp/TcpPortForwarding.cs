@@ -80,6 +80,9 @@ namespace HPSocket.Tcp
         public string Version => Sdk.Sys.GetVersion();
 
         /// <inheritdoc />
+        public int SysErrorCode => throw new NotImplementedException("当前组件不提供系统错误码获取");
+
+        /// <inheritdoc />
         public string LocalBindAddress { get; set; } = "0.0.0.0";
 
         /// <inheritdoc />

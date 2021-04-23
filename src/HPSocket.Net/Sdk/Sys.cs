@@ -69,12 +69,18 @@ namespace HPSocket.Sdk
             return Marshal.GetLastWin32Error();
         }
 
+        /// <summary>
+        /// 调用系统的 ::GetLastError() 方法获取通信错误代码
+        /// </summary>
+        /// <returns></returns>
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_GetLastError();
 
         /// <summary>
         /// 调用系统的 ::WSAGetLastError() 方法获取通信错误代码
         /// </summary>
         /// <returns></returns>
-        [DllImport(HpSocketLibrary.DllName, SetLastError = true)]
+        [DllImport(HpSocketLibrary.DllName)]
         private static extern int SYS_WSAGetLastError();
 
         /// <summary>

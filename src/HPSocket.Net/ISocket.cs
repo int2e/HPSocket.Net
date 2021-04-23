@@ -27,6 +27,11 @@ namespace HPSocket
         string Version { get; }
 
         /// <summary>
+        /// 系统错误码
+        /// </summary>
+        int SysErrorCode { get; }
+
+        /// <summary>
         /// 等待通信组件停止运行
         /// <para>可用在控制台程序, 用来阻塞主线程, 防止程序退出</para>
         /// </summary>
