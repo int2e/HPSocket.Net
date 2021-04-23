@@ -61,7 +61,7 @@ namespace HPSocket.Sdk
         public static extern IntPtr HP_GetSocketErrorDesc(SocketError enCode);
 
         /// <summary>
-        /// 调用系统的 ::ErrorCode() 方法获取系统错误代码
+        /// 调用系统的 GetLastWin32Error() 方法获取系统错误代码
         /// </summary>
         /// <returns></returns>
         public static int GetLastError()
@@ -69,12 +69,19 @@ namespace HPSocket.Sdk
             return Marshal.GetLastWin32Error();
         }
 
+        //
+        // /// <summary>
+        // /// 调用系统的 ::GetLastError() 方法获取通信错误代码
+        // /// </summary>
+        // /// <returns></returns>
+        // [DllImport(HpSocketLibrary.DllName)]
+        // public static extern int SYS_GetLastError();
+
         /// <summary>
-        /// 调用系统的 ::GetLastError() 方法获取通信错误代码
+        /// 调用系统的 GetLastWin32Error() 方法获取系统错误代码
         /// </summary>
         /// <returns></returns>
-        [DllImport(HpSocketLibrary.DllName)]
-        public static extern int SYS_GetLastError();
+        public static int SYS_GetLastError() => GetLastError();
 
         /// <summary>
         /// 调用系统的 ::WSAGetLastError() 方法获取通信错误代码

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
@@ -26,10 +27,12 @@ namespace HPSocket
         /// </summary>
         string Version { get; }
 
+#if !NET20 && !NET30 && !NET35
         /// <summary>
         /// 系统错误码
         /// </summary>
-        int SysErrorCode { get; }
+        ThreadLocal<int> SysErrorCode { get; }
+#endif
 
         /// <summary>
         /// 等待通信组件停止运行

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
@@ -48,8 +49,10 @@ namespace HPSocket.WebSocket
         /// <inheritdoc />
         public string Version => Sdk.Sys.GetVersion();
 
+#if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
-        public int SysErrorCode => Http.SysErrorCode;
+        public ThreadLocal<int> SysErrorCode => Http.SysErrorCode;
+#endif
 
         /// <inheritdoc />
         public byte[] DefaultMask { get; set; } = new byte[] { 0x01, 0x002, 0x3, 0x04 };
@@ -194,7 +197,12 @@ namespace HPSocket.WebSocket
         {
             if (!_httpAgent.Connect(Uri.Host, (ushort)Uri.Port))
             {
-                throw new WebSocketException($"sys error code: {SysErrorCode}");
+#if !NET20 && !NET30 && !NET35
+                throw new WebSocketException($"sys error code: {SysErrorCode.Value}");
+#else
+                throw new WebSocketException($"sys error code: {Sdk.Sys.SYS_GetLastError()}");
+#endif
+
             }
         }
 

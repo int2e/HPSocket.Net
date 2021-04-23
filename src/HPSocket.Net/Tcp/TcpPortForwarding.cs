@@ -79,8 +79,10 @@ namespace HPSocket.Tcp
         /// </summary>
         public string Version => Sdk.Sys.GetVersion();
 
+#if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
-        public int SysErrorCode => throw new NotImplementedException("当前组件不提供系统错误码获取");
+        public ThreadLocal<int> SysErrorCode => throw new NotImplementedException("当前组件不提供系统错误码获取");
+#endif
 
         /// <inheritdoc />
         public string LocalBindAddress { get; set; } = "0.0.0.0";

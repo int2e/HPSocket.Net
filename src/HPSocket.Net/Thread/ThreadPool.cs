@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
@@ -35,14 +36,19 @@ namespace HPSocket.Thread
         /// </summary>
         private readonly TaskProc _taskProc;
         #endregion
-
+        
+#if !NET20 && !NET30 && !NET35
         /// <summary>
         /// 系统错误码
         /// </summary>
-        public int SysErrorCode { get; private set; }
+        public ThreadLocal<int> SysErrorCode { get; private set; }
+#endif
 
         public ThreadPool()
         {
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode = new ThreadLocal<int>(() => System.Threading.Thread.CurrentThread.ManagedThreadId);
+#endif
             _taskProc = MyTaskProc;
             GC.KeepAlive(_taskProc);
 
@@ -75,7 +81,9 @@ namespace HPSocket.Thread
         public bool Start(int threadCount, RejectedPolicy policy, uint maxQueueSize = 0, uint stackSize = 0)
         {
             var ok = Sdk.ThreadPool.HP_ThreadPool_Start(_pool, threadCount, maxQueueSize, policy, stackSize);
-            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             return ok;
         }
 
@@ -91,7 +99,9 @@ namespace HPSocket.Thread
                 return false;
             }
             var ok = Sdk.ThreadPool.HP_ThreadPool_Stop(_pool, maxWait);
-            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             return ok;
         }
 
@@ -127,7 +137,9 @@ namespace HPSocket.Thread
             var bytes = Encoding.ASCII.GetBytes(guid);
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.ThreadPool.HP_ThreadPool_Submit(_pool, _taskProc, (IntPtr)gch, maxWait);
-            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             return ok;
         }
 
@@ -230,7 +242,9 @@ namespace HPSocket.Thread
         private bool AdjustThreadCount(int count)
         {
             var ok = Sdk.ThreadPool.HP_ThreadPool_AdjustThreadCount(_pool, count);
-            SysErrorCode = ok ? 0 : Sys.SYS_GetLastError();
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             return ok;
         }
 
@@ -309,7 +323,7 @@ namespace HPSocket.Thread
         /// 获取系统返回的错误码
         /// </summary>
         /// <returns></returns>
-        public int ErrorCode => Sys.GetLastError();
+        public int ErrorCode => Sys.SYS_GetLastError();
 
         /// <summary>
         /// 释放资源
@@ -323,6 +337,9 @@ namespace HPSocket.Thread
             {
                 // 释放托管对象资源
                 _extraData.Clear();
+#if !NET20 && !NET30 && !NET35
+                SysErrorCode?.Dispose();
+#endif
             }
             Destroy();
 

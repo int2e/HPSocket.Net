@@ -6369,13 +6369,13 @@
         </member>
         <member name="M:HPSocket.Sdk.Sys.GetLastError">
             <summary>
-            调用系统的 ::ErrorCode() 方法获取系统错误代码
+            调用系统的 GetLastWin32Error() 方法获取系统错误代码
             </summary>
             <returns></returns>
         </member>
         <member name="M:HPSocket.Sdk.Sys.SYS_GetLastError">
             <summary>
-            调用系统的 ::GetLastError() 方法获取通信错误代码
+            调用系统的 GetLastWin32Error() 方法获取系统错误代码
             </summary>
             <returns></returns>
         </member>

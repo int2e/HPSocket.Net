@@ -106,7 +106,9 @@ namespace HPSocket.Tcp
         public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail)
         {
             var ok = Sdk.Tcp.HP_TcpAgent_SendSmallFile(SenderPtr, connId, filePath, ref head, ref tail);
-            SysErrorCode = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             return ok;
         }
 
