@@ -1089,9 +1089,9 @@ namespace HPSocket.Base
                 if (NativeGetConnectionExtra(connId, out var extra) && extra != IntPtr.Zero)
                 {
                     var nativeExtra = extra.ToNativeExtra();
-                    extra.FreeNativeExtraIntPtr();
                     if (nativeExtra.TcpConnectionState == TcpConnectionState.Connecting)
                     {
+                        extra.FreeNativeExtraIntPtr();
                         nativeExtra.TcpConnectionState = TcpConnectionState.TimedOut;
                         NativeSetConnectionExtra(connId, nativeExtra.ToIntPtr());
                         Disconnect(connId);
