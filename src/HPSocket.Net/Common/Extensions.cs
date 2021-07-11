@@ -17,6 +17,7 @@ using System.Linq;
 #endif
 using System.Runtime.InteropServices;
 using System.Text;
+
 using HPSocket.Http;
 using HPSocket.Tcp;
 using HPSocket.WebSocket;
@@ -523,17 +524,20 @@ namespace HPSocket
         /// <returns></returns>
         internal static IntPtr ToIntPtr(this NativeExtra extra)
         {
+            lock (ReferenceData)
+            {
 #if !NETSTANDARD2_0
-            var size = Marshal.SizeOf(typeof(NativeExtra));
-            var ptr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(extra, ptr, true);
+                var size = Marshal.SizeOf(typeof(NativeExtra));
+                var ptr = Marshal.AllocHGlobal(size);
+                Marshal.StructureToPtr(extra, ptr, true);
 #else
-            var size = Marshal.SizeOf<NativeExtra>();
-            var ptr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr<NativeExtra>(extra, ptr, true);
+                var size = Marshal.SizeOf<NativeExtra>();
+                var ptr = Marshal.AllocHGlobal(size);
+                Marshal.StructureToPtr<NativeExtra>(extra, ptr, true);
 #endif
-            ReferenceData.Set(ptr, 1);
-            return ptr;
+                ReferenceData.Set(ptr, 1);
+                return ptr;
+            }
         }
 
         /// <summary>
@@ -547,11 +551,20 @@ namespace HPSocket
             {
                 throw new ArgumentException("参数不能为IntPtr.Zero", nameof(ptr));
             }
+
+            lock (ReferenceData)
+            {
+                // 针对可能出现的指针不存在而做的特殊处理
+                if (!ReferenceData.ContainsKey(ptr))
+                {
+                    return new NativeExtra();
+                }
 #if !NETSTANDARD2_0
-            return (NativeExtra)Marshal.PtrToStructure(ptr, typeof(NativeExtra));
+                return (NativeExtra)Marshal.PtrToStructure(ptr, typeof(NativeExtra));
 #else
-            return Marshal.PtrToStructure<NativeExtra>(ptr);
+                return Marshal.PtrToStructure<NativeExtra>(ptr);
 #endif
+            }
         }
 
         /// <summary>
@@ -565,13 +578,16 @@ namespace HPSocket
                 throw new ArgumentException("参数不能为IntPtr.Zero", nameof(ptr));
             }
 
-            if (ReferenceData.ContainsKey(ptr))
+            lock (ReferenceData)
             {
-                var count = ReferenceData.Get(ptr);
-                if (count == 1)
+                if (ReferenceData.ContainsKey(ptr))
                 {
-                    Marshal.FreeHGlobal(ptr);
-                    ReferenceData.Remove(ptr);
+                    var count = ReferenceData.Get(ptr);
+                    if (count == 1)
+                    {
+                        ReferenceData.Remove(ptr);
+                        Marshal.FreeHGlobal(ptr);
+                    }
                 }
             }
         }
@@ -910,7 +926,7 @@ namespace HPSocket
 #endif
 
             Console.WriteLine(logo);
-      
+
             var repositories = @"
 ┌─Repositories─────────────────────────────────────────────┐
 │ [github] https://github.com/int2e/HPSocket.Net           │

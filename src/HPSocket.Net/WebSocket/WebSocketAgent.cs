@@ -1,7 +1,9 @@
 ﻿using HPSocket.Http;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
@@ -47,6 +49,11 @@ namespace HPSocket.WebSocket
         /// <inheritdoc />
         public string Version => Sdk.Sys.GetVersion();
 
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public ThreadLocal<int> SysErrorCode => Http.SysErrorCode;
+#endif
+
         /// <inheritdoc />
         public byte[] DefaultMask { get; set; } = new byte[] { 0x01, 0x002, 0x3, 0x04 };
 
@@ -55,6 +62,9 @@ namespace HPSocket.WebSocket
 
         /// <inheritdoc />
         public string Cookie { get; set; }
+
+        /// <inheritdoc />
+        public List<NameValue> RequestHeaders { get; set; }
 
         /// <inheritdoc />
         public int ConnectionTimeout { get => _httpAgent.ConnectionTimeout; set => _httpAgent.ConnectionTimeout = value; }
@@ -174,7 +184,7 @@ namespace HPSocket.WebSocket
         {
             return Task.Factory.StartNew((obj) => Wait((int)obj), milliseconds);
         }
-        
+
         /// <inheritdoc />
         public Task<bool> StopAsync()
         {
@@ -187,7 +197,12 @@ namespace HPSocket.WebSocket
         {
             if (!_httpAgent.Connect(Uri.Host, (ushort)Uri.Port))
             {
-                throw new WebSocketException(_httpAgent.ErrorCode, _httpAgent.ErrorMessage);
+#if !NET20 && !NET30 && !NET35
+                throw new WebSocketException($"sys error code: {SysErrorCode.Value}");
+#else
+                throw new WebSocketException($"sys error code: {Sdk.Sys.SYS_GetLastError()}");
+#endif
+
             }
         }
 
@@ -306,7 +321,7 @@ namespace HPSocket.WebSocket
                 });
             }
 
-            if (string.IsNullOrEmpty(SubProtocols))
+            if (!string.IsNullOrEmpty(SubProtocols))
             {
                 headers.Add(new NameValue
                 {
@@ -324,7 +339,13 @@ namespace HPSocket.WebSocket
                 });
             }
 
-            var ok = _httpAgent.SendRequest(connId, HttpMethod.Get, Uri.AbsolutePath, headers, null, 0);
+            // 附加请求头
+            if (RequestHeaders != null && RequestHeaders.Count > 0)
+            {
+                headers.AddRange(RequestHeaders);
+            }
+
+            var ok = _httpAgent.SendRequest(connId, HttpMethod.Get, Uri.PathAndQuery, headers);
             return ok ? HandleResult.Ok : HandleResult.Error;
         }
 
@@ -343,7 +364,7 @@ namespace HPSocket.WebSocket
                     Mask = DefaultMask,
                     OpCode = OpCode.Text,
                     Rsv = compressionMethod == CompressionMethod.None ? Rsv.Off : Rsv.Compression,
-                    Path = Uri.AbsolutePath,
+                    Path = Uri.PathAndQuery,
                 });
 
                 OnOpen?.Invoke(this, connId);

@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using HPSocket.Http;
 using Timer = System.Timers.Timer;
+using System.Threading;
 
 namespace HPSocket.WebSocket
 {
@@ -56,6 +57,11 @@ namespace HPSocket.WebSocket
 
         /// <inheritdoc />
         public string Version => Sdk.Sys.GetVersion();
+
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public ThreadLocal<int> SysErrorCode => Http.SysErrorCode;
+#endif
 
         /// <inheritdoc />
         public uint MaxPacketSize { get; set; } = 0;

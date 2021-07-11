@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
@@ -40,6 +41,9 @@ namespace HPSocket.Base
         protected Server(CreateListenerDelegate createListenerFunction, CreateServiceDelegate createServiceFunction,
             DestroyListenerDelegate destroyServiceFunction, DestroyListenerDelegate destroyListenerFunction)
         {
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode = new ThreadLocal<int>(() => System.Threading.Thread.CurrentThread.ManagedThreadId);
+#endif
             CreateListenerFunction = createListenerFunction;
             CreateServiceFunction = createServiceFunction;
             DestroyListenerFunction = destroyListenerFunction;
@@ -183,6 +187,11 @@ namespace HPSocket.Base
         /// <inheritdoc />
         public string Version => Sys.GetVersion();
 
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public ThreadLocal<int> SysErrorCode { get; protected set; }
+#endif
+
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Server.HP_Server_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
@@ -263,7 +272,14 @@ namespace HPSocket.Base
         public bool Stop() => HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1)
+        {
+            var ok = Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
@@ -284,6 +300,9 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Server.HP_Server_Send(SenderPtr, connId, gch.AddrOfPinnedObject(), length);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             gch.Free();
             return ok;
         }
@@ -293,12 +312,22 @@ namespace HPSocket.Base
         {
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Server.HP_Server_SendPart(SenderPtr, connId, gch.AddrOfPinnedObject(), length, offset);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool SendPackets(IntPtr connId, Wsabuf[] buffers) => Sdk.Server.HP_Server_SendPackets(SenderPtr, connId, buffers, buffers.Length);
+        public bool SendPackets(IntPtr connId, Wsabuf[] buffers)
+        {
+            var ok = Sdk.Server.HP_Server_SendPackets(SenderPtr, connId, buffers, buffers.Length);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool Disconnect(IntPtr connId, bool force = true) => Sdk.Server.HP_Server_Disconnect(SenderPtr, connId, force);
@@ -447,7 +476,7 @@ namespace HPSocket.Base
         {
             return ExtraData.GetAll();
         }
-		#endif
+#endif
 
         /// <inheritdoc />
         public bool RemoveExtra(IntPtr connId) => ExtraData.Remove(connId);
@@ -551,6 +580,9 @@ namespace HPSocket.Base
             if (disposing)
             {
                 // 释放托管对象资源
+#if !NET20 && !NET30 && !NET35
+                SysErrorCode?.Dispose();
+#endif
             }
 
             Destroy();

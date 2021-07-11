@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
@@ -29,6 +30,9 @@ namespace HPSocket.Udp
 
         public UdpNode()
         {
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode = new ThreadLocal<int>(() => System.Threading.Thread.CurrentThread.ManagedThreadId);
+#endif
             if (!CreateListener())
             {
                 throw new InitializationException("未能正确初始化监听");
@@ -153,6 +157,11 @@ namespace HPSocket.Udp
         /// <inheritdoc />
         public string Version => Sdk.Sys.GetVersion();
 
+#if !NET20 && !NET30 && !NET35
+        /// <inheritdoc />
+        public ThreadLocal<int> SysErrorCode { get; protected set; }
+#endif
+
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Udp.HP_UdpNode_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
@@ -196,7 +205,14 @@ namespace HPSocket.Udp
         public bool Stop() => HasStarted && Sdk.Udp.HP_UdpNode_Stop(SenderPtr);
 
         /// <inheritdoc />
-        public bool Wait(int milliseconds = -1) => Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
+        public bool Wait(int milliseconds = -1)
+        {
+            var ok = Sdk.Udp.HP_UdpNode_Wait(SenderPtr, milliseconds);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
 #if !NET20 && !NET30 && !NET35
         /// <inheritdoc />
@@ -217,6 +233,9 @@ namespace HPSocket.Udp
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_Send(SenderPtr, remoteAddress, remotePort, gch.AddrOfPinnedObject(), length);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             gch.Free();
             return ok;
         }
@@ -226,18 +245,31 @@ namespace HPSocket.Udp
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_SendPart(SenderPtr, remoteAddress, remotePort, gch.AddrOfPinnedObject(), length, offset);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool Send(string remoteAddress, ushort remotePort, Wsabuf[] buffers, int count) => Sdk.Udp.HP_UdpNode_SendPackets(SenderPtr, remoteAddress, remotePort, buffers, count);
+        public bool Send(string remoteAddress, ushort remotePort, Wsabuf[] buffers, int count)
+        {
+            var ok = Sdk.Udp.HP_UdpNode_SendPackets(SenderPtr, remoteAddress, remotePort, buffers, count);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool SendCast(byte[] data, int length)
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_SendCast(SenderPtr, gch.AddrOfPinnedObject(), length);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             gch.Free();
             return ok;
         }
@@ -247,12 +279,22 @@ namespace HPSocket.Udp
         {
             var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
             var ok = Sdk.Udp.HP_UdpNode_SendCastPart(SenderPtr, gch.AddrOfPinnedObject(), length, offset);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
             gch.Free();
             return ok;
         }
 
         /// <inheritdoc />
-        public bool SendCast(Wsabuf[] buffers, int count) => Sdk.Udp.HP_UdpNode_SendCastPackets(SenderPtr, buffers, count);
+        public bool SendCast(Wsabuf[] buffers, int count)
+        {
+            var ok = Sdk.Udp.HP_UdpNode_SendCastPackets(SenderPtr, buffers, count);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
         /// <inheritdoc />
         public bool GetLocalAddress(out string address, out ushort port)
@@ -409,6 +451,9 @@ namespace HPSocket.Udp
             if (disposing)
             {
                 // 释放托管对象资源
+#if !NET20 && !NET30 && !NET35
+                SysErrorCode?.Dispose();
+#endif
             }
 
             Destroy();

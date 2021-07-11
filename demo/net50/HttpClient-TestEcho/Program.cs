@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
 using HPSocket;
 using HPSocket.Http;
 
@@ -38,8 +39,8 @@ namespace HttpClientTestEcho
                     }
 
                     // 发送POST请求
-                    const string body = "{\"a\": \"b\", \"b\": 1}";
-                    if (!httpClient.SendPost("/test",new List<NameValue>
+                    var body = Encoding.UTF8.GetBytes("{\"a\": \"b\", \"b\": 1}");
+                    if (!httpClient.SendPost("/test", new List<NameValue>
                     {
                         new NameValue { Name = "Connection", Value = "Keep-Alive" },
                         new NameValue { Name = "Content-Type", Value = "application/json;charset=utf-8" }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
 using HPSocket.Tcp;
 using HPSocket.WebSocket;
 
@@ -8,6 +9,15 @@ namespace HPSocket.Http
 {
     public class HttpAgent : TcpAgent, IHttpAgent
     {
+        /// <summary>
+        /// 默认请求头
+        /// </summary>
+        private static readonly List<NameValue> DefaultRequestHeaders = new List<NameValue>
+        {
+            new NameValue{ Name="Accept", Value="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"},
+            new NameValue{ Name="User-Agent", Value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.72 Safari/537.36 Edg/90.0.818.41"},
+        };
+
         public HttpAgent()
             : base(Sdk.Http.Create_HP_HttpAgentListener,
                 Sdk.Http.Create_HP_HttpAgent,
@@ -101,10 +111,25 @@ namespace HPSocket.Http
         /// <inheritdoc />
         public bool SendRequest(IntPtr connId, HttpMethod method, string path, List<NameValue> headers, byte[] body, int length)
         {
+            if (headers == null)
+            {
+                headers = DefaultRequestHeaders;
+            }
             var gch = GCHandle.Alloc(body, GCHandleType.Pinned);
             var ok = Sdk.Http.HP_HttpAgent_SendRequest(SenderPtr, connId, method.ToNameString(), path, headers.ToArray(), headers.Count, gch.AddrOfPinnedObject(), length);
             gch.Free();
             return ok;
+        }
+
+        /// <inheritdoc />
+        public bool SendRequest(IntPtr connId, HttpMethod method, string path, List<NameValue> headers)
+        {
+            if (headers == null)
+            {
+                headers = DefaultRequestHeaders;
+            }
+
+            return Sdk.Http.HP_HttpAgent_SendRequest(SenderPtr, connId, method.ToNameString(), path, headers.ToArray(), headers.Count, IntPtr.Zero, 0);
         }
 
         /// <summary>
@@ -160,39 +185,43 @@ namespace HPSocket.Http
         }
 
         /// <inheritdoc />
-        public bool SendPost(IntPtr connId, string path, List<NameValue> headers, string body, int length)
-        {
-            return Sdk.Http.HP_HttpAgent_SendPost(SenderPtr, connId, path, headers.ToArray(), headers.Count, body,
-                length);
-        }
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
+        public bool SendPost(IntPtr connId, string path, List<NameValue> headers, string body, int length) => Sdk.Http.HP_HttpAgent_SendPost(SenderPtr, connId, path, headers.ToArray(), headers.Count, body, length);
 
         /// <inheritdoc />
-        public bool SendPut(IntPtr connId, string path, List<NameValue> headers, string body, int length)
-        {
-            return Sdk.Http.HP_HttpAgent_SendPut(SenderPtr, connId, path, headers.ToArray(), headers.Count, body,
-                length);
-        }
+        public bool SendPost(IntPtr connId, string path, List<NameValue> headers, byte[] body, int length) => SendRequest(connId, HttpMethod.Post, path, headers, body, length);
 
         /// <inheritdoc />
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
+        public bool SendPut(IntPtr connId, string path, List<NameValue> headers, string body, int length) => Sdk.Http.HP_HttpAgent_SendPut(SenderPtr, connId, path, headers.ToArray(), headers.Count, body, length);
+
+        /// <inheritdoc />
+        public bool SendPut(IntPtr connId, string path, List<NameValue> headers, byte[] body, int length) => SendRequest(connId, HttpMethod.Put, path, headers, body, length);
+
+        /// <inheritdoc />
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
         public bool SendPatch(IntPtr connId, string path, List<NameValue> headers, string body, int length) => Sdk.Http.HP_HttpAgent_SendPatch(SenderPtr, connId, path, headers.ToArray(), headers.Count, body, length);
 
         /// <inheritdoc />
-        public bool SendGet(IntPtr connId, string path, List<NameValue> headers) => Sdk.Http.HP_HttpAgent_SendGet(SenderPtr, connId, path, headers.ToArray(), headers.Count);
+        public bool SendPatch(IntPtr connId, string path, List<NameValue> headers, byte[] body, int length) => SendRequest(connId, HttpMethod.Patch, path, headers, body, length);
 
         /// <inheritdoc />
-        public bool SendDelete(IntPtr connId, string path, List<NameValue> headers) => Sdk.Http.HP_HttpAgent_SendDelete(SenderPtr, connId, path, headers.ToArray(), headers.Count);
+        public bool SendGet(IntPtr connId, string path, List<NameValue> headers) => SendRequest(connId, HttpMethod.Get, path, headers);
 
         /// <inheritdoc />
-        public bool SendHead(IntPtr connId, string path, List<NameValue> headers) => Sdk.Http.HP_HttpAgent_SendHead(SenderPtr, connId, path, headers.ToArray(), headers.Count);
+        public bool SendDelete(IntPtr connId, string path, List<NameValue> headers) => SendRequest(connId, HttpMethod.Delete, path, headers);
 
         /// <inheritdoc />
-        public bool SendTrace(IntPtr connId, string path, List<NameValue> headers) => Sdk.Http.HP_HttpAgent_SendTrace(SenderPtr, connId, path, headers.ToArray(), headers.Count);
+        public bool SendHead(IntPtr connId, string path, List<NameValue> headers) => SendRequest(connId, HttpMethod.Head, path, headers);
 
         /// <inheritdoc />
-        public bool SendOptions(IntPtr connId, string path, List<NameValue> headers) => Sdk.Http.HP_HttpAgent_SendOptions(SenderPtr, connId, path, headers.ToArray(), headers.Count);
+        public bool SendTrace(IntPtr connId, string path, List<NameValue> headers) => SendRequest(connId, HttpMethod.Trace, path, headers);
 
         /// <inheritdoc />
-        public bool SendConnect(IntPtr connId, string path, List<NameValue> headers) => Sdk.Http.HP_HttpAgent_SendConnect(SenderPtr, connId, path, headers.ToArray(), headers.Count);
+        public bool SendOptions(IntPtr connId, string path, List<NameValue> headers) => SendRequest(connId, HttpMethod.Options, path, headers);
+
+        /// <inheritdoc />
+        public bool SendConnect(IntPtr connId, string path, List<NameValue> headers) => SendRequest(connId, HttpMethod.Connect, path, headers);
 
         /// <inheritdoc />
         public bool StartHttp(IntPtr connId) => Sdk.Http.HP_HttpAgent_StartHttp(SenderPtr, connId);

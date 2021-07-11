@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 using HPSocket.WebSocket;
 
 namespace HPSocket
@@ -29,6 +31,11 @@ namespace HPSocket
         /// cookie
         /// </summary>
         string Cookie { get; set; }
+        
+        /// <summary>
+        /// 附加请求头, 除去UserAgent和Cookie头之外, 还想附加别的http请求头, 在此设置, 将在第一次访问, 升级协议的时候附加这些请求头
+        /// </summary>
+        List<NameValue> RequestHeaders { get; set; }
 
         /// <summary>
         /// 连接超时时间

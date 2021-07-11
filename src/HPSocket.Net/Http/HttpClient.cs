@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
 using HPSocket.Tcp;
 using HPSocket.WebSocket;
 
@@ -8,6 +9,15 @@ namespace HPSocket.Http
 {
     public class HttpClient : TcpClient, IHttpClient
     {
+        /// <summary>
+        /// 默认请求头
+        /// </summary>
+        private static readonly List<NameValue> DefaultRequestHeaders = new List<NameValue>
+        {
+            new NameValue{ Name="Accept", Value="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"},
+            new NameValue{ Name="User-Agent", Value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.72 Safari/537.36 Edg/90.0.818.41"},
+        };
+
         public HttpClient()
             : base(Sdk.Http.Create_HP_HttpClientListener,
                 Sdk.Http.Create_HP_HttpClient,
@@ -84,10 +94,24 @@ namespace HPSocket.Http
         /// <inheritdoc />
         public bool SendRequest(HttpMethod method, string path, List<NameValue> headers, byte[] body, int length)
         {
+            if (headers == null)
+            {
+                headers = DefaultRequestHeaders;
+            }
             var gch = GCHandle.Alloc(body, GCHandleType.Pinned);
             var ok = Sdk.Http.HP_HttpClient_SendRequest(SenderPtr, method.ToNameString(), path, headers.ToArray(), headers.Count, gch.AddrOfPinnedObject(), length);
             gch.Free();
             return ok;
+        }
+
+        /// <inheritdoc />
+        public bool SendRequest(HttpMethod method, string path, List<NameValue> headers)
+        {
+            if (headers == null)
+            {
+                headers = DefaultRequestHeaders;
+            }
+            return Sdk.Http.HP_HttpClient_SendRequest(SenderPtr, method.ToNameString(), path, headers.ToArray(), headers.Count, IntPtr.Zero, 0);
         }
 
         /// <summary>
@@ -134,43 +158,43 @@ namespace HPSocket.Http
         }
 
         /// <inheritdoc />
-        public bool SendPost(string path, List<NameValue> headers, string body, int length)
-        {
-            return Sdk.Http.HP_HttpClient_SendPost(SenderPtr, path, headers.ToArray(), headers.Count, body, length);
-        }
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
+        public bool SendPost(string path, List<NameValue> headers, string body, int length) => Sdk.Http.HP_HttpClient_SendPost(SenderPtr, path, headers.ToArray(), headers.Count, body, length);
 
         /// <inheritdoc />
-        public bool SendPut(string path, List<NameValue> headers, string body, int length)
-        {
-            return Sdk.Http.HP_HttpClient_SendPut(SenderPtr, path, headers.ToArray(), headers.Count, body, length);
-        }
+        public bool SendPost(string path, List<NameValue> headers, byte[] body, int length) => SendRequest(HttpMethod.Post, path, headers, body, length);
 
         /// <inheritdoc />
-        public bool SendPatch(string path, List<NameValue> headers, string body, int length)
-        {
-            return Sdk.Http.HP_HttpClient_SendPatch(SenderPtr, path, headers.ToArray(), headers.Count, body, length);
-        }
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
+        public bool SendPut(string path, List<NameValue> headers, string body, int length) => Sdk.Http.HP_HttpClient_SendPut(SenderPtr, path, headers.ToArray(), headers.Count, body, length);
 
         /// <inheritdoc />
-        public bool SendGet(string path, List<NameValue> headers)
-        {
-            return Sdk.Http.HP_HttpClient_SendGet(SenderPtr, path, headers.ToArray(), headers.Count);
-        }
+        public bool SendPut(string path, List<NameValue> headers, byte[] body, int length) => SendRequest(HttpMethod.Put, path, headers, body, length);
 
         /// <inheritdoc />
-        public bool SendDelete(string path, List<NameValue> headers) => Sdk.Http.HP_HttpClient_SendDelete(SenderPtr, path, headers.ToArray(), headers.Count);
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
+        public bool SendPatch(string path, List<NameValue> headers, string body, int length) => Sdk.Http.HP_HttpClient_SendPatch(SenderPtr, path, headers.ToArray(), headers.Count, body, length);
 
         /// <inheritdoc />
-        public bool SendHead(string path, List<NameValue> headers) => Sdk.Http.HP_HttpClient_SendHead(SenderPtr, path, headers.ToArray(), headers.Count);
+        public bool SendPatch(string path, List<NameValue> headers, byte[] body, int length) => SendRequest(HttpMethod.Patch, path, headers, body, length);
 
         /// <inheritdoc />
-        public bool SendTrace(string path, List<NameValue> headers) => Sdk.Http.HP_HttpClient_SendTrace(SenderPtr, path, headers.ToArray(), headers.Count);
+        public bool SendGet(string path, List<NameValue> headers) => SendRequest(HttpMethod.Get, path, headers);
 
         /// <inheritdoc />
-        public bool SendOptions(string path, List<NameValue> headers) => Sdk.Http.HP_HttpClient_SendOptions(SenderPtr, path, headers.ToArray(), headers.Count);
+        public bool SendDelete(string path, List<NameValue> headers) => SendRequest(HttpMethod.Delete, path, headers);
 
         /// <inheritdoc />
-        public bool SendConnect(string path, List<NameValue> headers) => Sdk.Http.HP_HttpClient_SendConnect(SenderPtr, path, headers.ToArray(), headers.Count);
+        public bool SendHead(string path, List<NameValue> headers) => SendRequest(HttpMethod.Head, path, headers);
+
+        /// <inheritdoc />
+        public bool SendTrace(string path, List<NameValue> headers) => SendRequest(HttpMethod.Trace, path, headers);
+
+        /// <inheritdoc />
+        public bool SendOptions(string path, List<NameValue> headers) => SendRequest(HttpMethod.Options, path, headers);
+
+        /// <inheritdoc />
+        public bool SendConnect(string path, List<NameValue> headers) => SendRequest(HttpMethod.Connect, path, headers);
 
         /// <inheritdoc />
         public bool GetWsMessageState(out MessageState state)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+
 using HPSocket.Adapter;
 
 namespace HPSocket.Tcp
@@ -102,7 +103,14 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
-        public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail) => Sdk.Tcp.HP_TcpAgent_SendSmallFile(SenderPtr, connId, filePath, ref head, ref tail);
+        public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail)
+        {
+            var ok = Sdk.Tcp.HP_TcpAgent_SendSmallFile(SenderPtr, connId, filePath, ref head, ref tail);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
 
         /// <inheritdoc />

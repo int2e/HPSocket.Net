@@ -56,6 +56,16 @@ namespace HPSocket
         bool SendRequest(IntPtr connId, HttpMethod method, string path, List<NameValue> headers, byte[] body, int length);
 
         /// <summary>
+        /// 发送请求
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="method">http method</param>
+        /// <param name="path">请求路径</param>
+        /// <param name="headers">请求头</param>
+        /// <returns></returns>
+        bool SendRequest(IntPtr connId, HttpMethod method, string path, List<NameValue> headers);
+
+        /// <summary>
         /// 发送本地小文件
         /// <para>向指定连接发送 4096 KB 以下的小文件</para>
         /// </summary>
@@ -77,7 +87,19 @@ namespace HPSocket
         /// <param name="body">请求体</param>
         /// <param name="length">请求体长度</param>
         /// <returns></returns>
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
         bool SendPost(IntPtr connId, string path, List<NameValue> headers, string body, int length);
+
+        /// <summary>
+        /// 发送 POST 请求
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="path">请求路径</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="body">请求体</param>
+        /// <param name="length">请求体长度</param>
+        /// <returns></returns>
+        bool SendPost(IntPtr connId, string path, List<NameValue> headers, byte[] body, int length);
 
         /// <summary>
         /// 发送 PUT 请求
@@ -88,7 +110,19 @@ namespace HPSocket
         /// <param name="body">请求体</param>
         /// <param name="length">请求体长度</param>
         /// <returns></returns>
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
         bool SendPut(IntPtr connId, string path, List<NameValue> headers, string body, int length);
+
+        /// <summary>
+        /// 发送 PUT 请求
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="path">请求路径</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="body">请求体</param>
+        /// <param name="length">请求体长度</param>
+        /// <returns></returns>
+        bool SendPut(IntPtr connId, string path, List<NameValue> headers, byte[] body, int length);
 
         /// <summary>
         /// 发送 PATCH 请求
@@ -99,7 +133,19 @@ namespace HPSocket
         /// <param name="body">请求体</param>
         /// <param name="length">请求体长度</param>
         /// <returns></returns>
+        [Obsolete("该方法已过期, 推荐使用body参数为byte[]类型的重载方法", false)]
         bool SendPatch(IntPtr connId, string path, List<NameValue> headers, string body, int length);
+
+        /// <summary>
+        /// 发送 PATCH 请求
+        /// </summary>
+        /// <param name="connId"></param>
+        /// <param name="path">请求路径</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="body">请求体</param>
+        /// <param name="length">请求体长度</param>
+        /// <returns></returns>
+        bool SendPatch(IntPtr connId, string path, List<NameValue> headers, byte[] body, int length);
 
         /// <summary>
         /// 发送 GET 请求

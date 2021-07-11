@@ -432,6 +432,9 @@
         <member name="P:HPSocket.Base.Agent.Version">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Base.Agent.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Agent.ErrorMessage">
             <inheritdoc />
         </member>
@@ -685,6 +688,9 @@
         <member name="P:HPSocket.Base.Client.Version">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Base.Client.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Base.Client.ErrorMessage">
             <inheritdoc />
         </member>
@@ -890,6 +896,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Base.Server.SysErrorCode">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Server.ErrorMessage">
@@ -1802,6 +1811,11 @@
             HttpMethod
             </summary>
         </member>
+        <member name="F:HPSocket.Http.HttpAgent.DefaultRequestHeaders">
+            <summary>
+            默认请求头
+            </summary>
+        </member>
         <member name="P:HPSocket.Http.HttpAgent.HttpAutoStart">
             <inheritdoc />
         </member>
@@ -1853,6 +1867,9 @@
         <member name="M:HPSocket.Http.HttpAgent.SendRequest(System.IntPtr,HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Http.HttpAgent.SendRequest(System.IntPtr,HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue})">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Http.HttpAgent.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
             <summary>
             http agent 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法
@@ -1888,10 +1905,19 @@
         <member name="M:HPSocket.Http.HttpAgent.SendPost(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Http.HttpAgent.SendPost(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Http.HttpAgent.SendPut(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Http.HttpAgent.SendPut(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Http.HttpAgent.SendPatch(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpAgent.SendPatch(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpAgent.SendGet(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue})">
@@ -1966,6 +1992,11 @@
         <member name="M:HPSocket.Http.HttpAgent.GetAllCookies(System.IntPtr)">
             <inheritdoc />
         </member>
+        <member name="F:HPSocket.Http.HttpClient.DefaultRequestHeaders">
+            <summary>
+            默认请求头
+            </summary>
+        </member>
         <member name="P:HPSocket.Http.HttpClient.HttpAutoStart">
             <inheritdoc />
         </member>
@@ -2017,6 +2048,9 @@
         <member name="M:HPSocket.Http.HttpClient.SendRequest(HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Http.HttpClient.SendRequest(HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue})">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Http.HttpClient.SendSmallFile(System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
             <summary>
             http agent 不实现当前方法, 请调用带HttpMethod版本的SendSmallFile方法
@@ -2047,10 +2081,19 @@
         <member name="M:HPSocket.Http.HttpClient.SendPost(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Http.HttpClient.SendPost(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Http.HttpClient.SendPut(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Http.HttpClient.SendPut(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Http.HttpClient.SendPatch(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpClient.SendPatch(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpClient.SendGet(System.String,System.Collections.Generic.List{HPSocket.NameValue})">
@@ -3309,6 +3352,16 @@
             <param name="length">请求体长度</param>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IHttpAgent.SendRequest(System.IntPtr,HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue})">
+            <summary>
+            发送请求
+            </summary>
+            <param name="connId"></param>
+            <param name="method">http method</param>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IHttpAgent.SendSmallFile(System.IntPtr,HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String)">
             <summary>
             发送本地小文件
@@ -3332,6 +3385,17 @@
             <param name="length">请求体长度</param>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IHttpAgent.SendPost(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <summary>
+            发送 POST 请求
+            </summary>
+            <param name="connId"></param>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IHttpAgent.SendPut(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
             <summary>
             发送 PUT 请求
@@ -3343,7 +3407,29 @@
             <param name="length">请求体长度</param>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IHttpAgent.SendPut(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <summary>
+            发送 PUT 请求
+            </summary>
+            <param name="connId"></param>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IHttpAgent.SendPatch(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
+            <summary>
+            发送 PATCH 请求
+            </summary>
+            <param name="connId"></param>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IHttpAgent.SendPatch(System.IntPtr,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
             <summary>
             发送 PATCH 请求
             </summary>
@@ -3441,6 +3527,15 @@
             <param name="length">请求体长度</param>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IHttpClient.SendRequest(HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue})">
+            <summary>
+            发送请求
+            </summary>
+            <param name="method">http method</param>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IHttpClient.SendSmallFile(HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String)">
             <summary>
             发送本地小文件
@@ -3480,6 +3575,16 @@
             <param name="length">请求体长度</param>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IHttpClient.SendPost(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <summary>
+            发送 POST 请求
+            </summary>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IHttpClient.SendPut(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
             <summary>
             发送 PUT 请求
@@ -3490,7 +3595,27 @@
             <param name="length">请求体长度</param>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IHttpClient.SendPut(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
+            <summary>
+            发送 PUT 请求
+            </summary>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IHttpClient.SendPatch(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.String,System.Int32)">
+            <summary>
+            发送 PATCH 请求
+            </summary>
+            <param name="path">请求路径</param>
+            <param name="headers">请求头</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IHttpClient.SendPatch(System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
             <summary>
             发送 PATCH 请求
             </summary>
@@ -4075,6 +4200,57 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:HPSocket.IHttpSyncClientEx">
+            <summary>
+            http sync client
+            </summary>
+        </member>
+        <member name="P:HPSocket.IHttpSyncClientEx.RequestHeaders">
+            <summary>
+            http请求头
+            </summary>
+        </member>
+        <member name="P:HPSocket.IHttpSyncClientEx.ResponseHeaders">
+            <summary>
+            http响应头
+            </summary>
+        </member>
+        <member name="M:HPSocket.IHttpSyncClientEx.Get(System.String,System.Boolean)">
+            <summary>
+            发送 GET 请求
+            </summary>
+            <param name="url">请求url</param>
+            <param name="forceReconnect">是否强制重新连接（默认：false，当请求 URL 的主机和端口与现有连接一致时，重用现有连接）</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IHttpSyncClientEx.Post(System.String,System.Byte[],System.Int32,System.Boolean)">
+            <summary>
+            发送 POST 请求
+            </summary>
+            <param name="url">请求url</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <param name="forceReconnect">是否强制重新连接（默认：false，当请求 URL 的主机和端口与现有连接一致时，重用现有连接）</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IHttpSyncClientEx.Put(System.String,System.Byte[],System.Int32,System.Boolean)">
+            <summary>
+            发送 PUT 请求
+            </summary>
+            <param name="url">请求url</param>
+            <param name="body">请求体</param>
+            <param name="length">请求体长度</param>
+            <param name="forceReconnect">是否强制重新连接（默认：false，当请求 URL 的主机和端口与现有连接一致时，重用现有连接）</param>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.IHttpSyncClientEx.Delete(System.String,System.Boolean)">
+            <summary>
+            发送 DELETE 请求
+            </summary>
+            <param name="url">请求url</param>
+            <param name="forceReconnect">是否强制重新连接（默认：false，当请求 URL 的主机和端口与现有连接一致时，重用现有连接）</param>
+            <returns></returns>
+        </member>
         <member name="T:HPSocket.IProxy">
             <summary>
             proxy
@@ -4448,6 +4624,11 @@
         <member name="P:HPSocket.ISocket.Version">
             <summary>
             当前组件版本
+            </summary>
+        </member>
+        <member name="P:HPSocket.ISocket.SysErrorCode">
+            <summary>
+            系统错误码
             </summary>
         </member>
         <member name="M:HPSocket.ISocket.Wait(System.Int32)">
@@ -5906,6 +6087,11 @@
             cookie
             </summary>
         </member>
+        <member name="P:HPSocket.IWebSocketAgent.RequestHeaders">
+            <summary>
+            附加请求头, 除去UserAgent和Cookie头之外, 还想附加别的http请求头, 在此设置, 将在第一次访问, 升级协议的时候附加这些请求头
+            </summary>
+        </member>
         <member name="P:HPSocket.IWebSocketAgent.ConnectionTimeout">
             <summary>
             连接超时时间
@@ -6183,7 +6369,13 @@
         </member>
         <member name="M:HPSocket.Sdk.Sys.GetLastError">
             <summary>
-            调用系统的 ::ErrorCode() 方法获取系统错误代码
+            调用系统的 GetLastWin32Error() 方法获取系统错误代码
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.Sdk.Sys.SYS_GetLastError">
+            <summary>
+            调用系统的 GetLastWin32Error() 方法获取系统错误代码
             </summary>
             <returns></returns>
         </member>
@@ -7198,6 +7390,9 @@
             当前组件版本
             </summary>
         </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwarding.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.Tcp.TcpPortForwarding.LocalBindAddress">
             <inheritdoc />
         </member>
@@ -7550,6 +7745,11 @@
             任务回调函数, 用于产生扩展板回调函数
             </summary>
         </member>
+        <member name="P:HPSocket.Thread.ThreadPool.SysErrorCode">
+            <summary>
+            系统错误码
+            </summary>
+        </member>
         <member name="M:HPSocket.Thread.ThreadPool.Start(System.Int32,HPSocket.Thread.RejectedPolicy,System.UInt32,System.UInt32)">
             <summary>
             启动线程池组件
@@ -7558,14 +7758,14 @@
             <param name="policy">任务拒绝处理策略</param>
             <param name="maxQueueSize">任务队列最大容量（0：不限制，默认：0）</param>
             <param name="stackSize">线程堆栈空间大小（默认：0 -> 操作系统默认）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.Stop(System.Int32)">
             <summary>
             在规定时间内关闭线程池组件，如果工作线程在最大等待时间内未能正常关闭，会尝试强制关闭，这种情况下很可能会造成系统资源泄漏
             </summary>
             <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.Submit(HPSocket.Thread.TaskProcEx,System.Object,System.Int32)">
             <summary>
@@ -7574,7 +7774,7 @@
             <param name="taskProc">任务处理函数</param>
             <param name="obj">任务参数</param>
             <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.MyTaskProc(System.IntPtr)">
             <summary>
@@ -7587,7 +7787,7 @@
             增加或减少线程池的工作线程数量
             </summary>
             <param name="count">线程数量， 大于0: count， 等于0: (CPU核数 * 2 + 2)， 小于0: (CPU核数 * (-count))</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="M:HPSocket.Thread.ThreadPool.Wait(System.Int32)">
             <summary>
@@ -7608,7 +7808,7 @@
             在规定时间内关闭线程池组件，如果工作线程在最大等待时间内未能正常关闭，会尝试强制关闭，这种情况下很可能会造成系统资源泄漏
             </summary>
             <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-            <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+            <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         </member>
         <member name="P:HPSocket.Thread.ThreadPool.TaskCount">
             <summary>
@@ -7871,6 +8071,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Udp.UdpNode.SysErrorCode">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Udp.UdpNode.ErrorMessage">
@@ -8244,6 +8447,9 @@
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Version">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.WebSocket.WebSocketAgent.SysErrorCode">
+            <inheritdoc />
+        </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.DefaultMask">
             <inheritdoc />
         </member>
@@ -8251,6 +8457,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.Cookie">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.WebSocket.WebSocketAgent.RequestHeaders">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketAgent.ConnectionTimeout">
@@ -8375,6 +8584,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.WebSocket.WebSocketServer.SysErrorCode">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.WebSocket.WebSocketServer.MaxPacketSize">

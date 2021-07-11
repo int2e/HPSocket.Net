@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
@@ -35,9 +36,19 @@ namespace HPSocket.Thread
         /// </summary>
         private readonly TaskProc _taskProc;
         #endregion
+        
+#if !NET20 && !NET30 && !NET35
+        /// <summary>
+        /// 系统错误码
+        /// </summary>
+        public ThreadLocal<int> SysErrorCode { get; private set; }
+#endif
 
         public ThreadPool()
         {
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode = new ThreadLocal<int>(() => System.Threading.Thread.CurrentThread.ManagedThreadId);
+#endif
             _taskProc = MyTaskProc;
             GC.KeepAlive(_taskProc);
 
@@ -66,15 +77,33 @@ namespace HPSocket.Thread
         /// <param name="policy">任务拒绝处理策略</param>
         /// <param name="maxQueueSize">任务队列最大容量（0：不限制，默认：0）</param>
         /// <param name="stackSize">线程堆栈空间大小（默认：0 -> 操作系统默认）</param>
-        /// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
-        public bool Start(int threadCount, RejectedPolicy policy, uint maxQueueSize = 0, uint stackSize = 0) => Sdk.ThreadPool.HP_ThreadPool_Start(_pool, threadCount, maxQueueSize, policy, stackSize);
+        /// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
+        public bool Start(int threadCount, RejectedPolicy policy, uint maxQueueSize = 0, uint stackSize = 0)
+        {
+            var ok = Sdk.ThreadPool.HP_ThreadPool_Start(_pool, threadCount, maxQueueSize, policy, stackSize);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
         /// <summary>
         /// 在规定时间内关闭线程池组件，如果工作线程在最大等待时间内未能正常关闭，会尝试强制关闭，这种情况下很可能会造成系统资源泄漏
         /// </summary>
         /// <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-        /// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
-        public bool Stop(int maxWait = -1) => HasStarted && Sdk.ThreadPool.HP_ThreadPool_Stop(_pool, maxWait);
+        /// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
+        public bool Stop(int maxWait = -1)
+        {
+            if (!HasStarted)
+            {
+                return false;
+            }
+            var ok = Sdk.ThreadPool.HP_ThreadPool_Stop(_pool, maxWait);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
         ///// <summary>
         ///// 向线程池提交异步任务
@@ -82,7 +111,7 @@ namespace HPSocket.Thread
         ///// <param name="taskProc">任务处理函数</param>
         ///// <param name="args">任务参数</param>
         ///// <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-        ///// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
+        ///// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
         //public bool Submit(TaskProc taskProc, IntPtr args, int maxWait = -1) => Sdk.ThreadPool.HP_ThreadPool_Submit(_pool, taskProc, args, maxWait);
 
         /// <summary>
@@ -91,7 +120,7 @@ namespace HPSocket.Thread
         /// <param name="taskProc">任务处理函数</param>
         /// <param name="obj">任务参数</param>
         /// <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-        /// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
+        /// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
         public bool Submit(TaskProcEx taskProc, object obj, int maxWait = -1)
         {
             var guid = Guid.NewGuid().ToString("N");
@@ -107,7 +136,11 @@ namespace HPSocket.Thread
 
             var bytes = Encoding.ASCII.GetBytes(guid);
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            return Sdk.ThreadPool.HP_ThreadPool_Submit(_pool, _taskProc, (IntPtr)gch, maxWait);
+            var ok = Sdk.ThreadPool.HP_ThreadPool_Submit(_pool, _taskProc, (IntPtr)gch, maxWait);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
         }
 
         /// <summary>
@@ -143,7 +176,7 @@ namespace HPSocket.Thread
         ///// <param name="taskBufferType">数据类型</param>
         ///// <param name="wParam">自定义参数</param>
         ///// <param name="lParam">自定义参数</param>
-        ///// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
+        ///// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
         //public static IntPtr CreateSocketTask(SocketTaskProc taskProc, IntPtr sender, IntPtr connId, byte[] buffer, int bufferSize, TaskBufferType taskBufferType, IntPtr wParam, IntPtr lParam)
         //{
         //    var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
@@ -167,7 +200,7 @@ namespace HPSocket.Thread
         ///// </summary>
         ///// <param name="task">任务参数 SocketTask</param>
         ///// <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-        ///// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
+        ///// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
         //public bool SubmitSocketTask(IntPtr task, int maxWait = -1) => Sdk.ThreadPool.HP_ThreadPool_Submit_Task(_pool, task, maxWait);
 
 
@@ -183,7 +216,7 @@ namespace HPSocket.Thread
         ///// <param name="wParam">自定义参数</param>
         ///// <param name="lParam">自定义参数</param>
         ///// <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-        ///// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
+        ///// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码，其中，错误码 ERROR_DESTINATION_ELEMENT_FULL 表示任务队列已满</returns>
         //public bool SubmitSocketTask(SocketTaskProc socketTaskProc, IntPtr sender, IntPtr connId, byte[] buffer, int bufferSize, TaskBufferType taskBufferType, IntPtr wParam, IntPtr lParam, int maxWait = -1)
         //{
         //    var task = CreateSocketTask(socketTaskProc, sender, connId, buffer, bufferSize, taskBufferType, wParam, lParam);
@@ -205,8 +238,15 @@ namespace HPSocket.Thread
         /// 增加或减少线程池的工作线程数量
         /// </summary>
         /// <param name="count">线程数量， 大于0: count， 等于0: (CPU核数 * 2 + 2)， 小于0: (CPU核数 * (-count))</param>
-        /// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
-        private bool AdjustThreadCount(int count) => Sdk.ThreadPool.HP_ThreadPool_AdjustThreadCount(_pool, count);
+        /// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
+        private bool AdjustThreadCount(int count)
+        {
+            var ok = Sdk.ThreadPool.HP_ThreadPool_AdjustThreadCount(_pool, count);
+#if !NET20 && !NET30 && !NET35
+            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+#endif
+            return ok;
+        }
 
         /// <summary>
         /// 等待线程池组件停止运行
@@ -230,10 +270,10 @@ namespace HPSocket.Thread
         /// 在规定时间内关闭线程池组件，如果工作线程在最大等待时间内未能正常关闭，会尝试强制关闭，这种情况下很可能会造成系统资源泄漏
         /// </summary>
         /// <param name="maxWait">最大等待时间（毫秒，默认：INFINITE即-1，一直等待）</param>
-        /// <returns>true: 成功, false: 失败，可通过 ErrorCode 属性 获取系统错误代码</returns>
+        /// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
         public Task<bool> StopAsync(int maxWait = -1)
         {
-            return Task.Factory.StartNew((obj)=> Stop((int)obj), maxWait);
+            return Task.Factory.StartNew((obj) => Stop((int)obj), maxWait);
         }
 #endif
 
@@ -283,7 +323,7 @@ namespace HPSocket.Thread
         /// 获取系统返回的错误码
         /// </summary>
         /// <returns></returns>
-        public int ErrorCode => Sys.GetLastError();
+        public int ErrorCode => Sys.SYS_GetLastError();
 
         /// <summary>
         /// 释放资源
@@ -297,6 +337,9 @@ namespace HPSocket.Thread
             {
                 // 释放托管对象资源
                 _extraData.Clear();
+#if !NET20 && !NET30 && !NET35
+                SysErrorCode?.Dispose();
+#endif
             }
             Destroy();
 
