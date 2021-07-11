@@ -103,6 +103,13 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
+        public bool NoDelay 
+        {
+            get => Sdk.Tcp.HP_TcpAgent_IsNoDelay(SenderPtr);
+            set => Sdk.Tcp.HP_TcpAgent_SetNoDelay(SenderPtr, value);
+        }
+
+        /// <inheritdoc />
         public bool SendSmallFile(IntPtr connId, string filePath, ref Wsabuf head, ref Wsabuf tail)
         {
             var ok = Sdk.Tcp.HP_TcpAgent_SendSmallFile(SenderPtr, connId, filePath, ref head, ref tail);

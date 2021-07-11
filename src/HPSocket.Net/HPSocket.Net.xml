@@ -5054,6 +5054,11 @@
             读取或设置心跳确认包检测间隔（毫秒，0 不发送心跳包，如果超过若干次 [默认：WinXP 5 次, Win7 10 次] 检测不到心跳确认包则认为已断线）
             </summary>
         </member>
+        <member name="P:HPSocket.ITcpAgent.NoDelay">
+            <summary>
+            获取或设置是否开启 nodelay 模式 (默认: false, 不开启)
+            </summary>
+        </member>
         <member name="M:HPSocket.ITcpAgent.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
             <summary>
             发送本地小文件
@@ -5110,6 +5115,11 @@
         <member name="P:HPSocket.ITcpClient.KeepAliveInterval">
             <summary>
              读取或设置心跳确认包检测间隔（毫秒，0 不发送心跳包，如果超过若干次 [默认：WinXP 5 次, Win7 10 次] 检测不到心跳确认包则认为已断线）
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpClient.NoDelay">
+            <summary>
+            获取或设置是否开启 nodelay 模式 (默认: false, 不开启)
             </summary>
         </member>
         <member name="M:HPSocket.ITcpClient.SendSmallFile(System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
@@ -5495,6 +5505,11 @@
         <member name="P:HPSocket.ITcpServer.KeepAliveInterval">
             <summary>
             读取或设置心跳确认包检测间隔（毫秒，0 不发送心跳包，如果超过若干次 [默认：WinXP 5 次, Win7 10 次] 检测不到心跳确认包则认为已断线）
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpServer.NoDelay">
+            <summary>
+            获取或设置是否开启 nodelay 模式 (默认: false, 不开启)
             </summary>
         </member>
         <member name="M:HPSocket.ITcpServer.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
@@ -7256,6 +7271,9 @@
         <member name="P:HPSocket.Tcp.TcpAgent.KeepAliveInterval">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Tcp.TcpAgent.NoDelay">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Tcp.TcpAgent.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
             <inheritdoc />
         </member>
@@ -7292,6 +7310,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Tcp.TcpClient.KeepAliveInterval">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Tcp.TcpClient.NoDelay">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpClient.SendSmallFile(System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
@@ -7606,6 +7627,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Tcp.TcpServer.KeepAliveInterval">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Tcp.TcpServer.NoDelay">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Tcp.TcpServer.SendSmallFile(System.IntPtr,System.String,HPSocket.Wsabuf@,HPSocket.Wsabuf@)">
