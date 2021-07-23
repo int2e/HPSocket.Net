@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HPSocket.Net" Version="5.8.2.1" />
+    <PackageReference Include="HPSocket.Net" Version="5.8.4" />
   </ItemGroup>
 
   <ItemGroup>
