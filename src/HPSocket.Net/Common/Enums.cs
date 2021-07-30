@@ -18,7 +18,7 @@
         /// </summary>
         Stopping = 2,
         /// <summary>
-        /// 已经启动
+        /// 已经停止
         /// </summary>
         Stopped = 3,
     }
