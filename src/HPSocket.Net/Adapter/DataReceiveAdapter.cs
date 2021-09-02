@@ -14,7 +14,7 @@ namespace HPSocket.Adapter
         /// <summary>
         /// 数据接收适配器信息
         /// </summary>
-        protected readonly ExtraData<IntPtr, DataReceiveAdapterInfo> _dataReceiveAdapterCache = new ExtraData<IntPtr, DataReceiveAdapterInfo>();
+        protected readonly ExtraData<IntPtr, DataReceiveAdapterInfo> DataReceiveAdapterCache = new ExtraData<IntPtr, DataReceiveAdapterInfo>();
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace HPSocket.Adapter
         /// <param name="connId"></param>
         internal virtual void OnOpen(IntPtr connId)
         {
-            _dataReceiveAdapterCache.Set(connId, new DataReceiveAdapterInfo
+            DataReceiveAdapterCache.Set(connId, new DataReceiveAdapterInfo
             {
                 ConnId = connId,
                 Data = new List<byte>(),
@@ -51,7 +51,7 @@ namespace HPSocket.Adapter
         /// <param name="connId"></param>
         internal virtual void OnClose(IntPtr connId)
         {
-            _dataReceiveAdapterCache.Remove(connId);
+            DataReceiveAdapterCache.Remove(connId);
         }
     }
 }

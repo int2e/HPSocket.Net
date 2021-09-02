@@ -1,11 +1,11 @@
-﻿using HPSocket.Sdk;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
+using HPSocket.Sdk;
 
 namespace HPSocket.Base
 {

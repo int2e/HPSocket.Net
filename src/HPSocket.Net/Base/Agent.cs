@@ -1,8 +1,4 @@
-﻿using HPSocket.Proxy;
-using HPSocket.Sdk;
-using HPSocket.Tcp;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,6 +6,10 @@ using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
+using HPSocket.Proxy;
+using HPSocket.Sdk;
+using HPSocket.Tcp;
+
 using Timer = System.Timers.Timer;
 
 namespace HPSocket.Base
@@ -385,7 +385,7 @@ namespace HPSocket.Base
         {
             var ok = Sdk.Agent.HP_Agent_Wait(SenderPtr, milliseconds);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             return ok;
         }
@@ -457,7 +457,7 @@ namespace HPSocket.Base
             else
             {
 #if !NET20 && !NET30 && !NET35
-                SysErrorCode.Value = Sdk.Sys.SYS_GetLastError();
+                SysErrorCode.Value = Sys.SYS_GetLastError();
 #endif
             }
 
@@ -537,7 +537,7 @@ namespace HPSocket.Base
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Agent.HP_Agent_Send(SenderPtr, connId, gch.AddrOfPinnedObject(), length);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             gch.Free();
             return ok;
@@ -549,7 +549,7 @@ namespace HPSocket.Base
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Agent.HP_Agent_SendPart(SenderPtr, connId, gch.AddrOfPinnedObject(), length, offset);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             gch.Free();
             return ok;
@@ -560,7 +560,7 @@ namespace HPSocket.Base
         {
             var ok = Sdk.Agent.HP_Agent_SendPackets(SenderPtr, connId, buffers, buffers.Length);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             return ok;
         }
