@@ -471,8 +471,8 @@ namespace HPSocket.WebSocket
                 {
                     if (!string.IsNullOrEmpty(SubProtocols))
                     {
-                        var subProtocols = SubProtocols.Split(',', ' ');
-                        var headerProtocols = secWebSocketProtocol.Split(',', ' ');
+                        var subProtocols = SubProtocols.Split(new []{',', ' '});
+                        var headerProtocols = secWebSocketProtocol.Split(new[] { ',', ' ' });
 #if NET20 || NET30 || NET35
                         var list = new List<string>();
                         foreach (var protocol in headerProtocols)

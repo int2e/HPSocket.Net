@@ -78,7 +78,7 @@ namespace HPSocket.WebSocket
 #else
             _connectionIds.TryTake(out var _);
 #endif
-            return HandleResult.Ok; ;
+            return HandleResult.Ok;
         }
 
         /// <summary>

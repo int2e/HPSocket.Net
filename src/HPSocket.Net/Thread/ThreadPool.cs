@@ -5,7 +5,7 @@ using System.Threading;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
-using HPSocket.Sdk;
+
 
 namespace HPSocket.Thread
 {
@@ -155,6 +155,7 @@ namespace HPSocket.Thread
             var bytes = (byte[])gch.Target;
             gch.Free();
 
+            // ReSharper disable once AssignNullToNotNullAttribute
             var guid = Encoding.ASCII.GetString(bytes);
             var args = _extraData.Get(guid);
             if (args == null) return;
@@ -239,6 +240,7 @@ namespace HPSocket.Thread
         /// </summary>
         /// <param name="count">线程数量， 大于0: count， 等于0: (CPU核数 * 2 + 2)， 小于0: (CPU核数 * (-count))</param>
         /// <returns>true: 成功, false: 失败，可通过 SysErrorCode 属性 获取系统错误代码</returns>
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private bool AdjustThreadCount(int count)
         {
             var ok = Sdk.ThreadPool.HP_ThreadPool_AdjustThreadCount(_pool, count);
@@ -323,7 +325,7 @@ namespace HPSocket.Thread
         /// 获取系统返回的错误码
         /// </summary>
         /// <returns></returns>
-        public int ErrorCode => Sys.SYS_GetLastError();
+        public int ErrorCode => Sdk.Sys.SYS_GetLastError();
 
         /// <summary>
         /// 释放资源

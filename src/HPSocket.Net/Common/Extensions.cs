@@ -480,7 +480,7 @@ namespace HPSocket
                 return data;
             }
 
-            Stream stream = null;
+            Stream stream;
             if (contentEncoding.ToLower().Trim() == "gzip")
             {
                 stream = new GZipStream(new MemoryStream(data), CompressionMode.Decompress);
@@ -526,7 +526,7 @@ namespace HPSocket
         {
             lock (ReferenceData)
             {
-#if !NETSTANDARD2_0
+#if NET20 || NET30 || NET35 || NET40 || NET45
                 var size = Marshal.SizeOf(typeof(NativeExtra));
                 var ptr = Marshal.AllocHGlobal(size);
                 Marshal.StructureToPtr(extra, ptr, true);
@@ -535,6 +535,7 @@ namespace HPSocket
                 var ptr = Marshal.AllocHGlobal(size);
                 Marshal.StructureToPtr<NativeExtra>(extra, ptr, true);
 #endif
+              
                 ReferenceData.Set(ptr, 1);
                 return ptr;
             }
@@ -559,7 +560,7 @@ namespace HPSocket
                 {
                     return new NativeExtra();
                 }
-#if !NETSTANDARD2_0
+#if NET20 || NET30 || NET35 || NET40 || NET45
                 return (NativeExtra)Marshal.PtrToStructure(ptr, typeof(NativeExtra));
 #else
                 return Marshal.PtrToStructure<NativeExtra>(ptr);

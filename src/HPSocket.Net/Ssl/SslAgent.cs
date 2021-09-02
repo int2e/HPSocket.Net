@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using HPSocket.Adapter;
 using HPSocket.Tcp;
 
