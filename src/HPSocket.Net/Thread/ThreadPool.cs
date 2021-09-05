@@ -27,6 +27,11 @@ namespace HPSocket.Thread
         private readonly IntPtr _pool;
 
         /// <summary>
+        /// 线程池事件监听器
+        /// </summary>
+        private readonly IntPtr _listener;
+
+        /// <summary>
         /// 附加数据, 用于管理扩展板回调函数参数
         /// </summary>
         private readonly ExtraData<string, ThreadProcExArgs> _extraData = new ExtraData<string, ThreadProcExArgs>();
@@ -35,14 +40,39 @@ namespace HPSocket.Thread
         /// 任务回调函数, 用于产生扩展板回调函数
         /// </summary>
         private readonly TaskProc _taskProc;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly Sdk.ThreadPoolOnStartup _onStartup;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly Sdk.ThreadPoolOnShutdown _onShutdown;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly Sdk.ThreadPoolOnWorkerThreadStart _onWorkerThreadStart;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly Sdk.ThreadPoolOnWorkerThreadEnd _onWorkerThreadEnd;
         #endregion
-        
+
 #if !NET20 && !NET30 && !NET35
         /// <summary>
         /// 系统错误码
         /// </summary>
         public ThreadLocal<int> SysErrorCode { get; private set; }
 #endif
+        /// <summary>
+        /// 线程池启动事件
+        /// </summary>
+        public event StartupEventHandler OnStartup;
+        /// <summary>
+        /// 线程池关闭事件
+        /// </summary>
+        public event ShutdownEventHandler OnShutdown;
+        /// <summary>
+        /// 工作线程启动事件(每个工作线程触发一次)
+        /// </summary>
+        public event WorkerThreadStartEventHandler OnWorkerThreadStart;
+        /// <summary>
+        /// 工作线程退出事件(每个工作线程触发一次)
+        /// </summary>
+        public event WorkerThreadEndEventHandler OnWorkerThreadEnd;
 
         public ThreadPool()
         {
@@ -50,9 +80,28 @@ namespace HPSocket.Thread
             SysErrorCode = new ThreadLocal<int>(() => System.Threading.Thread.CurrentThread.ManagedThreadId);
 #endif
             _taskProc = MyTaskProc;
+
             GC.KeepAlive(_taskProc);
 
-            _pool = Sdk.ThreadPool.Create_HP_ThreadPool();
+
+            _listener = Sdk.ThreadPool.Create_HP_ThreadPoolListener();
+            if (_listener != IntPtr.Zero)
+            {
+                _onStartup = SdkOnStartup;
+                _onShutdown = SdkOnShutdown;
+                _onWorkerThreadStart = SdkOnWorkerThreadStart;
+                _onWorkerThreadEnd = SdkOnWorkerThreadEnd;
+                GC.KeepAlive(_onStartup);
+                GC.KeepAlive(_onShutdown);
+                GC.KeepAlive(_onWorkerThreadStart);
+                GC.KeepAlive(_onWorkerThreadEnd);
+                Sdk.ThreadPool.HP_Set_FN_ThreadPool_OnStartup(_listener, _onStartup);
+                Sdk.ThreadPool.HP_Set_FN_ThreadPool_OnShutdown(_listener, _onShutdown);
+                Sdk.ThreadPool.HP_Set_FN_ThreadPool_OnWorkerThreadStart(_listener, _onWorkerThreadStart);
+                Sdk.ThreadPool.HP_Set_FN_ThreadPool_OnWorkerThreadEnd(_listener, _onWorkerThreadEnd);
+
+            }
+            _pool = Sdk.ThreadPool.Create_HP_ThreadPool(_listener);
             if (_pool == IntPtr.Zero)
             {
                 throw new InitializationException("创建线程池对象失败");
@@ -64,11 +113,38 @@ namespace HPSocket.Thread
         private void Destroy()
         {
             Stop();
+            if (_listener != IntPtr.Zero)
+            {
+                Sdk.ThreadPool.Destroy_HP_ThreadPoolListener(_listener);
+            }
             if (_pool != IntPtr.Zero)
             {
                 Sdk.ThreadPool.Destroy_HP_ThreadPool(_pool);
             }
         }
+
+        private void SdkOnStartup(IntPtr threadPoolPtr)
+        {
+            OnStartup?.Invoke(this);
+        }
+
+        private void SdkOnShutdown(IntPtr threadPoolPtr)
+        {
+            OnShutdown?.Invoke(this);
+        }
+
+        private void SdkOnWorkerThreadStart(IntPtr threadPoolPtr, IntPtr threadId)
+        {
+            //OnWorkerThreadStart?.Invoke(this, System.Threading.Thread.CurrentThread.ManagedThreadId);
+            OnWorkerThreadStart?.Invoke(this, (ulong)threadId);
+        }
+
+        private void SdkOnWorkerThreadEnd(IntPtr threadPoolPtr, IntPtr threadId)
+        {
+            // OnWorkerThreadEnd?.Invoke(this, System.Threading.Thread.CurrentThread.ManagedThreadId);
+            OnWorkerThreadEnd?.Invoke(this, (ulong)threadId);
+        }
+        
 
         /// <summary>
         /// 启动线程池组件
@@ -320,12 +396,6 @@ namespace HPSocket.Thread
         /// 获取任务拒绝处理策略
         /// </summary>
         public RejectedPolicy RejectedPolicy => Sdk.ThreadPool.HP_ThreadPool_GetRejectedPolicy(_pool);
-
-        /// <summary>
-        /// 获取系统返回的错误码
-        /// </summary>
-        /// <returns></returns>
-        public int ErrorCode => Sdk.Sys.SYS_GetLastError();
 
         /// <summary>
         /// 释放资源

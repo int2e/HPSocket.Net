@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
+
 using HPSocket.Thread;
 
 namespace HPSocket.Sdk
@@ -7,7 +9,13 @@ namespace HPSocket.Sdk
     public class ThreadPool
     {
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
-        public static extern IntPtr Create_HP_ThreadPool();
+        public static extern IntPtr Create_HP_ThreadPoolListener();
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void Destroy_HP_ThreadPoolListener(IntPtr pListener);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern IntPtr Create_HP_ThreadPool(IntPtr pListener);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void Destroy_HP_ThreadPool(IntPtr pThreadPool);
@@ -55,5 +63,17 @@ namespace HPSocket.Sdk
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern RejectedPolicy HP_ThreadPool_GetRejectedPolicy(IntPtr pThreadPool);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_Set_FN_ThreadPool_OnStartup(IntPtr pListener, ThreadPoolOnStartup fn);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_Set_FN_ThreadPool_OnShutdown(IntPtr pListener, ThreadPoolOnShutdown fn);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_Set_FN_ThreadPool_OnWorkerThreadStart(IntPtr pListener, ThreadPoolOnWorkerThreadStart fn);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_Set_FN_ThreadPool_OnWorkerThreadEnd(IntPtr pListener, ThreadPoolOnWorkerThreadEnd fn);
     }
 }
