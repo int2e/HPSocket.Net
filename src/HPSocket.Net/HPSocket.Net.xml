@@ -7916,12 +7916,6 @@
             获取任务拒绝处理策略
             </summary>
         </member>
-        <member name="P:HPSocket.Thread.ThreadPool.ErrorCode">
-            <summary>
-            获取系统返回的错误码
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:HPSocket.Thread.ThreadPool.Dispose(System.Boolean)">
             <summary>
             释放资源
