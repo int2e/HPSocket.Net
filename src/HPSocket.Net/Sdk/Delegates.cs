@@ -1,5 +1,7 @@
 ﻿using System;
+
 using HPSocket.Http;
+using HPSocket.Thread;
 using HPSocket.WebSocket;
 // ReSharper disable InconsistentNaming
 
@@ -55,11 +57,21 @@ namespace HPSocket.Sdk
     public delegate HandleResult OnWsMessageHeader(IntPtr sender, IntPtr dwConnId, bool bFinal, Rsv iRsv, OpCode opCode, byte[] lpszMask, ulong ullBodyLen);
     public delegate HandleResult OnWsMessageBody(IntPtr sender, IntPtr dwConnId, IntPtr data, int length);
     public delegate HandleResult OnWsMessageComplete(IntPtr sender, IntPtr dwConnId);
-    
+
     /* UdpNode */
     public delegate HandleResult UdpNodeOnPrepareListen(IntPtr sender, IntPtr soListen);
     public delegate HandleResult UdpNodeOnSend(IntPtr sender, string remoteAddress, ushort usRemotePort, IntPtr pData, int length);
     public delegate HandleResult UdpNodeOnReceive(IntPtr sender, string remoteAddress, ushort usRemotePort, IntPtr pData, int length);
     public delegate HandleResult UdpNodeOnError(IntPtr sender, SocketOperation socketOperation, int errorCode, string remoteAddress, ushort remotePort, IntPtr pData, int length);
     public delegate HandleResult UdpNodeOnShutdown(IntPtr sender);
+
+
+    /****************************************************/
+    /******************* 线程池 回调函数 *******************/
+    public delegate void SocketTaskProc(ref SocketTask task);
+    public delegate void ThreadPoolOnStartup(IntPtr threadPoolPtr);
+    public delegate void ThreadPoolOnShutdown(IntPtr threadPoolPtr);
+    public delegate void ThreadPoolOnWorkerThreadStart(IntPtr threadPoolPtr, IntPtr threadId);
+    public delegate void ThreadPoolOnWorkerThreadEnd(IntPtr threadPoolPtr, IntPtr threadId);
+
 }

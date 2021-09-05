@@ -45,6 +45,12 @@ namespace HPSocket
         ///  读取或设置心跳确认包检测间隔（毫秒，0 不发送心跳包，如果超过若干次 [默认：WinXP 5 次, Win7 10 次] 检测不到心跳确认包则认为已断线）
         /// </summary>
         uint KeepAliveInterval { get; set; }
+
+        /// <summary>
+        /// 获取或设置是否开启 nodelay 模式 (默认: false, 不开启)
+        /// </summary>
+        bool NoDelay { get; set; }
+
         #endregion
 
         #region 客户端方法

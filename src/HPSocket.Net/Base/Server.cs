@@ -1,5 +1,4 @@
-﻿using HPSocket.Sdk;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -8,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 #endif
+using HPSocket.Sdk;
 
 namespace HPSocket.Base
 {
@@ -276,7 +276,7 @@ namespace HPSocket.Base
         {
             var ok = Sdk.Server.HP_Server_Wait(SenderPtr, milliseconds);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             return ok;
         }
@@ -301,7 +301,7 @@ namespace HPSocket.Base
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Server.HP_Server_Send(SenderPtr, connId, gch.AddrOfPinnedObject(), length);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             gch.Free();
             return ok;
@@ -313,7 +313,7 @@ namespace HPSocket.Base
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Server.HP_Server_SendPart(SenderPtr, connId, gch.AddrOfPinnedObject(), length, offset);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             gch.Free();
             return ok;
@@ -324,7 +324,7 @@ namespace HPSocket.Base
         {
             var ok = Sdk.Server.HP_Server_SendPackets(SenderPtr, connId, buffers, buffers.Length);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             return ok;
         }

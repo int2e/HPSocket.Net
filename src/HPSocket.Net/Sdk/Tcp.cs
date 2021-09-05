@@ -157,6 +157,8 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_TcpServer_SetKeepAliveInterval(IntPtr pServer, uint dwKeepAliveInterval);
 
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_TcpServer_SetNoDelay(IntPtr pServer, bool bNoDelay);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpServer_GetAcceptSocketCount(IntPtr pServer);
@@ -172,6 +174,9 @@ namespace HPSocket.Sdk
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpServer_GetKeepAliveInterval(IntPtr pServer);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern bool HP_TcpServer_IsNoDelay(IntPtr pServer);
 
 
 
@@ -194,6 +199,9 @@ namespace HPSocket.Sdk
         public static extern void HP_TcpClient_SetKeepAliveInterval(IntPtr pClient, uint dwKeepAliveInterval);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_TcpClient_SetNoDelay(IntPtr pClient, bool bNoDelay);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpClient_GetSocketBufferSize(IntPtr pClient);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
@@ -202,6 +210,8 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpClient_GetKeepAliveInterval(IntPtr pClient);
 
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern bool HP_TcpClient_IsNoDelay(IntPtr pClient);
 
 
         /***************************************************************************************/
@@ -273,6 +283,9 @@ namespace HPSocket.Sdk
         public static extern void HP_TcpAgent_SetKeepAliveInterval(IntPtr pAgent, uint dwKeepAliveInterval);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_TcpAgent_SetNoDelay(IntPtr pAgent, bool bNoDelay);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpAgent_GetSocketBufferSize(IntPtr pAgent);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
@@ -280,6 +293,9 @@ namespace HPSocket.Sdk
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpAgent_GetKeepAliveInterval(IntPtr pAgent);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern bool HP_TcpAgent_IsNoDelay(IntPtr pAgent);
 
 
         /***************************************************************************************/

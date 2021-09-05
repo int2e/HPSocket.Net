@@ -47,6 +47,11 @@ namespace HPSocket
         /// </summary>
         uint KeepAliveInterval { get; set; }
 
+        /// <summary>
+        /// 获取或设置是否开启 nodelay 模式 (默认: false, 不开启)
+        /// </summary>
+        bool NoDelay { get; set; }
+
         #endregion
 
         #region 客户端方法

@@ -31,7 +31,7 @@ namespace HPSocket.Adapter
         {
             try
             {
-                var cache = _dataReceiveAdapterCache.Get(connId);
+                var cache = DataReceiveAdapterCache.Get(connId);
                 if (cache == null)
                 {
                     return HandleResult.Error;

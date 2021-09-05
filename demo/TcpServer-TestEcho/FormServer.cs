@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HPSocket;
 using HPSocket.Tcp;
@@ -72,8 +73,14 @@ namespace TcpServerTestEcho
 
 
             // 线程池相关设置
+            _threadPool.OnStartup += ThreadPoolOnStartup; // 线程池启动事件
+            _threadPool.OnShutdown += ThreadPoolOnShutdown; // 线程池退出事件
+            _threadPool.OnWorkerThreadStart += ThreadPoolOnWorkerThreadStart; // 工作线程启动事件
+            _threadPool.OnWorkerThreadEnd += ThreadPoolOnWorkerThreadEnd; // 工作线程关闭事件
+
             // 线程池回调函数
             _taskTaskProc = TaskTaskProc;
+
 
             // 定时输出线程池任务数
             _timer.Elapsed += (_, args) =>
@@ -105,6 +112,31 @@ namespace TcpServerTestEcho
             // 停止释放服务器
             _server.Dispose();
             e.Cancel = false;
+        }
+
+        private void ThreadPoolOnStartup(ThreadPool threadPool)
+        {
+            AddLog("ThreadPoolOnStartup()");
+        }
+
+        private void ThreadPoolOnShutdown(ThreadPool threadPool)
+        {
+            AddLog("ThreadPoolOnShutdown()");
+        }
+
+        private void ThreadPoolOnWorkerThreadStart(ThreadPool threadPool, ulong threadId)
+        {
+            // 如果要在当前事件中操作ui, 请另开Task, 如下所示
+            var id = threadId;
+            Task.Run(() =>
+            {
+                AddLog($"ThreadPoolOnWorkerThreadStart({id})");
+            });
+        }
+
+        private void ThreadPoolOnWorkerThreadEnd(ThreadPool threadPool, ulong threadId)
+        {
+            AddLog($"ThreadPoolOnWorkerThreadEnd({threadId},{Thread.CurrentThread.ManagedThreadId})");
         }
 
         // ReSharper disable once InconsistentNaming
@@ -311,6 +343,7 @@ namespace TcpServerTestEcho
         /// <param name="obj">任务参数</param>
         private void TaskTaskProc(object obj)
         {
+            AddLog($"TaskTaskProc() 线程id: {Thread.CurrentThread.ManagedThreadId}");
             if (!(obj is TaskInfo taskInfo))
             {
                 return;
@@ -396,7 +429,7 @@ namespace TcpServerTestEcho
                     if (!_threadPool.Start(2, RejectedPolicy.WaitFor))
                     {
                         btnSwitchService.Enabled = false;
-                        throw new Exception($"线程池启动失败, 错误码: {_threadPool.ErrorCode}");
+                        throw new Exception($"线程池启动失败, 错误码: {_threadPool.SysErrorCode}");
                     }
 
                     // 启动服务

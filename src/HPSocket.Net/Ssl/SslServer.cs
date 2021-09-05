@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 using HPSocket.Adapter;
 using HPSocket.Tcp;
@@ -14,9 +13,9 @@ namespace HPSocket.Ssl
     {
         public SslServer()
         {
-            OnAccept += SslServer_OnAccept; ;
-            base.OnReceive += SslServer_OnReceive; ;
-            OnClose += SslServer_OnClose; ;
+            OnAccept += SslServer_OnAccept;
+            base.OnReceive += SslServer_OnReceive;
+            OnClose += SslServer_OnClose;
         }
 
 #pragma warning disable 0067

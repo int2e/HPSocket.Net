@@ -32,9 +32,9 @@ namespace WebSocketClientTestEcho
 
                     // 最大封包大小
                     MaxPacketSize = 0x4000,
-
+                    
                     // 浏览器User-Agent, 默认chrome78.0.3904.97的User-Agent
-                    UserAgent = "hp-socket5.7 websocket agent",
+                    UserAgent = $"hp-socket websocket agent",
 
                     // 升级websocket协议的时候可以附带cookie
                     Cookie = "key=hello;value=world",
