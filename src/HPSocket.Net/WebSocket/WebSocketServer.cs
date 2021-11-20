@@ -457,7 +457,7 @@ namespace HPSocket.WebSocket
                     return HttpParseResult.Error;
                 }
 
-                using (var sha1 = new SHA1CryptoServiceProvider())
+                using (var sha1 = SHA1.Create())
                 {
                     headers.Add(new NameValue
                     {
@@ -471,7 +471,7 @@ namespace HPSocket.WebSocket
                 {
                     if (!string.IsNullOrEmpty(SubProtocols))
                     {
-                        var subProtocols = SubProtocols.Split(new []{',', ' '});
+                        var subProtocols = SubProtocols.Split(new[] { ',', ' ' });
                         var headerProtocols = secWebSocketProtocol.Split(new[] { ',', ' ' });
 #if NET20 || NET30 || NET35
                         var list = new List<string>();

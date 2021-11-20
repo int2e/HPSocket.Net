@@ -1067,7 +1067,7 @@
         </member>
         <member name="F:HPSocket.ServiceState.Stopped">
             <summary>
-            已经启动
+            已经停止
             </summary>
         </member>
         <member name="T:HPSocket.SocketOperation">
