@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{02D026E9-705D-457E-B37B-AB25403B2344}</ProjectGuid>
+    <ProjectGuid>{87901101-A061-4DED-8D62-D96A41D103A0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>UdpServerTestEcho</RootNamespace>
-    <AssemblyName>UdpServer-TestEcho</AssemblyName>
+    <RootNamespace>UdpArqServerTestEcho</RootNamespace>
+    <AssemblyName>UdpArqServer-TestEcho</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
