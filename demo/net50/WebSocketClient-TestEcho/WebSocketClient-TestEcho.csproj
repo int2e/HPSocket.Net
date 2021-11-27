@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HPSocket.Net" Version="5.8.5" />
+    <PackageReference Include="HPSocket.Net" Version="5.8.5.1" />
   </ItemGroup>
 
 </Project>
