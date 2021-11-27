@@ -5722,7 +5722,7 @@
         </member>
         <member name="P:HPSocket.IUdpClient.DetectInterval">
             <summary>
-            获取或设置心跳检查次数
+            获取或设置心跳检查间隔
             </summary>
         </member>
         <member name="T:HPSocket.IUdpNode">
@@ -5966,7 +5966,7 @@
         </member>
         <member name="P:HPSocket.IUdpServer.DetectInterval">
             <summary>
-            获取或设置心跳检查次数
+            获取或设置心跳检查间隔
             </summary>
         </member>
         <member name="T:HPSocket.IWebSocket">
