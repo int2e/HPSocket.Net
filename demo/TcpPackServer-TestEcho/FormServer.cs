@@ -262,7 +262,7 @@ namespace TcpPackServerTestEcho
                     if (!_threadPool.Start(2, RejectedPolicy.WaitFor))
                     {
                         btnSwitchService.Enabled = false;
-                        throw new Exception($"线程池启动失败, 错误码: {_threadPool.ErrorCode}");
+                        throw new Exception($"线程池启动失败, 错误码: {_threadPool.SysErrorCode}");
                     }
 
                     // 启动服务
