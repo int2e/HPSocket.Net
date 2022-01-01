@@ -1,14 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
+
+using HPSocket.Adapter;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
 
 namespace HPSocket.Tcp
 {
+    /// <summary>
+    /// tcp 端口转发扩展
+    /// </summary>
+    public class TcpPortForwardingEx: TcpPortForwarding, ITcpPortForwardingEx
+    {
+        /// <summary>
+        /// 目标服务器地址
+        /// </summary>
+        [Obsolete("ITcpPortForwardingEx组件无需设置TargetAddress属性, 请设置ConnectAdapter属性", true)]
+        public new string TargetAddress { get; set; }
+        /// <summary>
+        /// 目标服务器端口
+        /// </summary>
+        [Obsolete("ITcpPortForwardingEx组件无需设置TargetPort属性, 请设置ConnectAdapter属性", true)]
+        public new ushort TargetPort { get; set; }
 
-    public sealed class TcpPortForwarding : ITcpPortForwarding
+        /// <inheritdoc />
+        public PortForwardingConnectAdapter ConnectAdapter { get; set; }
+
+        #region 重写父类方法
+
+        /// <summary>
+        /// 获取目标IpEndPoint
+        /// </summary>
+        /// <returns></returns>
+        protected override IPEndPoint GetTargetIpEndPoint()
+        {
+            return ConnectAdapter?.GetTargetIpEndPoint(this);
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// tcp 端口转发
+    /// </summary>
+    public class TcpPortForwarding : ITcpPortForwarding
     {
         #region 私有成员
 
@@ -31,6 +69,11 @@ namespace HPSocket.Tcp
         /// agent
         /// </summary>
         private TcpAgent _agent;
+
+        /// <summary>
+        /// ipEndPoint
+        /// </summary>
+        private IPEndPoint _ipEndPoint;
 
         #endregion
 
@@ -183,9 +226,10 @@ namespace HPSocket.Tcp
             ErrorMessage = server.ErrorMessage;
         }
 
+
         #region server组件回调
 
-        private HandleResult ServerAccept(IServer sender, IntPtr connId, IntPtr client)
+        protected HandleResult ServerAccept(IServer sender, IntPtr connId, IntPtr client)
         {
             // 暂停接收数据
             if (!sender.PauseReceive(connId))
@@ -208,7 +252,9 @@ namespace HPSocket.Tcp
                 return HandleResult.Error;
             }
 
-            if (!_agent.Connect(TargetAddress, TargetPort, connId, out var agentConnId))
+            var endpoint = GetTargetIpEndPoint();
+
+            if (!_agent.Connect(endpoint.Address.ToString(), (ushort)endpoint.Port, connId, out var agentConnId))
             {
                 SetErrorInfo(sender);
                 return HandleResult.Error;
@@ -223,7 +269,7 @@ namespace HPSocket.Tcp
             return OnServerAccept?.Invoke(sender, connId, client) ?? HandleResult.Ok;
         }
 
-        private HandleResult ServerReceive(IServer sender, IntPtr connId, byte[] data)
+        protected HandleResult ServerReceive(IServer sender, IntPtr connId, byte[] data)
         {
             var extra = sender.GetExtra<TcpPortForwardingExtra>(connId);
             if (extra == null)
@@ -239,7 +285,7 @@ namespace HPSocket.Tcp
             return OnServerReceive?.Invoke(sender, connId, data) ?? HandleResult.Ok;
         }
 
-        private HandleResult ServerClose(IServer sender, IntPtr connId, SocketOperation socketOperation, int errorCode)
+        protected HandleResult ServerClose(IServer sender, IntPtr connId, SocketOperation socketOperation, int errorCode)
         {
             var extra = sender.GetExtra<TcpPortForwardingExtra>(connId);
             if (extra != null)
@@ -322,6 +368,19 @@ namespace HPSocket.Tcp
         }
 
         #endregion
+
+        #endregion
+
+        #region 保护方法
+
+        /// <summary>
+        /// 获取目标IpEndPoint
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IPEndPoint GetTargetIpEndPoint()
+        {
+            return _ipEndPoint ?? (_ipEndPoint = new IPEndPoint(IPAddress.Parse(TargetAddress), TargetPort));
+        }
 
         #endregion
 
