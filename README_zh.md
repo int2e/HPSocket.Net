@@ -7,6 +7,7 @@ the C# SDK for [HP-Socket](https://github.com/ldcsaa/HP-Socket)
 * `.Net Framework 2.0+`
 * `.Net Core 2.0+`
 * `.Net 5.0`
+* `.Net 6.0`
 
 #### 平台支持
 * `Windows 7+ x86/x64`
@@ -42,7 +43,7 @@ Nuget软件包中的`libhpsocket4c.dylib`编译自`HP-Socket`的`macOS分支`[HP
 + `ITcpPullClient`
 + `ITcpPackServer`
 + `ITcpPackAgent`
-+ `ITcpPacClient`
++ `ITcpPackClient`
 
 ##### UDP
 + `IUdpServer`

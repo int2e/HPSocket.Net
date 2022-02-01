@@ -1,8 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using HPSocket.Adapter;
 
 namespace HPSocket
 {
+    /// <summary>
+    /// tcp 端口转发扩展
+    /// </summary>
+    public interface ITcpPortForwardingEx : ITcpPortForwarding
+    {
+        #region 属性
+
+        /// <summary>
+        /// 目标服务器地址
+        /// </summary>
+        [Obsolete("ITcpPortForwardingEx组件无需设置TargetAddress属性, 请设置ConnectAdapter属性", true)]
+        new string TargetAddress { get; set; }
+        /// <summary>
+        /// 目标服务器端口
+        /// </summary>
+        [Obsolete("ITcpPortForwardingEx组件无需设置TargetPort属性, 请设置ConnectAdapter属性", true)]
+        new ushort TargetPort { get; set; }
+
+        /// <summary>
+        /// 连接适配器
+        /// </summary>
+        PortForwardingConnectAdapter ConnectAdapter { get; set; }
+
+        #endregion
+
+    }
+
     /// <summary>
     /// tcp 端口转发
     /// </summary>
@@ -120,7 +148,7 @@ namespace HPSocket
         /// <param name="connId"></param>
         /// <param name="obj"></param>
         /// <returns></returns>
-        bool SetExtraByAgentConnId (IntPtr connId, object obj);
+        bool SetExtraByAgentConnId(IntPtr connId, object obj);
 
         /// <summary>
         /// 根据Server组件的连接id设置附加数据

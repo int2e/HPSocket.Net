@@ -156,6 +156,18 @@
             <param name="data">包体</param>
             <returns>需子类根据包体data自己解析对象并返回</returns>
         </member>
+        <member name="T:HPSocket.Adapter.PortForwardingConnectAdapter">
+            <summary>
+            转发连接适配器
+            </summary>
+        </member>
+        <member name="M:HPSocket.Adapter.PortForwardingConnectAdapter.GetTargetIpEndPoint(HPSocket.ITcpPortForwarding)">
+            <summary>
+            获取目标IpEndPoint, 子类必须重写该方法
+            </summary>
+            <param name="sender"></param>
+            <returns></returns>
+        </member>
         <member name="T:HPSocket.Adapter.TerminatorDataReceiveAdapter`1">
             <summary>
             结束符数据接收适配器基类
@@ -1067,7 +1079,7 @@
         </member>
         <member name="F:HPSocket.ServiceState.Stopped">
             <summary>
-            已经启动
+            已经停止
             </summary>
         </member>
         <member name="T:HPSocket.SocketOperation">
@@ -5187,6 +5199,26 @@
             读取或设置包头标识，有效包头标识取值范围  0 ~ 1023/0x3FF，当包头标识为 0 时不校验包头，默认：0
             </summary>
         </member>
+        <member name="T:HPSocket.ITcpPortForwardingEx">
+            <summary>
+            tcp 端口转发扩展
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpPortForwardingEx.TargetAddress">
+            <summary>
+            目标服务器地址
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpPortForwardingEx.TargetPort">
+            <summary>
+            目标服务器端口
+            </summary>
+        </member>
+        <member name="P:HPSocket.ITcpPortForwardingEx.ConnectAdapter">
+            <summary>
+            连接适配器
+            </summary>
+        </member>
         <member name="T:HPSocket.ITcpPortForwarding">
             <summary>
             tcp 端口转发
@@ -5722,7 +5754,7 @@
         </member>
         <member name="P:HPSocket.IUdpClient.DetectInterval">
             <summary>
-            获取或设置心跳检查次数
+            获取或设置心跳检查间隔
             </summary>
         </member>
         <member name="T:HPSocket.IUdpNode">
@@ -5966,7 +5998,7 @@
         </member>
         <member name="P:HPSocket.IUdpServer.DetectInterval">
             <summary>
-            获取或设置心跳检查次数
+            获取或设置心跳检查间隔
             </summary>
         </member>
         <member name="T:HPSocket.IWebSocket">
@@ -7354,6 +7386,35 @@
         <member name="P:HPSocket.Tcp.TcpPackServer.PackHeaderFlag">
             <inheritdoc />
         </member>
+        <member name="T:HPSocket.Tcp.TcpPortForwardingEx">
+            <summary>
+            tcp 端口转发扩展
+            </summary>
+        </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwardingEx.TargetAddress">
+            <summary>
+            目标服务器地址
+            </summary>
+        </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwardingEx.TargetPort">
+            <summary>
+            目标服务器端口
+            </summary>
+        </member>
+        <member name="P:HPSocket.Tcp.TcpPortForwardingEx.ConnectAdapter">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwardingEx.GetTargetIpEndPoint">
+            <summary>
+            获取目标IpEndPoint
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:HPSocket.Tcp.TcpPortForwarding">
+            <summary>
+            tcp 端口转发
+            </summary>
+        </member>
         <member name="F:HPSocket.Tcp.TcpPortForwarding._disposed">
             <summary>
             是否释放了
@@ -7372,6 +7433,11 @@
         <member name="F:HPSocket.Tcp.TcpPortForwarding._agent">
             <summary>
             agent
+            </summary>
+        </member>
+        <member name="F:HPSocket.Tcp.TcpPortForwarding._ipEndPoint">
+            <summary>
+            ipEndPoint
             </summary>
         </member>
         <member name="E:HPSocket.Tcp.TcpPortForwarding.OnServerAccept">
@@ -7460,6 +7526,12 @@
             设置错误信息
             </summary>
             <param name="server"></param>
+        </member>
+        <member name="M:HPSocket.Tcp.TcpPortForwarding.GetTargetIpEndPoint">
+            <summary>
+            获取目标IpEndPoint
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:HPSocket.Tcp.TcpPortForwarding.Start">
             <inheritdoc />

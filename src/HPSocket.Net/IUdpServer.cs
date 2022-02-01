@@ -26,7 +26,7 @@
         uint DetectAttempts { get; set; }
 
         /// <summary>
-        /// 获取或设置心跳检查次数
+        /// 获取或设置心跳检查间隔
         /// </summary>
         uint DetectInterval { get; set; }
 
