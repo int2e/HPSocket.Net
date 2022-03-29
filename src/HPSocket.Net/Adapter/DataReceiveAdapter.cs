@@ -22,7 +22,7 @@ namespace HPSocket.Adapter
         /// 打开连接
         /// </summary>
         /// <param name="connId"></param>
-        internal virtual void OnOpen(IntPtr connId)
+        public virtual void OnOpen(IntPtr connId)
         {
             DataReceiveAdapterCache.Set(connId, new DataReceiveAdapterInfo
             {
@@ -40,7 +40,7 @@ namespace HPSocket.Adapter
         /// <param name="data"></param>
         /// <param name="parseRequestBody"></param>
         /// <returns></returns>
-        internal virtual HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
+        public virtual HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
         {
             return HandleResult.Ignore;
         }
@@ -49,7 +49,7 @@ namespace HPSocket.Adapter
         /// 关闭连接
         /// </summary>
         /// <param name="connId"></param>
-        internal virtual void OnClose(IntPtr connId)
+        public virtual void OnClose(IntPtr connId)
         {
             DataReceiveAdapterCache.Remove(connId);
         }

@@ -11,11 +11,11 @@ namespace HPSocket.Adapter
         /// <summary>
         /// 连接id
         /// </summary>
-        internal IntPtr ConnId { get; set; }
+        public IntPtr ConnId { get; set; }
 
         /// <summary>
         /// 数据
         /// </summary>
-        internal List<byte> Data { get; set; }
+        public List<byte> Data { get; set; }
     }
 }

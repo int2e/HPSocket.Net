@@ -38,7 +38,7 @@ namespace HPSocket.Adapter
         }
 
         /// <inheritdoc />
-        internal override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
+        public override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace HPSocket.Adapter
         /// </summary>
         /// <param name="header">包头, 其长度是HeaderLength属性指定的长度</param>
         /// <returns>需子类根据header自己解析包体实际长度并返回</returns>
-        protected virtual int GetBodySize(byte[] header)
+        public virtual int GetBodySize(byte[] header)
         {
             return 0;
         }
@@ -135,7 +135,7 @@ namespace HPSocket.Adapter
         /// <param name="header">包头</param>
         /// <param name="data">包体</param>
         /// <returns>需子类根据包体data自己解析对象并返回</returns>
-        protected virtual TRequestBodyType ParseRequestBody(byte[] header, byte[] data)
+        public virtual TRequestBodyType ParseRequestBody(byte[] header, byte[] data)
         {
             return default;
         }

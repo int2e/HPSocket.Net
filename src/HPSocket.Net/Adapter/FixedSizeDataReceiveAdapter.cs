@@ -27,7 +27,7 @@ namespace HPSocket.Adapter
         }
 
         /// <inheritdoc />
-        internal override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
+        public override HandleResult OnReceive<TSender>(TSender sender, IntPtr connId, byte[] data, ParseRequestBody<TSender, TRequestBodyType> parseRequestBody)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace HPSocket.Adapter
         /// </summary>
         /// <param name="data">包体</param>
         /// <returns>需子类根据包体data自己解析对象并返回</returns>
-        protected virtual TRequestBodyType ParseRequestBody(byte[] data)
+        public virtual TRequestBodyType ParseRequestBody(byte[] data)
         {
             return default;
         }
