@@ -79,6 +79,16 @@ namespace HPSocket.Http
             }
         }
 
+        /// <inheritdoc />
+        public bool StartHandShake() => Sdk.Ssl.HP_SSLClient_StartSSLHandShake(SenderPtr);
+
+        /// <inheritdoc />
+        public bool GetSessionInfo(SslSessionInfo info, out IntPtr sessionInfo)
+        {
+            sessionInfo = IntPtr.Zero;
+            return Sdk.Ssl.HP_SSLClient_GetSSLSessionInfo(SenderPtr, info, ref sessionInfo);
+        }
+
         /// <summary>
         /// 释放资源
         /// </summary>

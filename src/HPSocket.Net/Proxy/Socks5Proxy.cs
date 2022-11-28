@@ -137,7 +137,7 @@ namespace HPSocket.Proxy
 
             var sendBytes = new List<byte>
             {
-                0x05, 0x01, 0x01,
+                0x05, 0x01, 0x00,
             };
 
             switch (ipAddressType)
@@ -149,6 +149,7 @@ namespace HPSocket.Proxy
                 case IpAddressType.Domain:
                     sendBytes.Add(0x03);
                     sendBytes.Add((byte)RemoteAddress.Length);
+                    sendBytes.AddRange(Encoding.ASCII.GetBytes(RemoteAddress));
                     break;
                 case IpAddressType.Ipv6:
                     sendBytes.Add(0x04);

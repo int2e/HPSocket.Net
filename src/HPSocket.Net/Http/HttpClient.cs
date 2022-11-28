@@ -24,11 +24,13 @@ namespace HPSocket.Http
                 Sdk.Http.Destroy_HP_HttpClient,
                 Sdk.Http.Destroy_HP_HttpClientListener)
         {
+            OnProxyConnected += HttpClientOnProxyConnected;
         }
 
         protected HttpClient(Sdk.CreateListenerDelegate createListenerFunction, Sdk.CreateServiceDelegate createServiceFunction, Sdk.DestroyListenerDelegate destroyServiceFunction, Sdk.DestroyListenerDelegate destroyListenerFunction)
             : base(createListenerFunction, createServiceFunction, destroyServiceFunction, destroyListenerFunction)
         {
+            OnProxyConnected += HttpClientOnProxyConnected;
         }
 
         /// <inheritdoc />
@@ -50,6 +52,27 @@ namespace HPSocket.Http
         {
             get => Sdk.Http.HP_HttpClient_IsUseCookie(SenderPtr);
             set => Sdk.Http.HP_HttpClient_SetUseCookie(SenderPtr, value);
+        }
+
+        /// <inheritdoc />
+        public new List<IProxy> ProxyList
+        {
+            get => _proxyList;
+            set
+            {
+                _proxyList = value;
+                if (_proxyList != null)
+                {
+                    _onConnect = SdkOnConnect;
+                    _onReceive = SdkOnReceive;
+
+                    Sdk.Http.HP_Set_FN_HttpClient_OnConnect(ListenerPtr, _onConnect);
+                    Sdk.Http.HP_Set_FN_HttpClient_OnReceive(ListenerPtr, _onReceive);
+
+                    GC.KeepAlive(_onConnect);
+                    GC.KeepAlive(_onReceive);
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -90,6 +113,26 @@ namespace HPSocket.Http
 
         /// <inheritdoc />
         public event WsMessageCompleteEventHandler OnWsMessageComplete;
+
+        /// <inheritdoc />
+        public override bool Connect()
+        {
+            if (_proxyList?.Count > 0)
+            {
+                HttpAutoStart = false;
+            }
+
+            return base.Connect();
+        }
+
+        protected virtual void HttpClientOnProxyConnected(IClient sender, IProxy proxy)
+        {
+            _onReceive = SdkOnReceiveNoProxy;
+            Sdk.Http.HP_Set_FN_HttpClient_OnReceive(ListenerPtr, _onReceive);
+            GC.KeepAlive(_onReceive);
+
+            StartHttp();
+        }
 
         /// <inheritdoc />
         public bool SendRequest(HttpMethod method, string path, List<NameValue> headers, byte[] body, int length)
@@ -333,6 +376,26 @@ namespace HPSocket.Http
                 }
             }
             return list;
+        }
+
+        /// <inheritdoc />
+        public Dictionary<string, string> GetAllHeadersToDict()
+        {
+            var dict = new Dictionary<string, string>();
+            uint count = 0;
+            Sdk.Http.HP_HttpClient_GetAllHeaders(SenderPtr, IntPtr.Zero, ref count);
+            if (count > 0)
+            {
+                var headersArr = new NameValueIntPtr[count];
+                if (Sdk.Http.HP_HttpClient_GetAllHeaders(SenderPtr, Marshal.UnsafeAddrOfPinnedArrayElement(headersArr, 0), ref count))
+                {
+                    foreach (var item in headersArr)
+                    {
+                        dict[item.Name.PtrToAnsiString()] = item.Value.PtrToAnsiString();
+                    }
+                }
+            }
+            return dict;
         }
 
         /// <inheritdoc />

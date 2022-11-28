@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+
 using HPSocket.Proxy;
+using HPSocket.Tcp;
 
 namespace HPSocket
 {
     /// <summary>
     /// 非托管内存附加数据
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct NativeExtra
+    internal class NativeExtra
     {
         /// <summary>
         /// 连接状态
         /// </summary>
-        [MarshalAs(UnmanagedType.I4)] public Tcp.TcpConnectionState TcpConnectionState;
+        public TcpConnectionState TcpConnectionState { get; set; }
 
         /// <summary>
         /// 代理连接状态
         /// </summary>
-        [MarshalAs(UnmanagedType.I4)] public ProxyConnectionState ProxyConnectionState;
-
+        public ProxyConnectionState ProxyConnectionState { get; set; }
+        
         /// <summary>
-        /// 代理连接标记
+        /// 代理
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 40)] public string ProxyConnectionFlag;
+        public IProxy Proxy { get; set; }
 
         /// <summary>
         /// 用户的附加数据
         /// </summary>
-        [MarshalAs(UnmanagedType.SysUInt)] public IntPtr UserExtra;
+        public IntPtr UserExtra { get; set; }
     }
 }

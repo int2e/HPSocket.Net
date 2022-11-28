@@ -104,5 +104,81 @@ namespace HPSocket.Http
             }
             return defaultEncoding.GetString(data);
         }
+
+        /// <inheritdoc />
+        public List<NameValue> RequestHeaders { get; set; }
+
+        /// <inheritdoc />
+        public Dictionary<string, string> ResponseHeaders { get; set; }
+
+        /// <inheritdoc />
+        public byte[] Get(string url, bool forceReconnect = false)
+        {
+            if (!OpenUrl(HttpMethod.Get, url, RequestHeaders, null, 0, forceReconnect))
+            {
+                return null;
+            }
+
+            ResponseHeaders = GetAllHeadersToDict();
+            return GetResponseBodyToBytes();
+        }
+
+        /// <inheritdoc />
+        public byte[] Post(string url, byte[] body, int length, bool forceReconnect = false)
+        {
+            if (!OpenUrl(HttpMethod.Post, url, RequestHeaders, body, length, forceReconnect))
+            {
+                return null;
+            }
+
+            ResponseHeaders = GetAllHeadersToDict();
+            return GetResponseBodyToBytes();
+        }
+
+        /// <inheritdoc />
+        public byte[] Put(string url, byte[] body, int length, bool forceReconnect = false)
+        {
+            if (!OpenUrl(HttpMethod.Post, url, RequestHeaders, body, length, forceReconnect))
+            {
+                return null;
+            }
+
+            ResponseHeaders = GetAllHeadersToDict();
+            return GetResponseBodyToBytes();
+        }
+
+        /// <inheritdoc />
+        public byte[] Delete(string url, bool forceReconnect = false)
+        {
+            if (!OpenUrl(HttpMethod.Delete, url, RequestHeaders, null, 0, forceReconnect))
+            {
+                return null;
+            }
+
+            ResponseHeaders = GetAllHeadersToDict();
+            return GetResponseBodyToBytes();
+        }
+
+        private byte[] GetResponseBodyToBytes()
+        {
+            var ptr = IntPtr.Zero;
+            var length = 0;
+            var ok = Sdk.Http.HP_HttpSyncClient_GetResponseBody(SenderPtr, ref ptr, ref length);
+            if (!ok || length <= 0)
+            {
+                return null;
+            }
+
+            var data = new byte[length];
+            Marshal.Copy(ptr, data, 0, length);
+
+            // 开启自动解压缩就尝试解压缩数据
+            if (AutoDecompression)
+            {
+                data = data.HttpMessageDataDecompress(GetHeader("Content-Encoding"));
+            }
+
+            return data;
+        }
     }
 }

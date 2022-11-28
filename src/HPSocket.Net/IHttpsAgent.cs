@@ -1,6 +1,4 @@
-﻿using HPSocket.Ssl;
-
-namespace HPSocket
+﻿namespace HPSocket
 {
     /// <summary>
     /// https agent

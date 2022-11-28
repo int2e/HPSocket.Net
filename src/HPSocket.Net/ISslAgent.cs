@@ -32,7 +32,6 @@ namespace HPSocket
     /// </summary>
     public interface ISslAgent : ISsl, ITcpAgent
     {
-
         /// <summary>
         /// 启动 SSL 握手，当通信组件设置为非自动握手时，需要调用本方法启动 SSL 握手
         /// </summary>

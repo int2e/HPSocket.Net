@@ -166,7 +166,7 @@ namespace HPSocket
         string ErrorMessage { get; }
 
         /// <summary>
-        /// socks5 代理列表
+        /// 代理列表
         /// </summary>
         List<IProxy> ProxyList { get; set; }
 

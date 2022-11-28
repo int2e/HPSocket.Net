@@ -20,11 +20,13 @@ namespace HPSocket.Http
                 Sdk.Http.Destroy_HP_HttpsClient,
                 Sdk.Http.Destroy_HP_HttpClientListener)
         {
+            OnProxyConnected += HttpClientOnProxyConnected;
         }
 
         protected HttpsClient(Sdk.CreateListenerDelegate createListenerFunction, Sdk.CreateServiceDelegate createServiceFunction, Sdk.DestroyListenerDelegate destroyServiceFunction, Sdk.DestroyListenerDelegate destroyListenerFunction)
             : base(createListenerFunction, createServiceFunction, destroyServiceFunction, destroyListenerFunction)
         {
+            OnProxyConnected += HttpClientOnProxyConnected;
         }
 
         /// <inheritdoc />
@@ -77,6 +79,46 @@ namespace HPSocket.Http
                 Sdk.Ssl.HP_SSLClient_CleanupSSLContext(SenderPtr);
                 IsInitSsl = false;
             }
+        }
+
+        /// <inheritdoc />
+        public bool StartHandShake() => Sdk.Ssl.HP_SSLClient_StartSSLHandShake(SenderPtr);
+
+        /// <inheritdoc />
+        public bool GetSessionInfo(SslSessionInfo info, out IntPtr sessionInfo)
+        {
+            sessionInfo = IntPtr.Zero;
+            return Sdk.Ssl.HP_SSLClient_GetSSLSessionInfo(SenderPtr, info, ref sessionInfo);
+        }
+
+        /// <inheritdoc />
+        public override bool Connect()
+        {
+            if (_proxyList?.Count > 0)
+            {
+                AutoHandShake = false;
+                HttpAutoStart = false;
+            }
+
+            return base.Connect();
+        }
+
+        /// <inheritdoc />
+        public override bool Connect(string address, ushort port)
+        {
+            if (_proxyList?.Count > 0)
+            {
+                AutoHandShake = false;
+                HttpAutoStart = false;
+            }
+
+            return base.Connect(address, port);
+        }
+
+        protected override void HttpClientOnProxyConnected(IClient sender, IProxy proxy)
+        {
+            StartHandShake();
+            base.HttpClientOnProxyConnected(sender, proxy);
         }
 
         /// <summary>

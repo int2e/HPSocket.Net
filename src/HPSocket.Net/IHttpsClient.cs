@@ -1,11 +1,9 @@
-﻿using HPSocket.Ssl;
-
-namespace HPSocket
+﻿namespace HPSocket
 {
     /// <summary>
     /// https agent
     /// </summary>
-    public interface IHttpsClient : ISsl, IHttpClient
+    public interface IHttpsClient : ISslClient, IHttpClient
     {
     }
 }

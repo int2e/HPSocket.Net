@@ -2,10 +2,15 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using HPSocket.Proxy;
 #if !NET20 && !NET30 && !NET35
 using System.Threading.Tasks;
 #endif
 using HPSocket.Sdk;
+using HPSocket.Tcp;
+using System.Collections.Generic;
+
+using Timer = System.Timers.Timer;
 
 namespace HPSocket.Base
 {
@@ -18,14 +23,46 @@ namespace HPSocket.Base
         /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        /// 代理连接状态
+        /// </summary>
+        private int _proxyConnecteState;
+
+        /// <summary>
+        /// 连接超时时间
+        /// </summary>
+        private int _connectionTimeout;
+
+        /// <summary>
+        /// native data
+        /// </summary>
+        private NativeExtra _nativeExtra;
+
+
         #endregion
 
         #region 保护成员
 
         /// <summary>
+        /// 代理列表
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        protected List<IProxy> _proxyList;
+
+        /// <summary>
         /// 监听对象指针
         /// </summary>
         protected IntPtr ListenerPtr = IntPtr.Zero;
+
+        /// <summary>
+        /// 代理预连接
+        /// </summary>
+        protected event ClientProxyPrepareConnectEventHandler OnProxyPrepareConnect;
+
+        /// <summary>
+        /// 代理已连接
+        /// </summary>
+        protected event ClientProxyConnectedEventHandler OnProxyConnected;
 
         protected CreateListenerDelegate CreateListenerFunction;
         protected CreateServiceDelegate CreateServiceFunction;
@@ -70,6 +107,29 @@ namespace HPSocket.Base
 
         /// <inheritdoc />
         public bool Async { get; set; } = true;
+
+        /// <inheritdoc />
+        public int ConnectionTimeout
+        {
+            get => _connectionTimeout;
+
+            // ReSharper disable once ValueParameterNotUsed
+            set
+            {
+                if (value < 0)
+                {
+                    throw new InvalidOperationException("不能设置小于0的值");
+                }
+
+                var milliseconds = value;
+                if (milliseconds != 0 && (milliseconds < 100 || milliseconds % 100 != 0))
+                {
+                    throw new InvalidOperationException("超时时间毫秒数请设置为100的倍数, 如: [100,1100,1300]");
+                }
+
+                _connectionTimeout = value;
+            }
+        }
 
         /// <inheritdoc />
         public object ExtraData { get; set; }
@@ -167,6 +227,27 @@ namespace HPSocket.Base
         /// <inheritdoc />
         public string ErrorMessage => Sdk.Client.HP_Client_GetLastErrorDesc(SenderPtr).PtrToAnsiString();
 
+        /// <inheritdoc />
+        public List<IProxy> ProxyList
+        {
+            get => _proxyList;
+            set
+            {
+                _proxyList = value;
+                if (_proxyList != null)
+                {
+                    _onConnect = SdkOnConnect;
+                    _onReceive = SdkOnReceive;
+
+                    Sdk.Client.HP_Set_FN_Client_OnConnect(ListenerPtr, _onConnect);
+                    Sdk.Client.HP_Set_FN_Client_OnReceive(ListenerPtr, _onReceive);
+
+                    GC.KeepAlive(_onConnect);
+                    GC.KeepAlive(_onReceive);
+                }
+            }
+        }
+
         /// <summary>
         /// 创建socket监听和服务组件
         /// </summary>
@@ -203,6 +284,8 @@ namespace HPSocket.Base
         {
             Stop();
 
+            _nativeExtra = null;
+
             if (SenderPtr != IntPtr.Zero)
             {
 
@@ -222,7 +305,7 @@ namespace HPSocket.Base
         {
             var ok = Sdk.Client.HP_Client_Wait(SenderPtr, milliseconds);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             return ok;
         }
@@ -242,7 +325,7 @@ namespace HPSocket.Base
 #endif
 
         /// <inheritdoc />
-        public bool Connect()
+        public virtual bool Connect()
         {
             if (String.IsNullOrWhiteSpace(Address))
             {
@@ -259,21 +342,70 @@ namespace HPSocket.Base
                 return true;
             }
 
+            _nativeExtra = new NativeExtra
+            {
+                TcpConnectionState = TcpConnectionState.Connecting,
+            };
+
+            var address = Address;
+            var port = Port;
+
+            if (_proxyList?.Count > 0)
+            {
+                _proxyConnecteState = 1; // 连接中
+
+                var proxy = GetRandomProxyServer();
+                if ((proxy is Socks5Proxy socks5Proxy))
+                {
+                    socks5Proxy.SetRemoteAddressPort(Address, Port);
+                }
+                else if ((proxy is HttpProxy httpProxy))
+                {
+                    httpProxy.SetRemoteAddressPort(Address, Port);
+                }
+                _nativeExtra.ProxyConnectionState = ProxyConnectionState.Step1;
+                _nativeExtra.Proxy = proxy;
+                address = proxy.Host;
+                port = proxy.Port;
+                OnProxyPrepareConnect?.Invoke(this, proxy);
+            }
+            else
+            {
+                _proxyConnecteState = 0; // 不使用代理
+            }
+
+            bool ok;
             if (!String.IsNullOrWhiteSpace(BindAddress) && BindPort > 0)
             {
-                return Sdk.Client.HP_Client_StartWithBindAddressAndLocalPort(SenderPtr, Address, Port, Async, BindAddress, BindPort);
+                ok = Sdk.Client.HP_Client_StartWithBindAddressAndLocalPort(SenderPtr, address, port, Async, BindAddress, BindPort);
             }
-
-            if (!String.IsNullOrWhiteSpace(BindAddress))
+            else if (!String.IsNullOrWhiteSpace(BindAddress))
             {
-                return Sdk.Client.HP_Client_StartWithBindAddress(SenderPtr, Address, Port, Async, BindAddress);
+                ok = Sdk.Client.HP_Client_StartWithBindAddress(SenderPtr, address, port, Async, BindAddress);
+            }
+            else
+            {
+                ok = Sdk.Client.HP_Client_Start(SenderPtr, address, port, Async);
+            }
+            if (ok)
+            {
+#if !NET20 && !NET30 && !NET35
+                SysErrorCode.Value = 0;
+#endif
+                DelayWaitConnectTimeout();
+            }
+            else
+            {
+#if !NET20 && !NET30 && !NET35
+                SysErrorCode.Value = Sys.SYS_GetLastError();
+#endif
             }
 
-            return Sdk.Client.HP_Client_Start(SenderPtr, Address, Port, Async);
+            return ok;
         }
 
         /// <inheritdoc />
-        public bool Connect(string address, ushort port)
+        public virtual bool Connect(string address, ushort port)
         {
             Address = address;
             Port = port;
@@ -289,7 +421,7 @@ namespace HPSocket.Base
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Client.HP_Client_Send(SenderPtr, gch.AddrOfPinnedObject(), length);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             gch.Free();
             return ok;
@@ -301,7 +433,7 @@ namespace HPSocket.Base
             var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             var ok = Sdk.Client.HP_Client_SendPart(SenderPtr, gch.AddrOfPinnedObject(), length, offset);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             gch.Free();
             return ok;
@@ -312,7 +444,7 @@ namespace HPSocket.Base
         {
             var ok = Sdk.Client.HP_Client_SendPackets(SenderPtr, buffers, count);
 #if !NET20 && !NET30 && !NET35
-            SysErrorCode.Value = ok ? 0 : Sdk.Sys.SYS_GetLastError();
+            SysErrorCode.Value = ok ? 0 : Sys.SYS_GetLastError();
 #endif
             return ok;
         }
@@ -346,6 +478,20 @@ namespace HPSocket.Base
             return ok;
         }
 
+#if !NET20 && !NET30 && !NET35 && !NET40
+        /// <inheritdoc />
+        public async Task<bool> WaitProxyAsync()
+        {
+            do
+            {
+                await Task.Delay(10);
+            } while (_proxyConnecteState != 3 && _proxyConnecteState != 4);
+
+            return _proxyConnecteState == 3;
+        }
+#endif
+
+
         #region SDK事件
 
         #region SDK回调委托,防止GC
@@ -368,7 +514,7 @@ namespace HPSocket.Base
             _onPrepareConnect = SdkOnPrepareConnect;
             _onConnect = SdkOnConnect;
             _onSend = SdkOnSend;
-            _onReceive = SdkOnReceive;
+            _onReceive = SdkOnReceiveNoProxy;
             _onClose = SdkOnClose;
             _onHandShake = SdkOnHandShake;
 
@@ -389,9 +535,57 @@ namespace HPSocket.Base
 
         protected HandleResult SdkOnPrepareConnect(IntPtr sender, IntPtr connId, IntPtr socket) => OnPrepareConnect?.Invoke(this, socket) ?? HandleResult.Ignore;
 
-        protected HandleResult SdkOnConnect(IntPtr sender, IntPtr connId) => OnConnect?.Invoke(this) ?? HandleResult.Ignore;
+        protected HandleResult SdkOnConnect(IntPtr sender, IntPtr connId)
+        {
+            if ((_proxyList?.Count > 0 || ConnectionTimeout > 0) && _nativeExtra != null)
+            {
+                if (_proxyList?.Count > 0)
+                {
+                    _proxyConnecteState = 2; // 协商中
 
-        protected HandleResult SdkOnReceive(IntPtr sender, IntPtr connId, IntPtr data, int length)
+                    var proxy = _nativeExtra.Proxy;
+                    if (proxy == null)
+                    {
+                        return HandleResult.Error;
+                    }
+
+                    switch (_nativeExtra.ProxyConnectionState)
+                    {
+                        case ProxyConnectionState.Step1:
+                        {
+                            byte[] data;
+                            switch (proxy)
+                            {
+                                case IHttpProxy httpProxy:
+                                    data = httpProxy.GetConnectData();
+                                    break;
+                                case ISocks5Proxy socks5Proxy:
+                                    data = socks5Proxy.GetConnectData();
+                                    break;
+                                default:
+                                    return HandleResult.Error;
+                            }
+
+                            if (!Send(data, data.Length))
+                            {
+                                return HandleResult.Error;
+                            }
+
+                            break;
+                        }
+                    }
+                }
+                else if (ConnectionTimeout > 0)
+                {
+                    _nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
+                    return OnConnect?.Invoke(this) ?? HandleResult.Ignore;
+                }
+            }
+
+            return OnConnect?.Invoke(this) ?? HandleResult.Ignore;
+        }
+
+        protected HandleResult SdkOnReceiveNoProxy(IntPtr sender, IntPtr connId, IntPtr data, int length)
         {
             if (OnReceive == null) return HandleResult.Ignore;
             var bytes = new byte[length];
@@ -401,6 +595,153 @@ namespace HPSocket.Base
             }
             return OnReceive(this, bytes);
         }
+
+        protected HandleResult SdkOnReceive(IntPtr sender, IntPtr connId, IntPtr data, int length)
+        {
+            var bytes = new byte[length];
+            if (bytes.Length > 0)
+            {
+                Marshal.Copy(data, bytes, 0, length);
+            }
+
+            if (_proxyList?.Count > 0 && _nativeExtra != null)
+            {
+                if (_nativeExtra.ProxyConnectionState == ProxyConnectionState.Normal)
+                {
+                    _nativeExtra = null;
+                    return OnReceive?.Invoke(this, bytes) ?? HandleResult.Ignore;
+                }
+
+                var proxy = _nativeExtra.Proxy;
+                if (proxy == null)
+                {
+                    return HandleResult.Error;
+                }
+                switch (_nativeExtra.ProxyConnectionState)
+                {
+                    case ProxyConnectionState.Step1:
+                    {
+                        if (proxy is HttpProxy httpProxy)
+                        {
+                            if (!httpProxy.IsConnected(bytes))
+                            {
+                                return HandleResult.Error;
+                            }
+
+                            if (ConnectionTimeout > 0)
+                            {
+                                _nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
+                            }
+
+                            _nativeExtra.ProxyConnectionState = ProxyConnectionState.Normal;
+
+                            OnProxyConnected?.Invoke(this, proxy);
+
+                            _proxyConnecteState = 3; // 已连接
+
+                            if (OnConnect?.Invoke(this) == HandleResult.Error)
+                            {
+                                return HandleResult.Error;
+                            }
+                        }
+                        else
+                        {
+                            if (!(proxy is ISocks5Proxy socks5Proxy))
+                            {
+                                return HandleResult.Error;
+                            }
+
+                            if (!socks5Proxy.GetAuthenticateData(bytes, out var sendBytes))
+                            {
+                                return HandleResult.Error;
+                            }
+
+                            if (sendBytes?.Length > 0)
+                            {
+                                if (!Send(sendBytes, sendBytes.Length))
+                                {
+                                    return HandleResult.Error;
+                                }
+                            }
+                            else
+                            {
+                                if (!socks5Proxy.GetConnectRemoteServerData(out sendBytes))
+                                {
+                                    return HandleResult.Error;
+                                }
+
+                                if (!Send(sendBytes, sendBytes.Length))
+                                {
+                                    return HandleResult.Error;
+                                }
+
+                                _nativeExtra.ProxyConnectionState = ProxyConnectionState.Step3;
+                            }
+                        }
+
+                        break;
+                    }
+                    case ProxyConnectionState.Step2:
+                    {
+                        if (!(proxy is ISocks5Proxy socks5Proxy))
+                        {
+                            return HandleResult.Error;
+                        }
+                        if (!socks5Proxy.CheckSubVersion(bytes))
+                        {
+                            return HandleResult.Error;
+                        }
+
+                        if (!socks5Proxy.GetConnectRemoteServerData(out var sendBytes))
+                        {
+                            return HandleResult.Error;
+                        }
+
+                        if (!Send(sendBytes, sendBytes.Length))
+                        {
+                            return HandleResult.Error;
+                        }
+
+                        _nativeExtra.ProxyConnectionState = ProxyConnectionState.Step3;
+
+                        break;
+                    }
+                    case ProxyConnectionState.Step3:
+                    {
+                        if (!(proxy is ISocks5Proxy socks5Proxy))
+                        {
+                            return HandleResult.Error;
+                        }
+                        if (!socks5Proxy.IsConnected(bytes))
+                        {
+                            return HandleResult.Error;
+                        }
+
+                        if (ConnectionTimeout > 0)
+                        {
+                            _nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
+                        }
+
+                        _nativeExtra.ProxyConnectionState = ProxyConnectionState.Normal;
+                        _nativeExtra = null;
+                        OnProxyConnected?.Invoke(this, proxy);
+
+                        _proxyConnecteState = 3; // 已连接
+
+                        if (OnConnect?.Invoke(this) == HandleResult.Error)
+                        {
+                            return HandleResult.Error;
+                        }
+                        break;
+                    }
+                }
+
+                return HandleResult.Ok;
+            }
+
+            return OnReceive?.Invoke(this, bytes) ?? HandleResult.Ignore;
+        }
+
         protected HandleResult SdkOnSend(IntPtr sender, IntPtr connId, IntPtr data, int length)
         {
             if (OnSend == null) return HandleResult.Ignore;
@@ -412,11 +753,66 @@ namespace HPSocket.Base
             return OnSend(this, bytes);
         }
 
-        protected HandleResult SdkOnClose(IntPtr sender, IntPtr connId, SocketOperation socketOperation, int errorCode) => OnClose?.Invoke(this, socketOperation, errorCode) ?? HandleResult.Ignore;
+        protected HandleResult SdkOnClose(IntPtr sender, IntPtr connId, SocketOperation socketOperation, int errorCode)
+        {
+            if (_proxyConnecteState != 3)
+            {
+                _proxyConnecteState = 4;
+            }
+
+            return OnClose?.Invoke(this, socketOperation, errorCode) ?? HandleResult.Ignore;
+        }
 
         protected HandleResult SdkOnHandShake(IntPtr sender, IntPtr connId) => OnHandShake?.Invoke(this) ?? HandleResult.Ignore;
 
         #endregion
+
+
+        #region 代理获取方法
+
+        /// <summary>
+        /// 随机获取代理服务器
+        /// </summary>
+        /// <returns></returns>
+        private IProxy GetRandomProxyServer()
+        {
+            return _proxyList?[new Random(Guid.NewGuid().GetHashCode()).Next(0, _proxyList.Count)];
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 延迟等待连接超时
+        /// </summary>
+        private void DelayWaitConnectTimeout()
+        {
+            if (ConnectionTimeout == 0 || !Async) return;
+
+            // 得到设置的超时时间
+
+#pragma warning disable IDE0067 // 丢失范围之前释放对象
+            var timer = new Timer(_connectionTimeout)
+            {
+                AutoReset = false
+            };
+#pragma warning restore IDE0067 // 丢失范围之前释放对象
+
+            timer.Elapsed += (sender, args) =>
+            {
+
+                if (_nativeExtra != null && _nativeExtra.TcpConnectionState == TcpConnectionState.Connecting)
+                {
+                    _nativeExtra.TcpConnectionState = TcpConnectionState.TimedOut;
+                    Stop();
+                }
+
+                if (!(sender is Timer t)) return;
+                t.Close();
+                t.Stop();
+                t.Dispose();
+            };
+            timer.Start();
+        }
 
         /// <summary>
         /// 释放资源

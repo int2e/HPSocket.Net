@@ -319,19 +319,19 @@
             异步连接
             </summary>
         </member>
+        <member name="F:HPSocket.Base.Agent._connNativeId">
+            <summary>
+            native id
+            </summary>
+        </member>
+        <member name="F:HPSocket.Base.Agent._connNativeData">
+            <summary>
+            native data
+            </summary>
+        </member>
         <member name="F:HPSocket.Base.Agent._proxyList">
             <summary>
             代理列表
-            </summary>
-        </member>
-        <member name="F:HPSocket.Base.Agent._connProxy">
-            <summary>
-            连接分配的代理ip
-            </summary>
-        </member>
-        <member name="F:HPSocket.Base.Agent._connProxyCache">
-            <summary>
-            连接分配的代理ip的缓存,连接成功或失败后删除
             </summary>
         </member>
         <member name="F:HPSocket.Base.Agent.ListenerPtr">
@@ -620,9 +620,39 @@
             是否释放了
             </summary>
         </member>
+        <member name="F:HPSocket.Base.Client._proxyConnecteState">
+            <summary>
+            代理连接状态
+            </summary>
+        </member>
+        <member name="F:HPSocket.Base.Client._connectionTimeout">
+            <summary>
+            连接超时时间
+            </summary>
+        </member>
+        <member name="F:HPSocket.Base.Client._nativeExtra">
+            <summary>
+            native data
+            </summary>
+        </member>
+        <member name="F:HPSocket.Base.Client._proxyList">
+            <summary>
+            代理列表
+            </summary>
+        </member>
         <member name="F:HPSocket.Base.Client.ListenerPtr">
             <summary>
             监听对象指针
+            </summary>
+        </member>
+        <member name="E:HPSocket.Base.Client.OnProxyPrepareConnect">
+            <summary>
+            代理预连接
+            </summary>
+        </member>
+        <member name="E:HPSocket.Base.Client.OnProxyConnected">
+            <summary>
+            代理已连接
             </summary>
         </member>
         <member name="P:HPSocket.Base.Client.SenderPtr">
@@ -644,6 +674,9 @@
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Client.Async">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Base.Client.ConnectionTimeout">
             <inheritdoc />
         </member>
         <member name="P:HPSocket.Base.Client.ExtraData">
@@ -706,6 +739,9 @@
         <member name="P:HPSocket.Base.Client.ErrorMessage">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Base.Client.ProxyList">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Base.Client.CreateListener">
             <summary>
             创建socket监听和服务组件
@@ -753,11 +789,25 @@
         <member name="M:HPSocket.Base.Client.GetRemoteHost(System.String@,System.UInt16@)">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Base.Client.WaitProxyAsync">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Base.Client.SetCallback">
             <summary>
             设置回调
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:HPSocket.Base.Client.GetRandomProxyServer">
+            <summary>
+            随机获取代理服务器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HPSocket.Base.Client.DelayWaitConnectTimeout">
+            <summary>
+            延迟等待连接超时
+            </summary>
         </member>
         <member name="M:HPSocket.Base.Client.Dispose(System.Boolean)">
             <summary>
@@ -1040,7 +1090,7 @@
             <param name="client">如果为 TCP 连接，pClient为 SOCKET 句柄；如果为 UDP 连接，pClient为 SOCKADDR 指针；</param>
             <returns></returns>
         </member>
-        <member name="T:HPSocket.ProxyPrepareConnectEventHandler">
+        <member name="T:HPSocket.AgentProxyPrepareConnectEventHandler">
             <summary>
             代理预连接
             </summary>
@@ -1048,12 +1098,28 @@
             <param name="proxy"></param>
             <returns></returns>
         </member>
-        <member name="T:HPSocket.ProxyConnectedEventHandler">
+        <member name="T:HPSocket.AgentProxyConnectedEventHandler">
             <summary>
             代理已连接
             </summary>
             <param name="sender"></param>
             <param name="connId"></param>
+            <param name="proxy"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HPSocket.ClientProxyPrepareConnectEventHandler">
+            <summary>
+            代理预连接
+            </summary>
+            <param name="sender"></param>
+            <param name="proxy"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HPSocket.ClientProxyConnectedEventHandler">
+            <summary>
+            代理已连接
+            </summary>
+            <param name="sender"></param>
             <param name="proxy"></param>
             <returns></returns>
         </member>
@@ -1411,36 +1477,6 @@
             <param name="contentEncoding"></param>
             <returns></returns>
         </member>
-        <member name="T:HPSocket.NativeExtraExtensions">
-            <summary>
-            非托管附加数据扩展
-            </summary>
-        </member>
-        <member name="F:HPSocket.NativeExtraExtensions.ReferenceData">
-            <summary>
-            伪引用计数
-            </summary>
-        </member>
-        <member name="M:HPSocket.NativeExtraExtensions.ToIntPtr(HPSocket.NativeExtra)">
-            <summary>
-            结构体转 int ptr, 必须调用 IntPtr.FreeNativeExtraIntPtr()
-            </summary>
-            <param name="extra"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.NativeExtraExtensions.ToNativeExtra(System.IntPtr)">
-            <summary>
-            IntPtr转NativeExtra
-            </summary>
-            <param name="ptr"></param>
-            <returns></returns>
-        </member>
-        <member name="M:HPSocket.NativeExtraExtensions.FreeNativeExtraIntPtr(System.IntPtr)">
-            <summary>
-            释放由NativeExtra.ToIntPtr()申请的内存
-            </summary>
-            <param name="ptr"></param>
-        </member>
         <member name="T:HPSocket.HttpMethodExtensions">
             <summary>
             HttpMethod 扩展
@@ -1573,22 +1609,22 @@
             非托管内存附加数据
             </summary>
         </member>
-        <member name="F:HPSocket.NativeExtra.TcpConnectionState">
+        <member name="P:HPSocket.NativeExtra.TcpConnectionState">
             <summary>
             连接状态
             </summary>
         </member>
-        <member name="F:HPSocket.NativeExtra.ProxyConnectionState">
+        <member name="P:HPSocket.NativeExtra.ProxyConnectionState">
             <summary>
             代理连接状态
             </summary>
         </member>
-        <member name="F:HPSocket.NativeExtra.ProxyConnectionFlag">
+        <member name="P:HPSocket.NativeExtra.Proxy">
             <summary>
-            代理连接标记
+            代理
             </summary>
         </member>
-        <member name="F:HPSocket.NativeExtra.UserExtra">
+        <member name="P:HPSocket.NativeExtra.UserExtra">
             <summary>
             用户的附加数据
             </summary>
@@ -1837,6 +1873,9 @@
         <member name="P:HPSocket.Http.HttpAgent.IsUseCookie">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Http.HttpAgent.ProxyList">
+            <inheritdoc />
+        </member>
         <member name="E:HPSocket.Http.HttpAgent.OnMessageBegin">
             <inheritdoc />
         </member>
@@ -2018,6 +2057,9 @@
         <member name="P:HPSocket.Http.HttpClient.IsUseCookie">
             <inheritdoc />
         </member>
+        <member name="P:HPSocket.Http.HttpClient.ProxyList">
+            <inheritdoc />
+        </member>
         <member name="E:HPSocket.Http.HttpClient.OnMessageBegin">
             <inheritdoc />
         </member>
@@ -2055,6 +2097,9 @@
             <inheritdoc />
         </member>
         <member name="E:HPSocket.Http.HttpClient.OnWsMessageComplete">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpClient.Connect">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpClient.SendRequest(HPSocket.Http.HttpMethod,System.String,System.Collections.Generic.List{HPSocket.NameValue},System.Byte[],System.Int32)">
@@ -2169,6 +2214,9 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpClient.GetAllHeaders">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpClient.GetAllHeadersToDict">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpClient.GetAllHeaderNames">
@@ -2312,6 +2360,18 @@
         <member name="M:HPSocket.Http.HttpsClient.UnInitialize">
             <inheritdoc />
         </member>
+        <member name="M:HPSocket.Http.HttpsClient.StartHandShake">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsClient.GetSessionInfo(HPSocket.Ssl.SslSessionInfo,System.IntPtr@)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsClient.Connect">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsClient.Connect(System.String,System.UInt16)">
+            <inheritdoc />
+        </member>
         <member name="M:HPSocket.Http.HttpsClient.Dispose(System.Boolean)">
             <summary>
             释放资源
@@ -2392,6 +2452,12 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpsEasyClient.UnInitialize">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsEasyClient.StartHandShake">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsEasyClient.GetSessionInfo(HPSocket.Ssl.SslSessionInfo,System.IntPtr@)">
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpsEasyClient.Dispose(System.Boolean)">
@@ -2628,6 +2694,58 @@
             </summary>
             <param name="disposing"></param>
         </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.IsInitSsl">
+            <summary>
+            获取或设置是否初始化ssl环境
+            </summary>
+        </member>
+        <member name="F:HPSocket.Http.HttpsSyncClient._ignoreCertificateValidation">
+            <summary>
+            忽略证书验证
+            </summary>
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.IgnoreCertificateValidation">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.VerifyMode">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.PemCertFile">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.PemKeyFile">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.KeyPassword">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.CaPemCertFileOrPath">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.CipherList">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpsSyncClient.AutoHandShake">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsSyncClient.Initialize(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsSyncClient.UnInitialize">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsSyncClient.StartHandShake">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsSyncClient.GetSessionInfo(HPSocket.Ssl.SslSessionInfo,System.IntPtr@)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpsSyncClient.Dispose(System.Boolean)">
+            <summary>
+            释放资源
+            </summary>
+            <param name="disposing"></param>
+        </member>
         <member name="P:HPSocket.Http.HttpSyncClient.AutoDecompression">
             <inheritdoc />
         </member>
@@ -2647,6 +2765,24 @@
             <inheritdoc />
         </member>
         <member name="M:HPSocket.Http.HttpSyncClient.GetResponseBody">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpSyncClient.RequestHeaders">
+            <inheritdoc />
+        </member>
+        <member name="P:HPSocket.Http.HttpSyncClient.ResponseHeaders">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpSyncClient.Get(System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpSyncClient.Post(System.String,System.Byte[],System.Int32,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpSyncClient.Put(System.String,System.Byte[],System.Int32,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:HPSocket.Http.HttpSyncClient.Delete(System.String,System.Boolean)">
             <inheritdoc />
         </member>
         <member name="T:HPSocket.IAgent">
@@ -2802,7 +2938,7 @@
         </member>
         <member name="P:HPSocket.IAgent.ProxyList">
             <summary>
-            socks5 代理列表
+            代理列表
             </summary>
         </member>
         <member name="M:HPSocket.IAgent.Start">
@@ -3087,6 +3223,13 @@
             是否异步连接，默认为真
             </summary>
         </member>
+        <member name="P:HPSocket.IClient.ConnectionTimeout">
+            <summary>
+            连接超时时间, 默认操作系统默认值
+            <para>单位: 毫秒</para>
+            </summary>
+            <exception cref="T:System.InvalidOperationException">同步连接、.NET Framework2.0以及设置小于100毫秒会引发此异常</exception>
+        </member>
         <member name="P:HPSocket.IClient.ExtraData">
             <summary>
             附加数据
@@ -3179,6 +3322,11 @@
             获取错误信息
             </summary>
         </member>
+        <member name="P:HPSocket.IClient.ProxyList">
+            <summary>
+            代理列表
+            </summary>
+        </member>
         <member name="M:HPSocket.IClient.Connect">
             <summary>
             启动通讯组件并连接到服务器
@@ -3248,6 +3396,12 @@
             <param name="host"></param>
             <param name="port"></param>
             <returns></returns>
+        </member>
+        <member name="M:HPSocket.IClient.WaitProxyAsync">
+            <summary>
+            等待代理结果
+            </summary>
+            <returns>连接成功返回true, 连接失败返回false</returns>
         </member>
         <member name="T:HPSocket.IHttp">
             <summary>
@@ -3779,6 +3933,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:HPSocket.IHttpClient.GetAllHeadersToDict">
+            <summary>
+            获取所有请求头
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:HPSocket.IHttpClient.GetAllHeaderNames">
             <summary>
             获取所有请求头名称
@@ -4162,6 +4322,11 @@
             https agent
             </summary>
         </member>
+        <member name="P:HPSocket.IHttpsSyncClient.IgnoreCertificateValidation">
+            <summary>
+            忽略证书验证
+            </summary>
+        </member>
         <member name="T:HPSocket.IHttpSyncClient">
             <summary>
             http sync client
@@ -4212,22 +4377,17 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:HPSocket.IHttpSyncClientEx">
-            <summary>
-            http sync client
-            </summary>
-        </member>
-        <member name="P:HPSocket.IHttpSyncClientEx.RequestHeaders">
+        <member name="P:HPSocket.IHttpSyncClient.RequestHeaders">
             <summary>
             http请求头
             </summary>
         </member>
-        <member name="P:HPSocket.IHttpSyncClientEx.ResponseHeaders">
+        <member name="P:HPSocket.IHttpSyncClient.ResponseHeaders">
             <summary>
             http响应头
             </summary>
         </member>
-        <member name="M:HPSocket.IHttpSyncClientEx.Get(System.String,System.Boolean)">
+        <member name="M:HPSocket.IHttpSyncClient.Get(System.String,System.Boolean)">
             <summary>
             发送 GET 请求
             </summary>
@@ -4235,7 +4395,7 @@
             <param name="forceReconnect">是否强制重新连接（默认：false，当请求 URL 的主机和端口与现有连接一致时，重用现有连接）</param>
             <returns></returns>
         </member>
-        <member name="M:HPSocket.IHttpSyncClientEx.Post(System.String,System.Byte[],System.Int32,System.Boolean)">
+        <member name="M:HPSocket.IHttpSyncClient.Post(System.String,System.Byte[],System.Int32,System.Boolean)">
             <summary>
             发送 POST 请求
             </summary>
@@ -4245,7 +4405,7 @@
             <param name="forceReconnect">是否强制重新连接（默认：false，当请求 URL 的主机和端口与现有连接一致时，重用现有连接）</param>
             <returns></returns>
         </member>
-        <member name="M:HPSocket.IHttpSyncClientEx.Put(System.String,System.Byte[],System.Int32,System.Boolean)">
+        <member name="M:HPSocket.IHttpSyncClient.Put(System.String,System.Byte[],System.Int32,System.Boolean)">
             <summary>
             发送 PUT 请求
             </summary>
@@ -4255,7 +4415,7 @@
             <param name="forceReconnect">是否强制重新连接（默认：false，当请求 URL 的主机和端口与现有连接一致时，重用现有连接）</param>
             <returns></returns>
         </member>
-        <member name="M:HPSocket.IHttpSyncClientEx.Delete(System.String,System.Boolean)">
+        <member name="M:HPSocket.IHttpSyncClient.Delete(System.String,System.Boolean)">
             <summary>
             发送 DELETE 请求
             </summary>

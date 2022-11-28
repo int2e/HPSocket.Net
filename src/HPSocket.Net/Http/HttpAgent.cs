@@ -55,6 +55,27 @@ namespace HPSocket.Http
         }
 
         /// <inheritdoc />
+        public new List<IProxy> ProxyList
+        {
+            get => _proxyList;
+            set
+            {
+                _proxyList = value;
+                if (_proxyList != null)
+                {
+                    _onConnect = SdkOnConnect;
+                    _onReceive = SdkOnReceive;
+
+                    Sdk.Http.HP_Set_FN_HttpAgent_OnConnect(ListenerPtr, _onConnect);
+                    Sdk.Http.HP_Set_FN_HttpAgent_OnReceive(ListenerPtr, _onReceive);
+
+                    GC.KeepAlive(_onConnect);
+                    GC.KeepAlive(_onReceive);
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public event MessageBeginEventHandler OnMessageBegin;
 
         /// <inheritdoc />
@@ -95,7 +116,7 @@ namespace HPSocket.Http
 
         public override bool Start()
         {
-            if (ProxyList?.Count > 0)
+            if (_proxyList?.Count > 0)
             {
                 HttpAutoStart = false;
             }

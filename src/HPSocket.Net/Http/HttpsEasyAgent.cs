@@ -96,7 +96,7 @@ namespace HPSocket.Http
                 throw new InvalidOperationException("请先初始化ssl环境, 调用 Initialize() 方法");
             }
 
-            if (ProxyList?.Count > 0)
+            if (_proxyList?.Count > 0)
             {
                 AutoHandShake = false;
                 HttpAutoStart = false;

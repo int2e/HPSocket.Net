@@ -58,7 +58,8 @@ namespace HPSocket
     /// <param name="sender"></param>
     /// <param name="proxy"></param>
     /// <returns></returns>
-    public delegate void ProxyPrepareConnectEventHandler(IAgent sender, IProxy proxy);
+    public delegate void AgentProxyPrepareConnectEventHandler(IAgent sender, IProxy proxy);
+
     /// <summary>
     /// 代理已连接
     /// </summary>
@@ -66,5 +67,21 @@ namespace HPSocket
     /// <param name="connId"></param>
     /// <param name="proxy"></param>
     /// <returns></returns>
-    public delegate void ProxyConnectedEventHandler(IAgent sender, IntPtr connId, IProxy proxy);
+    public delegate void AgentProxyConnectedEventHandler(IAgent sender, IntPtr connId, IProxy proxy);
+    
+    /// <summary>
+    /// 代理预连接
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="proxy"></param>
+    /// <returns></returns>
+    public delegate void ClientProxyPrepareConnectEventHandler(IClient sender, IProxy proxy);
+
+    /// <summary>
+    /// 代理已连接
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="proxy"></param>
+    /// <returns></returns>
+    public delegate void ClientProxyConnectedEventHandler(IClient sender, IProxy proxy);
 }

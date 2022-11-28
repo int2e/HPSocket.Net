@@ -285,6 +285,12 @@ namespace HPSocket
         List<NameValue> GetAllHeaders();
 
         /// <summary>
+        /// 获取所有请求头
+        /// </summary>
+        /// <returns></returns>
+        Dictionary<string, string> GetAllHeadersToDict();
+
+        /// <summary>
         /// 获取所有请求头名称
         /// </summary>
         /// <returns></returns>

@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+
+#if !NET20 && !NET30 && !NET35 && !NET40
+using System.Threading.Tasks;
+#endif
 
 namespace HPSocket
 {
@@ -33,6 +38,13 @@ namespace HPSocket
         /// 是否异步连接，默认为真
         /// </summary>
         bool Async { get; set; }
+
+        /// <summary>
+        /// 连接超时时间, 默认操作系统默认值
+        /// <para>单位: 毫秒</para>
+        /// </summary>
+        /// <exception cref="InvalidOperationException">同步连接、.NET Framework2.0以及设置小于100毫秒会引发此异常</exception>
+        int ConnectionTimeout { get; set; }
 
         /// <summary>
         /// 附加数据
@@ -132,6 +144,11 @@ namespace HPSocket
         /// 获取错误信息
         /// </summary>
         string ErrorMessage { get; }
+        
+        /// <summary>
+        /// 代理列表
+        /// </summary>
+        List<IProxy> ProxyList { get; set; }
 
         #endregion
 
@@ -206,6 +223,15 @@ namespace HPSocket
         /// <param name="port"></param>
         /// <returns></returns>
         bool GetRemoteHost(out string host, out ushort port);
+
+#if !NET20 && !NET30 && !NET35 && !NET40
+        /// <summary>
+        /// 等待代理结果
+        /// </summary>
+        /// <returns>连接成功返回true, 连接失败返回false</returns>
+        Task<bool> WaitProxyAsync();
+#endif
+
 
         #endregion
     }
