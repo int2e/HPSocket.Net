@@ -29,7 +29,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         /// </summary>
         /// <param name="header">包头, header的长度是构造函数里指定的长度, 构造函数里指定包头长度多少, 父类就等到了指定长度在调用此方法</param>
         /// <returns>返回真实长度</returns>
-        protected override int GetBodySize(byte[] header)
+        public override int GetBodySize(byte[] header)
         {
             // 适配大小端请根据自己的业务场景来, 两端字节序要保持一致
 
@@ -51,7 +51,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         /// <param name="header">包头</param>
         /// <param name="data">包体</param>
         /// <returns></returns>
-        protected override Packet ParseRequestBody(byte[] header, byte[] data)
+        public override Packet ParseRequestBody(byte[] header, byte[] data)
         {
             // 将data转换为泛型传入的类型对象
             // 我这里是Packet类的对象

@@ -23,7 +23,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         /// </summary>
         /// <param name="data">父类处理好的定长数据</param>
         /// <returns></returns>
-        protected override byte[] ParseRequestBody(byte[] data)
+        public override byte[] ParseRequestBody(byte[] data)
         {
             // 因为继承自FixedSizeDataReceiveAdapter<byte[]>, 所以这里直接返回了, 如果是其他类型, 请做完转换在返回
             return data;

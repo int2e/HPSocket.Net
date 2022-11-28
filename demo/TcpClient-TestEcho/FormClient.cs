@@ -44,7 +44,7 @@ namespace TcpClientTestEcho
             // 要连接的服务器地址和端口(也可以调用Connect()方法时传入服务器ip和端口)
             // 例如: _client.Connect("127.0.0.1", 555)
             _client.Address = "127.0.0.1";
-            _client.Port = 5555;
+            _client.Port = 7000;
 
             // 事件绑定
             _client.OnPrepareConnect += OnPrepareConnect;

@@ -25,7 +25,7 @@ namespace TcpServerTestEchoAdapter.DataReceiveAdapter
         /// </summary>
         /// <param name="data">父类处理好的不含区间起始结束标志的数据</param>
         /// <returns></returns>
-        protected override string ParseRequestBody(byte[] data)
+        public override string ParseRequestBody(byte[] data)
         {
             // 转换成请求对象, 注意编码问题, 要两端保持一致
             return Encoding.UTF8.GetString(data);
