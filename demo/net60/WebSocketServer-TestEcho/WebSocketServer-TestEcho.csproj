@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>WebSocketServer-TestEcho</AssemblyName>
     <RootNamespace>WebSocketServerTestEcho</RootNamespace>
     <Platforms>AnyCPU;x64;x86</Platforms>
@@ -33,7 +33,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HPSocket.Net" Version="5.8.8.3" />
+		<PackageReference Include="HPSocket.Net" Version="5.9.4" />
 	</ItemGroup>
 
 </Project>
