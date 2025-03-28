@@ -645,6 +645,8 @@ namespace HPSocket.WebSocket
 
             if (session.OpCode == OpCode.Pong || session.OpCode == OpCode.Ping)
             {
+                session.Data.AddRange(data);
+
                 return HandleResult.Ok;
             }
 
