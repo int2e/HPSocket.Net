@@ -1098,17 +1098,14 @@ namespace HPSocket.Base
             if (ConnectionTimeout == 0 || !Async) return;
 
             // 得到设置的超时时间
-
-#pragma warning disable IDE0067 // 丢失范围之前释放对象
             var timer = new Timer(_connectionTimeout)
             {
                 AutoReset = false
             };
-#pragma warning restore IDE0067 // 丢失范围之前释放对象
 
             timer.Elapsed += (sender, args) =>
             {
-                if (NativeGetConnectionExtra(connId, out var nativeId))
+                if (IsConnected(connId) && NativeGetConnectionExtra(connId, out var nativeId))
                 {
                     var nativeExtra = _connNativeData.Get(nativeId.ToInt32());
                     if (nativeExtra != null && nativeExtra.TcpConnectionState == TcpConnectionState.Connecting)
