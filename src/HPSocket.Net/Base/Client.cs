@@ -21,7 +21,7 @@ namespace HPSocket.Base
         /// <summary>
         /// 是否释放了
         /// </summary>
-        private bool _disposed;
+        private volatile bool _disposed;
 
         /// <summary>
         /// 代理连接状态
@@ -37,6 +37,11 @@ namespace HPSocket.Base
         /// native data
         /// </summary>
         private NativeExtra _nativeExtra;
+
+        /// <summary>
+        /// 连接超时定时器
+        /// </summary>
+        private Timer _connectionTimer;
 
 
         #endregion
@@ -118,13 +123,13 @@ namespace HPSocket.Base
             {
                 if (value < 0)
                 {
-                    throw new InvalidOperationException("不能设置小于0的值");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "不能设置小于0的值");
                 }
 
                 var milliseconds = value;
                 if (milliseconds != 0 && (milliseconds < 100 || milliseconds % 100 != 0))
                 {
-                    throw new InvalidOperationException("超时时间毫秒数请设置为100的倍数, 如: [100,1100,1300]");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "超时时间毫秒数请设置为100的倍数, 如: [100,1100,1300]");
                 }
 
                 _connectionTimeout = value;
@@ -234,17 +239,21 @@ namespace HPSocket.Base
             set
             {
                 _proxyList = value;
-                if (_proxyList != null)
+                _onConnect = SdkOnConnect;
+                if (_proxyList?.Count > 0)
                 {
-                    _onConnect = SdkOnConnect;
                     _onReceive = SdkOnReceive;
-
-                    Sdk.Client.HP_Set_FN_Client_OnConnect(ListenerPtr, _onConnect);
-                    Sdk.Client.HP_Set_FN_Client_OnReceive(ListenerPtr, _onReceive);
-
-                    GC.KeepAlive(_onConnect);
-                    GC.KeepAlive(_onReceive);
                 }
+                else
+                {
+                    _onReceive = SdkOnReceiveNoProxy;
+                }
+
+                Sdk.Client.HP_Set_FN_Client_OnConnect(ListenerPtr, _onConnect);
+                Sdk.Client.HP_Set_FN_Client_OnReceive(ListenerPtr, _onReceive);
+
+                GC.KeepAlive(_onConnect);
+                GC.KeepAlive(_onReceive);
             }
         }
 
@@ -282,6 +291,10 @@ namespace HPSocket.Base
         /// </summary>
         private void Destroy()
         {
+            // 在释放本机资源前停止连接超时定时器,避免回调访问已释放的 SenderPtr
+            var timer = Interlocked.Exchange(ref _connectionTimer, null);
+            timer?.Dispose();
+
             Stop();
 
             _nativeExtra = null;
@@ -533,25 +546,38 @@ namespace HPSocket.Base
             GC.KeepAlive(_onHandShake);
         }
 
+        private static bool TrySetTcpConnected(NativeExtra nativeExtra)
+        {
+            return nativeExtra != null &&
+                   Interlocked.CompareExchange(
+                       ref nativeExtra.TcpConnectionStateRef,
+                       (int)TcpConnectionState.Connected,
+                       (int)TcpConnectionState.Connecting) == (int)TcpConnectionState.Connecting;
+        }
+
         protected HandleResult SdkOnPrepareConnect(IntPtr sender, IntPtr connId, IntPtr socket) => OnPrepareConnect?.Invoke(this, socket) ?? HandleResult.Ignore;
 
         protected HandleResult SdkOnConnect(IntPtr sender, IntPtr connId)
         {
-            if ((_proxyList?.Count > 0 || ConnectionTimeout > 0) && _nativeExtra != null)
+            var hasProxy = _proxyList?.Count > 0;
+            if (hasProxy)
             {
-                if (_proxyList?.Count > 0)
+                if (_nativeExtra == null)
                 {
-                    _proxyConnectionState = 2; // 协商中
+                    return HandleResult.Error;
+                }
 
-                    var proxy = _nativeExtra.Proxy;
-                    if (proxy == null)
-                    {
-                        return HandleResult.Error;
-                    }
+                _proxyConnectionState = 2; // 协商中
 
-                    switch (_nativeExtra.ProxyConnectionState)
-                    {
-                        case ProxyConnectionState.Step1:
+                var proxy = _nativeExtra.Proxy;
+                if (proxy == null)
+                {
+                    return HandleResult.Error;
+                }
+
+                switch (_nativeExtra.ProxyConnectionState)
+                {
+                    case ProxyConnectionState.Step1:
                         {
                             byte[] data;
                             switch (proxy)
@@ -573,19 +599,28 @@ namespace HPSocket.Base
 
                             break;
                         }
-                        default:
+                    default:
                         {
                             return HandleResult.Error;
                         }
-                    }
+                }
 
-                    return HandleResult.Ok;
-                }
-                else if (ConnectionTimeout > 0)
+                return HandleResult.Ok;
+            }
+
+            if (ConnectionTimeout > 0)
+            {
+                if (_nativeExtra == null)
                 {
-                    _nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
-                    return OnConnect?.Invoke(this) ?? HandleResult.Ignore;
+                    return HandleResult.Ignore;
                 }
+
+                // 仅当仍是 Connecting 时才触发 OnConnect, 防止与超时回调的 TimedOut 写入竞争
+                if (!TrySetTcpConnected(_nativeExtra))
+                {
+                    return HandleResult.Ignore;
+                }
+                return OnConnect?.Invoke(this) ?? HandleResult.Ignore;
             }
 
             return OnConnect?.Invoke(this) ?? HandleResult.Ignore;
@@ -636,7 +671,11 @@ namespace HPSocket.Base
 
                             if (ConnectionTimeout > 0)
                             {
-                                _nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
+                                // 仅当仍是 Connecting 时才触发 OnConnect, 防止与超时回调的 TimedOut 写入竞争
+                                if (!TrySetTcpConnected(_nativeExtra))
+                                {
+                                    return HandleResult.Ignore;
+                                }
                             }
 
                             _nativeExtra.ProxyConnectionState = ProxyConnectionState.Normal;
@@ -726,7 +765,11 @@ namespace HPSocket.Base
 
                         if (ConnectionTimeout > 0)
                         {
-                            _nativeExtra.TcpConnectionState = TcpConnectionState.Connected;
+                            // 仅当仍是 Connecting 时才触发 OnConnect, 防止与超时回调的 TimedOut 写入竞争
+                            if (!TrySetTcpConnected(_nativeExtra))
+                            {
+                                return HandleResult.Ignore;
+                            }
                         }
 
                         _nativeExtra.ProxyConnectionState = ProxyConnectionState.Normal;
@@ -767,6 +810,16 @@ namespace HPSocket.Base
                 _proxyConnectionState = 4;
             }
 
+            if (_nativeExtra != null)
+            {
+                if (_nativeExtra.TcpConnectionState == TcpConnectionState.TimedOut)
+                {
+                    socketOperation = SocketOperation.TimedOut;
+                    errorCode = (int)socketOperation;
+                }
+                _nativeExtra.TcpConnectionState = TcpConnectionState.Closed;
+            }
+
             return OnClose?.Invoke(this, socketOperation, errorCode) ?? HandleResult.Ignore;
         }
 
@@ -795,25 +848,40 @@ namespace HPSocket.Base
         {
             if (ConnectionTimeout == 0 || !Async) return;
 
+            // 先清理可能残留的旧定时器(避免多次 Connect 叠加)
+            var oldTimer = Interlocked.Exchange(ref _connectionTimer, null);
+            oldTimer?.Dispose();
+
             // 得到设置的超时时间
             var timer = new Timer(_connectionTimeout)
             {
                 AutoReset = false
             };
+            _connectionTimer = timer;
 
             timer.Elapsed += (sender, args) =>
             {
+                // 已释放或定时器已被替换,直接返回
+                if (_disposed || !ReferenceEquals(_connectionTimer, timer)) return;
 
-                if (IsConnected && _nativeExtra != null && _nativeExtra.TcpConnectionState == TcpConnectionState.Connecting)
+                if (_nativeExtra != null && _nativeExtra.TcpConnectionState == TcpConnectionState.Connecting)
                 {
-                    _nativeExtra.TcpConnectionState = TcpConnectionState.TimedOut;
-                    Stop();
+                    // CAS: 仅当仍是 Connecting 时才转为 TimedOut, 防止与 SdkOnConnect 的 Connected 写入竞争
+                    if (Interlocked.CompareExchange(
+                            ref _nativeExtra.TcpConnectionStateRef,
+                            (int)TcpConnectionState.TimedOut,
+                            (int)TcpConnectionState.Connecting) == (int)TcpConnectionState.Connecting)
+                    {
+                        Stop();
+                    }
                 }
 
-                if (!(sender is Timer t)) return;
-                t.Close();
-                t.Stop();
-                t.Dispose();
+                // 仅当本 timer 仍是当前定时器时才清理,避免与 Destroy 双重 Dispose
+                if (ReferenceEquals(Interlocked.CompareExchange(ref _connectionTimer, null, timer), timer))
+                {
+                    timer.Stop();
+                    timer.Dispose();
+                }
             };
             timer.Start();
         }
@@ -826,6 +894,9 @@ namespace HPSocket.Base
         {
             if (_disposed) return;
 
+            // 提前置位,让连接超时定时器回调能在本机资源释放前及时退出
+            _disposed = true;
+
             if (disposing)
             {
                 // 释放托管对象资源
@@ -835,8 +906,6 @@ namespace HPSocket.Base
             }
 
             Destroy();
-
-            _disposed = true;
         }
 
         /// <summary>

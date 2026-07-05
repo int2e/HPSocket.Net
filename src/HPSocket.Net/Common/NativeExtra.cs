@@ -11,9 +11,18 @@ namespace HPSocket
     internal class NativeExtra
     {
         /// <summary>
+        /// 连接状态(int 后备字段,仅供 Interlocked.CompareExchange 使用; 业务代码请用 <see cref="TcpConnectionState"/> 属性)
+        /// </summary>
+        internal int TcpConnectionStateRef;
+
+        /// <summary>
         /// 连接状态
         /// </summary>
-        public TcpConnectionState TcpConnectionState { get; set; }
+        public TcpConnectionState TcpConnectionState
+        {
+            get => (TcpConnectionState)TcpConnectionStateRef;
+            set => TcpConnectionStateRef = (int)value;
+        }
 
         /// <summary>
         /// 代理连接状态

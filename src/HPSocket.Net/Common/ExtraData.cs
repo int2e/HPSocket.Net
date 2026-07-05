@@ -103,6 +103,62 @@ namespace HPSocket
         }
 
         /// <summary>
+        /// 删除附加数据并返回被删除的值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool Remove(TKey key, out TValue value)
+        {
+            lock (_dict)
+            {
+                try
+                {
+                    if (_dict.TryGetValue(key, out value))
+                    {
+                        _dict.Remove(key);
+                        return true;
+                    }
+                    value = default;
+                    return false;
+                }
+                catch (ArgumentNullException)
+                {
+                    value = default;
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 当 key 当前值与指定值一致时删除附加数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool Remove(TKey key, TValue value)
+        {
+            lock (_dict)
+            {
+                try
+                {
+                    if (_dict.TryGetValue(key, out var existingValue) &&
+                        EqualityComparer<TValue>.Default.Equals(existingValue, value))
+                    {
+                        _dict.Remove(key);
+                        return true;
+                    }
+
+                    return false;
+                }
+                catch (ArgumentNullException)
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
         /// 清除
         /// </summary>
         internal void Clear()
@@ -189,6 +245,44 @@ namespace HPSocket
             try
             {
                 return _dict.TryRemove(key, out _);
+            }
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 删除附加数据并返回被删除的值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool Remove(TKey key, out TValue value)
+        {
+            try
+            {
+                return _dict.TryRemove(key, out value);
+            }
+            catch (ArgumentNullException)
+            {
+                value = default;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 当 key 当前值与指定值一致时删除附加数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool Remove(TKey key, TValue value)
+        {
+            try
+            {
+                return ((System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>)_dict)
+                    .Remove(new System.Collections.Generic.KeyValuePair<TKey, TValue>(key, value));
             }
             catch (ArgumentNullException)
             {

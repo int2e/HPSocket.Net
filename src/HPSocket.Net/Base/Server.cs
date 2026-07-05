@@ -18,7 +18,7 @@ namespace HPSocket.Base
         /// <summary>
         /// 是否释放了
         /// </summary>
-        private bool _disposed;
+        private volatile bool _disposed;
 
         #endregion
 
@@ -276,7 +276,7 @@ namespace HPSocket.Base
         }
 
         /// <inheritdoc />
-        public bool Stop() => HasStarted && Sdk.Server.HP_Server_Stop(SenderPtr);
+        public bool Stop() => HasStarted && State != ServiceState.Stopped && State != ServiceState.Stopping && Sdk.Server.HP_Server_Stop(SenderPtr);
 
         /// <inheritdoc />
         public bool Wait(int milliseconds = -1)
@@ -584,6 +584,9 @@ namespace HPSocket.Base
         {
             if (_disposed) return;
 
+            // 提前置位,避免多线程 Dispose 造成双重销毁
+            _disposed = true;
+
             if (disposing)
             {
                 // 释放托管对象资源
@@ -593,8 +596,6 @@ namespace HPSocket.Base
             }
 
             Destroy();
-
-            _disposed = true;
         }
 
         /// <summary>
