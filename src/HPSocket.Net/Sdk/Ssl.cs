@@ -6,7 +6,7 @@ namespace HPSocket.Sdk
 {
     internal static class Ssl
     {
-        public delegate int SniServerNameCallback(string serverName);
+        public delegate int SniServerNameCallback(string serverName, IntPtr context);
 
 
         /**************** HPSocket4C 导出函数 ****************/

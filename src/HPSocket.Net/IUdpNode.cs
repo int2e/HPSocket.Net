@@ -78,8 +78,9 @@ namespace HPSocket
         uint MaxDatagramSize { get; set; }
 
         /// <summary>
-        /// 获取或设置是否使用地址重用机制（默认：不启用）
+        /// 获取或设置是否使用地址重用机制（默认：启用，仅重用地址）
         /// </summary>
+        [System.Obsolete("原生 API 已移除，请使用 ReuseAddressPolicy。", true)]
         bool IsReuseAddress { get; set; }
 
         /// <summary>
@@ -119,7 +120,7 @@ namespace HPSocket
         uint FreeBufferPoolHold { get; set; }
 
         /// <summary>
-        /// 获取或设置地址重用选项
+        /// 获取或设置地址重用选项（默认：AddressOnly）
         /// </summary>
         ReuseAddressPolicy ReuseAddressPolicy { get; set; }
 

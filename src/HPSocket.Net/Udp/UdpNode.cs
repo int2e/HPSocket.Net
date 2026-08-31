@@ -95,10 +95,13 @@ namespace HPSocket.Udp
         }
 
         /// <inheritdoc />
+        [Obsolete("原生 API 已移除，请使用 ReuseAddressPolicy。", true)]
         public bool IsReuseAddress
         {
-            get => Sdk.Udp.HP_UdpNode_IsReuseAddress(SenderPtr);
-            set => Sdk.Udp.HP_UdpNode_SetReuseAddress(SenderPtr, value);
+            get => ReuseAddressPolicy != HPSocket.ReuseAddressPolicy.None;
+            set => ReuseAddressPolicy = value
+                ? HPSocket.ReuseAddressPolicy.AddressOnly
+                : HPSocket.ReuseAddressPolicy.None;
         }
 
         /// <inheritdoc />

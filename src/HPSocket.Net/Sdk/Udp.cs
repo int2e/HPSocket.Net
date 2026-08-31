@@ -357,10 +357,6 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_UdpNode_GetMaxDatagramSize(IntPtr pNode);
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
-        public static extern void HP_UdpNode_SetReuseAddress(IntPtr pNode, bool bReuseAddress);
-        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
-        public static extern bool HP_UdpNode_IsReuseAddress(IntPtr pNode);
-        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_UdpNode_SetMultiCastTtl(IntPtr pNode, int iMcTtl);
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern int HP_UdpNode_GetMultiCastTtl(IntPtr pNode);
@@ -389,9 +385,9 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_UdpNode_GetFreeBufferPoolHold(IntPtr pNode);
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
-        public static extern ReuseAddressPolicy HP_UdpNode_GetReuseAddressPolicy(IntPtr pServer);
+        public static extern ReuseAddressPolicy HP_UdpNode_GetReuseAddressPolicy(IntPtr pNode);
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
-        public static extern void HP_UdpNode_SetReuseAddressPolicy(IntPtr pServer, ReuseAddressPolicy enReusePolicy);
+        public static extern void HP_UdpNode_SetReuseAddressPolicy(IntPtr pNode, ReuseAddressPolicy enReusePolicy);
 
         /**********************************************************************************/
         /***************************** UdpNode 回调函数设置方法 *****************************/

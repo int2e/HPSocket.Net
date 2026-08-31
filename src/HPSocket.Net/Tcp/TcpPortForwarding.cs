@@ -155,7 +155,7 @@ namespace HPSocket.Tcp
         public uint MaxConnectionCount { get; set; } = 10000;
 
         /// <inheritdoc />
-        public int ConnectionTimeout { get; set; } = 0;
+        public int ConnectionTimeout { get; set; } = 10000;
 
         /// <inheritdoc />
         public List<IProxy> ProxyList { get; set; }

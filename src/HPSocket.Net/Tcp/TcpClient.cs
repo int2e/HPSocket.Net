@@ -92,6 +92,17 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
+        public override bool Connect()
+        {
+            if (!Async && State == ServiceState.Stopped)
+            {
+                Sdk.Tcp.HP_TcpClient_SetSyncConnectTimeout(SenderPtr, (uint)ConnectionTimeout);
+            }
+
+            return base.Connect();
+        }
+
+        /// <inheritdoc />
         public uint SocketBufferSize
         {
             get => Sdk.Tcp.HP_TcpClient_GetSocketBufferSize(SenderPtr);

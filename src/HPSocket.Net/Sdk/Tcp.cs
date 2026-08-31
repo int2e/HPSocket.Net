@@ -190,6 +190,9 @@ namespace HPSocket.Sdk
         /***************************** TCP Client 属性访问方法 *****************************/
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_TcpClient_SetSyncConnectTimeout(IntPtr pClient, uint dwSyncConnectTimeout);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_TcpClient_SetSocketBufferSize(IntPtr pClient, uint dwSocketBufferSize);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
@@ -200,6 +203,9 @@ namespace HPSocket.Sdk
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_TcpClient_SetNoDelay(IntPtr pClient, bool bNoDelay);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern uint HP_TcpClient_GetSyncConnectTimeout(IntPtr pClient);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpClient_GetSocketBufferSize(IntPtr pClient);
@@ -274,6 +280,9 @@ namespace HPSocket.Sdk
         public static extern ReuseAddressPolicy HP_Agent_GetReuseAddressPolicy(IntPtr pAgent);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern void HP_TcpAgent_SetSyncConnectTimeout(IntPtr pAgent, uint dwSyncConnectTimeout);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_TcpAgent_SetSocketBufferSize(IntPtr pAgent, uint dwSocketBufferSize);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
@@ -284,6 +293,9 @@ namespace HPSocket.Sdk
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern void HP_TcpAgent_SetNoDelay(IntPtr pAgent, bool bNoDelay);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern uint HP_TcpAgent_GetSyncConnectTimeout(IntPtr pAgent);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern uint HP_TcpAgent_GetSocketBufferSize(IntPtr pAgent);

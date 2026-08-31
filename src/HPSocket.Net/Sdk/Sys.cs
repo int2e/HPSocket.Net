@@ -385,6 +385,111 @@ namespace HPSocket.Sdk
         [DllImport(HpSocketLibrary.DllName)]
         public static extern void SYS_Free(IntPtr p);
 
+        /// <summary>
+        /// 分配并清零内存块
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern IntPtr SYS_Calloc(int number, int size);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_CodePageToUnicodeEx(int codePage, IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_UnicodeToCodePageEx(int codePage, IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_GbkToUnicodeEx(IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_UnicodeToGbkEx(IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_Utf8ToUnicodeEx(IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_UnicodeToUtf8Ex(IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_GbkToUtf8Ex(IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_Utf8ToGbkEx(IntPtr src, int srcLength, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_CodePageToUnicode(int codePage, IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_UnicodeToCodePage(int codePage, IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_GbkToUnicode(IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_UnicodeToGbk(IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_Utf8ToUnicode(IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_UnicodeToUtf8(IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_GbkToUtf8(IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern bool SYS_Utf8ToGbk(IntPtr src, IntPtr dest, ref int destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern uint SYS_GuessBase64EncodeBound(uint srcLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern uint SYS_GuessBase64DecodeBound(IntPtr src, uint srcLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_Base64Encode(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_Base64Decode(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern uint SYS_GuessUrlEncodeBound(IntPtr src, uint srcLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern uint SYS_GuessUrlDecodeBound(IntPtr src, uint srcLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_UrlEncode(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_UrlDecode(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_Compress(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_CompressEx(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength, int level, int method, int windowBits, int memoryLevel, int strategy);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_Uncompress(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_UncompressEx(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength, int windowBits);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern uint SYS_GuessCompressBound(uint srcLength, bool gzip);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_GZipCompress(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern int SYS_GZipUncompress(IntPtr src, uint srcLength, IntPtr dest, ref uint destLength);
+
+        [DllImport(HpSocketLibrary.DllName)]
+        public static extern uint SYS_GZipGuessUncompressBound(IntPtr src, uint srcLength);
+
 
         /// <summary>
         /// Brotli 压缩
@@ -395,7 +500,7 @@ namespace HPSocket.Sdk
         /// <param name="destLen"></param>
         /// <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
         [DllImport(HpSocketLibrary.DllName)]
-        public static extern int SYS_BrotliCompress(byte[] src, int srcLen, ref IntPtr dest, ref uint destLen);
+        public static extern int SYS_BrotliCompress(IntPtr src, uint srcLen, IntPtr dest, ref uint destLen);
 
         /// <summary>
         /// Brotli 高级压缩
@@ -409,7 +514,7 @@ namespace HPSocket.Sdk
         /// <param name="mode"></param>
         /// <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
         [DllImport(HpSocketLibrary.DllName)]
-        public static extern int SYS_BrotliCompressEx(IntPtr lpszSrc, uint srcLen, ref IntPtr dest, ref uint destLen, int quality, int window, int mode);
+        public static extern int SYS_BrotliCompressEx(IntPtr lpszSrc, uint srcLen, IntPtr dest, ref uint destLen, int quality, int window, int mode);
   
         /// <summary>
         /// Brotli 解压
@@ -420,7 +525,7 @@ namespace HPSocket.Sdk
         /// <param name="destLen"></param>
         /// <returns>0.成功，-3.输入数据不正确，-5.输出缓冲区不足</returns>
         [DllImport(HpSocketLibrary.DllName)]
-        public static extern int SYS_BrotliUncompress(IntPtr lpszSrc, uint srcLen, ref IntPtr dest, ref uint destLen);
+        public static extern int SYS_BrotliUncompress(IntPtr lpszSrc, uint srcLen, IntPtr dest, ref uint destLen);
 
         /// <summary>
         /// Brotli 推测压缩结果长度

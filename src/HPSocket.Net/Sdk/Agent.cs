@@ -51,6 +51,9 @@ namespace HPSocket.Sdk
         public static extern bool HP_Agent_ConnectWithLocalAddress(IntPtr pAgent, string lpszRemoteAddress, ushort usPort, ref IntPtr pdwConnId, string lpszLocalAddress);
 
         [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
+        public static extern bool HP_Agent_ConnectWithExtraAndLocalPort(IntPtr pAgent, string lpszRemoteAddress, ushort usPort, ref IntPtr pdwConnId, IntPtr pExtra, ushort usLocalPort);
+
+        [DllImport(HpSocketLibrary.DllName, CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern bool HP_Agent_ConnectWithExtraAndLocalAddressPort(IntPtr pAgent, string lpszRemoteAddress, ushort usPort, ref IntPtr pdwConnId, IntPtr pExtra, ushort usLocalPort, string lpszLocalAddress);
 
 

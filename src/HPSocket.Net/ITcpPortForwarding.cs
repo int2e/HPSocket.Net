@@ -113,7 +113,7 @@ namespace HPSocket
         uint MaxConnectionCount { get; set; }
 
         /// <summary>
-        /// 连接目标服务器的超时时间, 默认0, 不启用, 使用系统默认时间
+        /// 连接目标服务器的超时时间，默认 10000 毫秒
         /// </summary>
         int ConnectionTimeout { get; set; }
 

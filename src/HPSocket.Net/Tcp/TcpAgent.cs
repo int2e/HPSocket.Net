@@ -82,6 +82,32 @@ namespace HPSocket.Tcp
         }
 
         /// <inheritdoc />
+        public override int ConnectionTimeout
+        {
+            get => base.ConnectionTimeout;
+            set
+            {
+                if (!Async && State != ServiceState.Stopped)
+                {
+                    throw new InvalidOperationException("同步连接模式下请在启动前设置连接超时时间");
+                }
+
+                base.ConnectionTimeout = value;
+            }
+        }
+
+        /// <inheritdoc />
+        public override bool Start()
+        {
+            if (!Async && State == ServiceState.Stopped)
+            {
+                Sdk.Tcp.HP_TcpAgent_SetSyncConnectTimeout(SenderPtr, (uint)ConnectionTimeout);
+            }
+
+            return base.Start();
+        }
+
+        /// <inheritdoc />
         public uint SocketBufferSize
         {
             get => Sdk.Tcp.HP_TcpAgent_GetSocketBufferSize(SenderPtr);

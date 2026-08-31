@@ -40,10 +40,12 @@ namespace HPSocket
         bool Async { get; set; }
 
         /// <summary>
-        /// 连接超时时间, 默认操作系统默认值
+        /// 连接超时时间，默认 10000 毫秒
+        /// <para>TCP 同步连接由原生组件执行超时控制，异步连接由 .NET 计时器执行超时控制</para>
+        /// <para>HTTP 同步客户端请使用 <see cref="IHttpSyncClient.ConnectTimeout"/></para>
         /// <para>单位: 毫秒</para>
         /// </summary>
-        /// <exception cref="InvalidOperationException">同步连接、.NET Framework2.0以及设置小于100毫秒会引发此异常</exception>
+        /// <exception cref="ArgumentOutOfRangeException">设置小于 100 或非 100 倍数的值会引发此异常</exception>
         int ConnectionTimeout { get; set; }
 
         /// <summary>
